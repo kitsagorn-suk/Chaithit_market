@@ -32,7 +32,6 @@ namespace Chaithit_Market.Core
             payload += " \"expire_date\":" + timestampExpire + ",";
             payload += " \"create_date\":" + timestampNow + ",";
             payload += " \"user_id\":" + dataFormToken.userID + ",";
-            payload += " \"role_id\":" + dataFormToken.roleID + ",";
             payload += " }";
 
             string encryptedHeader = Utility.Base64UrlEncode(header);
