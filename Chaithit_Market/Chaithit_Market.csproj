@@ -178,6 +178,7 @@
     <Compile Include="DTO\SaveRentalDTO.cs" />
     <Compile Include="DTO\SaveUserProfileDTO.cs" />
     <Compile Include="DTO\SearchRentDTO.cs" />
+    <Compile Include="DTO\SearchRentStandDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -191,6 +192,7 @@
     <Compile Include="Models\Pagination.cs" />
     <Compile Include="Models\ReturnIdModel.cs" />
     <Compile Include="Models\SearchRentalModel.cs" />
+    <Compile Include="Models\SearchRentalStandModel.cs" />
     <Compile Include="Models\SearchUserProfileModel.cs" />
     <Compile Include="Models\UploadModel.cs" />
     <Compile Include="Models\ValidationModel.cs" />

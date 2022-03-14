@@ -1334,14 +1334,14 @@ namespace Chaithit_Market.Core
                 }
             }
 
-            int total = GetTotalSearchUserProfile(searchRentDTO);
+            int total = GetTotalSearchRent(searchRentDTO);
 
             pagination.SetPagination(total, searchRentDTO.perPage, searchRentDTO.pageInt);
 
             return pagination;
         }
 
-        public int GetTotalSearchUserProfile(SearchRentDTO searchRentDTO)
+        public int GetTotalSearchRent(SearchRentDTO searchRentDTO)
         {
             int total = 0;
 
@@ -1353,6 +1353,103 @@ namespace Chaithit_Market.Core
             pName.Direction = ParameterDirection.Input;
             pName.Value = searchRentDTO.name;
             sql.Parameters.Add(pName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public Pagination<SearchRentalStand> SearchRentalStand(SearchRentStandDTO searchRentStandDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_stand_page " +
+                "@pRentCode, " +
+                "@pRentName, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pRentCode = new SqlParameter(@"pRentCode", SqlDbType.VarChar, 255);
+            pRentCode.Direction = ParameterDirection.Input;
+            pRentCode.Value = searchRentStandDTO.rentCode;
+            sql.Parameters.Add(pRentCode);
+
+            SqlParameter pRentName = new SqlParameter(@"pRentName", SqlDbType.VarChar, 255);
+            pRentName.Direction = ParameterDirection.Input;
+            pRentName.Value = searchRentStandDTO.rentName;
+            sql.Parameters.Add(pRentName);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchRentStandDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchRentStandDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchRentStandDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchRentStandDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchRentalStand> pagination = new Pagination<SearchRentalStand>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchRentalStand data = new SearchRentalStand();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchRentStand(searchRentStandDTO);
+
+            pagination.SetPagination(total, searchRentStandDTO.perPage, searchRentStandDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchRentStand(SearchRentStandDTO searchRentStandDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_stand_total " +
+                "@pRentCode, " +
+                "@pRentName ");
+
+            SqlParameter pRentCode = new SqlParameter(@"pRentCode", SqlDbType.VarChar, 255);
+            pRentCode.Direction = ParameterDirection.Input;
+            pRentCode.Value = searchRentStandDTO.rentCode;
+            sql.Parameters.Add(pRentCode);
+
+            SqlParameter pRentName = new SqlParameter(@"pRentName", SqlDbType.VarChar, 255);
+            pRentName.Direction = ParameterDirection.Input;
+            pRentName.Value = searchRentStandDTO.rentName;
+            sql.Parameters.Add(pRentName);
 
             table = sql.executeQueryWithReturnTable();
 
