@@ -1282,6 +1282,91 @@ namespace Chaithit_Market.Core
 
             return total;
         }
+
+        public Pagination<SearchRental> SearchRental(SearchRentDTO searchRentDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_page " +
+                "@pName, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 255);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = searchRentDTO.name;
+            sql.Parameters.Add(pName);
+            
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchRentDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchRentDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchRentDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchRentDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchRental> pagination = new Pagination<SearchRental>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchRental data = new SearchRental();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchUserProfile(searchRentDTO);
+
+            pagination.SetPagination(total, searchRentDTO.perPage, searchRentDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchUserProfile(SearchRentDTO searchRentDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_total " +
+                "@pName ");
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 255);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = searchRentDTO.name;
+            sql.Parameters.Add(pName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
     }
 
     public class SQLCustomExecute

@@ -12,6 +12,7 @@ namespace Chaithit_Market.Models
         public MsgModel msg { get; set; }
         public Pagination<SearchUserProfile> data { get; set; }
     }
+
     public class SearchUserProfile
     {
         public int userProfileID { set; get; } = 0;
@@ -35,5 +36,4 @@ namespace Chaithit_Market.Models
             endDate = dr["end_date"].ToString();
         }
     }
-
 }

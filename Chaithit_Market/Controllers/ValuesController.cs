@@ -419,6 +419,59 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
+
+        [Route("search/rental")]
+        [HttpPost]
+        public IHttpActionResult SearchRental(SearchRentDTO searchRentDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("SearchRental", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                SaveService srv = new SaveService();
+
+                var obj = new object();
+
+                if (searchRentDTO.pageInt.Equals(null) || searchRentDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchRentDTO.perPage.Equals(null) || searchRentDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchRentDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchRentDTO.sortField);
+                }
+
+                if (!(searchRentDTO.sortType == "a" || searchRentDTO.sortType == "d" || searchRentDTO.sortType == "A" || searchRentDTO.sortType == "D" || searchRentDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchRentalService(authHeader, lang, platform.ToLower(), logID, searchRentDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
         #endregion
 
         #region Transection

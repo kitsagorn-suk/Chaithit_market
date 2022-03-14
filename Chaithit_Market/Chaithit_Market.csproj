@@ -177,6 +177,7 @@
     <Compile Include="DTO\MasterDataDTO.cs" />
     <Compile Include="DTO\SaveRentalDTO.cs" />
     <Compile Include="DTO\SaveUserProfileDTO.cs" />
+    <Compile Include="DTO\SearchRentDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -189,6 +190,7 @@
     <Compile Include="Models\MsgModel.cs" />
     <Compile Include="Models\Pagination.cs" />
     <Compile Include="Models\ReturnIdModel.cs" />
+    <Compile Include="Models\SearchRentalModel.cs" />
     <Compile Include="Models\SearchUserProfileModel.cs" />
     <Compile Include="Models\UploadModel.cs" />
     <Compile Include="Models\ValidationModel.cs" />
@@ -235,7 +237,9 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
