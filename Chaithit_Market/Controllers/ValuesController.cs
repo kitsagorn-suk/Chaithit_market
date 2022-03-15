@@ -303,68 +303,95 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("upload/imageUserProfile")]
+        [Route("upload/file")]
         [HttpPost]
-        public Task<HttpResponseMessage> UploadImageUserProfile()
+        public async Task<HttpResponseMessage> UploadFile()
         {
             var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"]; //
-            string version = request.Headers["version"]; //
+            string authHeader = (request.Headers["Authorization"] ?? "");
+            string lang = (request.Headers["lang"] ?? WebConfigurationManager.AppSettings["default_language"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
             
-            var obj = new Object();
+            UploadModel value = new UploadModel();
+            value.data = new _ServiceUploadData();
 
-            string savedFilePath = string.Empty;
-            // Check if the request contains multipart/form-data
-            if (!Request.Content.IsMimeMultipartContent())
+            int userID = 0;
+            string diskFolderPath = string.Empty;
+            string subFolder = string.Empty;
+            string keyName = string.Empty;
+            string fileName = string.Empty;
+            string newFileName = string.Empty;
+            string fileURL = string.Empty;
+            var fileSize = long.MinValue;
+
+            var path = WebConfigurationManager.AppSettings["body_path"];
+            if (!Directory.Exists(path))
             {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                Directory.CreateDirectory(path);
             }
-            //Get the path of folder where we want to upload all files.
-            string rootPath = string.Format(WebConfigurationManager.AppSettings["upload_user_path"]);
-            //string rootPath = HttpContext.Current.Server.MapPath("~/image_id_no");
-            var provider = new MultipartFileStreamProvider(rootPath);
-            // Read the form data.
-            //If any error(Cancelled or any fault) occurred during file read , return internal server error
-            var task = Request.Content.ReadAsMultipartAsync(provider).
-                ContinueWith<HttpResponseMessage>(t =>
+
+            if (!Request.Content.IsMimeMultipartContent("form-data"))
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType));
+            }
+
+            MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(path);
+
+            await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+            foreach (MultipartFileData fileData in streamProvider.FileData)
+            {
+                fileSize = new FileInfo(fileData.LocalFileName).Length;
+                if (fileSize > 3100000)
                 {
-                    string newFileName = null;
+                    throw new Exception("error file size limit 3.00 MB");
+                }
 
-                    if (t.IsCanceled || t.IsFaulted)
-                    {
-                        Request.CreateErrorResponse(HttpStatusCode.InternalServerError, t.Exception);
-                    }
-                    foreach (MultipartFileData dataitem in provider.FileData)
-                    {
-                        try
-                        {
-                            //Replace / from file name
-                            string name = dataitem.Headers.ContentDisposition.FileName.Replace("\"", "");
-                            //Create New file name using GUID to prevent duplicate file name
-                            newFileName = Guid.NewGuid() + Path.GetExtension(name);
-                            rootPath = rootPath + "\\" + "Temp" + "\\ImageFilePath";
-                            //Move file from current location to target folder.
-                            if (!Directory.Exists(rootPath))
-                            {
-                                Directory.CreateDirectory(rootPath);
-                            }
-                            File.Move(dataitem.LocalFileName, Path.Combine(rootPath, newFileName));
-                            //savedFilePath = string.Format(WebConfigurationManager.AppSettings["user_gallery_url"], newFileName);
+                keyName = fileData.Headers.ContentDisposition.Name.Replace("\"", "");
+                fileName = fileData.Headers.ContentDisposition.FileName.Replace("\"", "");
+                newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
+                
+                if (keyName == "upload_user_profile")
+                {
+                    subFolder = userID + "\\ProFilePath";
+                    diskFolderPath = string.Format(WebConfigurationManager.AppSettings["file_user_path"], subFolder);
+                    fileURL = string.Format(WebConfigurationManager.AppSettings["file_user_url"], userID + "/ProFilePath", newFileName);
+                }
 
-                            UploadService srv = new UploadService();
-                            obj = srv.UploadImageUserProfile(newFileName, "Temp", lang);
-                        }
-                        catch (Exception ex)
-                        {
-                            string message = ex.StackTrace;
-                        }
-                    }
+                var fullPath = Path.Combine(diskFolderPath, newFileName);
+                var fileInfo = new FileInfo(fullPath);
+                while (fileInfo.Exists)
+                {
+                    newFileName = fileInfo.Name.Replace(fileInfo.Extension, "");
+                    newFileName = newFileName + Guid.NewGuid().ToString() + fileInfo.Extension;
 
-                    return Request.CreateResponse(HttpStatusCode.OK, obj, Configuration.Formatters.JsonFormatter);
-                });
-            return task;
+                    fullPath = Path.Combine(diskFolderPath, newFileName);
+                    fileInfo = new FileInfo(fullPath);
+                }
+
+                if (!Directory.Exists(fileInfo.Directory.FullName))
+                {
+                    Directory.CreateDirectory(fileInfo.Directory.FullName);
+                }
+                File.Move(fileData.LocalFileName, fullPath);
+
+                if (!File.Exists(fullPath))
+                {
+                    value.success = false;
+                    value.data.file_size = fileSize.ToString();
+                    value.msg = new MsgModel() { code = 0, text = "อัพโหลดไม่สำเร็จ", topic = "ไม่สำเร็จ" };
+                }
+                else
+                {
+                    value.success = true;
+                    value.data.img_url = fileURL;
+                    value.data.file_size = fileSize.ToString();
+                    value.msg = new MsgModel() { code = 0, text = "อัพโหลดสำเร็จ", topic = "สำเร็จ" };
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, value, Configuration.Formatters.JsonFormatter);
         }
 
         [Route("search/userProfile")]
