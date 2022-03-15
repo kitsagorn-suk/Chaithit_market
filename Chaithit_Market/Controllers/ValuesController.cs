@@ -129,9 +129,9 @@ namespace Chaithit_Market.Controllers
                     {
                         checkMissingOptional += "endDate ";
                     }
-                    if (saveUserProfileDTO.isEmp == 0)
+                    if (saveUserProfileDTO.statusEmp == 0)
                     {
-                        checkMissingOptional += "isEmp ";
+                        checkMissingOptional += "statusEmp ";
                     }
                 }
                 else if (saveUserProfileDTO.mode.ToLower().Equals("update"))
@@ -168,9 +168,9 @@ namespace Chaithit_Market.Controllers
                     {
                         checkMissingOptional += "endDate ";
                     }
-                    if (saveUserProfileDTO.isEmp == 0)
+                    if (saveUserProfileDTO.statusEmp == 0)
                     {
-                        checkMissingOptional += "isEmp ";
+                        checkMissingOptional += "statusEmp ";
                     }
                 }
                 else if (saveUserProfileDTO.mode.ToLower().Equals("delete"))

@@ -27,7 +27,7 @@ namespace Chaithit_Market.Services
                 if (validation.Success == true)
                 {
                     string auth = GenAuthorization.GetAuthorization(username, password, "ChaithitMarket", platform.ToLower());
-                    value.data = _sql.Login(username, password, auth, lang);
+                    value.data = _sql.Login(username, password, auth, platform.ToLower(), lang);
                     value.data.token = auth;
                     value.data.platform = platform;
                 }

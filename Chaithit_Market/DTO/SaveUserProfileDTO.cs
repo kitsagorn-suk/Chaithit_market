@@ -17,6 +17,6 @@ namespace Chaithit_Market.DTO
         public string position { set; get; } = "";
         public string startDate { set; get; } = "";
         public string endDate{ set; get; } = "";
-        public int isEmp { set; get; } = 0;
+        public int statusEmp { set; get; } = 0;
     }
 }

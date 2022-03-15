@@ -32,8 +32,8 @@ namespace Chaithit_Market.Models
             userName = dr["name"].ToString();
             rentAmount = decimal.Parse(dr["rent_amount"].ToString());
             placeID = int.Parse(dr["place_id"].ToString());
-            startDate = dr["start_date"].ToString();
-            endDate = dr["end_date"].ToString();
+            startDate = DateTime.Parse(dr["start_date"].ToString()).ToString("yyyy-MM-dd");
+            endDate = DateTime.Parse(dr["end_date"].ToString()).ToString("yyyy-MM-dd");
         }
     }
 }

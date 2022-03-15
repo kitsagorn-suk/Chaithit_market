@@ -200,31 +200,36 @@ namespace Chaithit_Market.Core
             return data;
         }
 
-        public LoginData Login(string pUserName, string pPassword, string pTokenID, string pLang)
+        public LoginData Login(string UserName, string Password, string TokenID, string DeviceType, string Lang)
         {
             DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec login @pUserName, @pPassword, @pTokenID, @pLang");
+            SQLCustomExecute sql = new SQLCustomExecute("exec login @pUserName, @pPassword, @pTokenID, @pDeviceType, @pLang");
 
-            SqlParameter paramUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar, 150);
-            paramUserName.Direction = ParameterDirection.Input;
-            paramUserName.Value = pUserName;
+            SqlParameter pUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar, 100);
+            pUserName.Direction = ParameterDirection.Input;
+            pUserName.Value = UserName;
 
-            SqlParameter paramPassword = new SqlParameter(@"pPassword", SqlDbType.VarChar, 250);
-            paramPassword.Direction = ParameterDirection.Input;
-            paramPassword.Value = pPassword;
+            SqlParameter pPassword = new SqlParameter(@"pPassword", SqlDbType.VarChar, 200);
+            pPassword.Direction = ParameterDirection.Input;
+            pPassword.Value = Password;
 
-            SqlParameter paramTokenID = new SqlParameter(@"pTokenID", SqlDbType.VarChar);
-            paramTokenID.Direction = ParameterDirection.Input;
-            paramTokenID.Value = pTokenID;
+            SqlParameter pTokenID = new SqlParameter(@"pTokenID", SqlDbType.VarChar);
+            pTokenID.Direction = ParameterDirection.Input;
+            pTokenID.Value = TokenID;
+            
+            SqlParameter pDeviceType = new SqlParameter(@"pDeviceType", SqlDbType.VarChar, 100);
+            pDeviceType.Direction = ParameterDirection.Input;
+            pDeviceType.Value = DeviceType;
 
-            SqlParameter paramLang = new SqlParameter(@"pLang", SqlDbType.VarChar, 5);
-            paramLang.Direction = ParameterDirection.Input;
-            paramLang.Value = pLang;
+            SqlParameter pLang = new SqlParameter(@"pLang", SqlDbType.VarChar, 5);
+            pLang.Direction = ParameterDirection.Input;
+            pLang.Value = Lang;
 
-            sql.Parameters.Add(paramUserName);
-            sql.Parameters.Add(paramPassword);
-            sql.Parameters.Add(paramTokenID);
-            sql.Parameters.Add(paramLang);
+            sql.Parameters.Add(pUserName);
+            sql.Parameters.Add(pPassword);
+            sql.Parameters.Add(pTokenID);
+            sql.Parameters.Add(pDeviceType);
+            sql.Parameters.Add(pLang);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -696,7 +701,7 @@ namespace Chaithit_Market.Core
                 "@pPosition," +
                 "@pStartDate," +
                 "@pEndDate," +
-                "@pIsEmp," +
+                "@pStatusEmp," +
                 "@pCreateBy ");
 
             SqlParameter pUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar);
@@ -739,10 +744,10 @@ namespace Chaithit_Market.Core
             pEndDate.Value = saveUserProfileDTO.endDate;
             sql.Parameters.Add(pEndDate);
 
-            SqlParameter pIsEmp = new SqlParameter(@"pIsEmp", SqlDbType.Int);
-            pIsEmp.Direction = ParameterDirection.Input;
-            pIsEmp.Value = saveUserProfileDTO.isEmp;
-            sql.Parameters.Add(pIsEmp);
+            SqlParameter pStatusEmp = new SqlParameter(@"pStatusEmp", SqlDbType.Int);
+            pStatusEmp.Direction = ParameterDirection.Input;
+            pStatusEmp.Value = saveUserProfileDTO.statusEmp;
+            sql.Parameters.Add(pStatusEmp);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
@@ -775,7 +780,7 @@ namespace Chaithit_Market.Core
                 "@pPosition," +
                 "@pStartDate," +
                 "@pEndDate," +
-                "@pIsEmp," +
+                "@pStatusEmp," +
                 "@pUpdateBy ");
 
             SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
@@ -813,10 +818,10 @@ namespace Chaithit_Market.Core
             pEndDate.Value = saveUserProfileDTO.endDate;
             sql.Parameters.Add(pEndDate);
 
-            SqlParameter pIsEmp = new SqlParameter(@"pIsEmp", SqlDbType.Int);
-            pIsEmp.Direction = ParameterDirection.Input;
-            pIsEmp.Value = saveUserProfileDTO.isEmp;
-            sql.Parameters.Add(pIsEmp);
+            SqlParameter pStatusEmp = new SqlParameter(@"pStatusEmp", SqlDbType.Int);
+            pStatusEmp.Direction = ParameterDirection.Input;
+            pStatusEmp.Value = saveUserProfileDTO.statusEmp;
+            sql.Parameters.Add(pStatusEmp);
 
             SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
