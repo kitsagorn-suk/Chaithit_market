@@ -240,6 +240,8 @@ namespace Chaithit_Market.Core
                 data.loadData(table.Rows[0]);
             }
 
+            data.imageUrl = GetImageUrl(data.id, "user_profile");
+
             return data;
         }
 
@@ -1468,6 +1470,133 @@ namespace Chaithit_Market.Core
             }
 
             return total;
+        }
+
+        public _ReturnIdModel InsertUploadFile(UploadFileDTO uploadFileDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec insert_file_detail " +
+                "@pActionID," +
+                "@pActionName," +
+                "@pFileCode," +
+                "@pFileExtension," +
+                "@pName," +
+                "@pUrl," +
+                "@pCreateBy");
+
+            SqlParameter pActionID = new SqlParameter(@"pActionID", SqlDbType.Int);
+            pActionID.Direction = ParameterDirection.Input;
+            pActionID.Value = uploadFileDTO.actionID;
+            sql.Parameters.Add(pActionID);
+
+            SqlParameter pActionName = new SqlParameter(@"pActionName", SqlDbType.VarChar);
+            pActionName.Direction = ParameterDirection.Input;
+            pActionName.Value = uploadFileDTO.actionName;
+            sql.Parameters.Add(pActionName);
+
+            SqlParameter pFileCode = new SqlParameter(@"pFileCode", SqlDbType.VarChar);
+            pFileCode.Direction = ParameterDirection.Input;
+            pFileCode.Value = uploadFileDTO.fileCode;
+            sql.Parameters.Add(pFileCode);
+
+            SqlParameter pFileExtension = new SqlParameter(@"pFileExtension", SqlDbType.VarChar);
+            pFileExtension.Direction = ParameterDirection.Input;
+            pFileExtension.Value = uploadFileDTO.fileExtension;
+            sql.Parameters.Add(pFileExtension);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = uploadFileDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pUrl = new SqlParameter(@"pUrl", SqlDbType.VarChar);
+            pUrl.Direction = ParameterDirection.Input;
+            pUrl.Value = uploadFileDTO.url;
+            sql.Parameters.Add(pUrl);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public _ReturnIdModel DeleteUploadFile(UploadFileDTO uploadFileDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec delete_file_detail " +
+                "@pFileDetailID," +
+                "@pUpdateBy ");
+
+            SqlParameter pFileDetailID = new SqlParameter(@"pFileDetailID", SqlDbType.Int);
+            pFileDetailID.Direction = ParameterDirection.Input;
+            pFileDetailID.Value = uploadFileDTO.fileDetailID;
+            sql.Parameters.Add(pFileDetailID);
+
+            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public string[] GetImageUrl(int ActionID, string ActionName)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_image_url " +
+                "@pActionID, " +
+                "@pActionName");
+
+            SqlParameter pActionID = new SqlParameter(@"pActionID", SqlDbType.Int);
+            pActionID.Direction = ParameterDirection.Input;
+            pActionID.Value = ActionID;
+            sql.Parameters.Add(pActionID);
+
+            SqlParameter pActionName = new SqlParameter(@"pActionName", SqlDbType.VarChar);
+            pActionName.Direction = ParameterDirection.Input;
+            pActionName.Value = ActionName;
+            sql.Parameters.Add(pActionName);
+
+            table = sql.executeQueryWithReturnTable();
+            
+            List<string> list = new List<string>();
+            foreach (DataRow dr in table.Rows)
+            {
+                list.Add(dr["url"].ToString());
+            }
+            if (list.Count == 0)
+            {
+                list.Add("");
+            }
+            String[] strArry = list.ToArray();
+
+            return strArry;
         }
     }
 

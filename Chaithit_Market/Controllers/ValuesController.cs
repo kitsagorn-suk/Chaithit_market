@@ -68,11 +68,11 @@ namespace Chaithit_Market.Controllers
         #region Add User
         [Route("save/userProfile")]
         [HttpPost]
-        public IHttpActionResult SaveUserProfile(SaveUserProfileDTO saveUserProfileDTO)
+        public async Task<HttpResponseMessage> SaveUserProfile()
         {
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string lang = (request.Headers["lang"] ?? WebConfigurationManager.AppSettings["default_language"]);
             string platform = request.Headers["platform"];
             string version = request.Headers["version"];
 
@@ -80,11 +80,87 @@ namespace Chaithit_Market.Controllers
             AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
 
             try
-            {
+            { 
+                var obj = new Object();
+                SaveUserProfileDTO saveUserProfileDTO = new SaveUserProfileDTO();
+                string diskFolderPath = string.Empty;
+                string subFolder = string.Empty;
+                string keyName = string.Empty;
+                string fileName = string.Empty;
+                string newFileName = string.Empty;
+                string fileURL = string.Empty;
+                var fileSize = long.MinValue;
+
+                var path = WebConfigurationManager.AppSettings["body_path"];
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                if (!Request.Content.IsMimeMultipartContent("form-data"))
+                {
+                    throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType));
+                }
+
+                MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(path);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                foreach (var key in streamProvider.FormData.AllKeys)
+                {
+                    foreach (var val in streamProvider.FormData.GetValues(key))
+                    {
+                        if (key == "mode")
+                        {
+                            saveUserProfileDTO.mode = val;
+                        }
+                        if (key == "userProfileID")
+                        {
+                            saveUserProfileDTO.userProfileID = int.Parse(string.IsNullOrEmpty(val) ? "0" : val);
+                        }
+                        if (key == "userName")
+                        {
+                            saveUserProfileDTO.userName = val;
+                        }
+                        if (key == "password")
+                        {
+                            saveUserProfileDTO.password = val;
+                        }
+                        if (key == "firstName")
+                        {
+                            saveUserProfileDTO.firstName = val;
+                        }
+                        if (key == "lastName")
+                        {
+                            saveUserProfileDTO.lastName = val;
+                        }
+                        if (key == "mobile")
+                        {
+                            saveUserProfileDTO.mobile = val;
+                        }
+                        if (key == "position")
+                        {
+                            saveUserProfileDTO.position = val;
+                        }
+                        if (key == "startDate")
+                        {
+                            saveUserProfileDTO.startDate = val;
+                        }
+                        if (key == "endDate")
+                        {
+                            saveUserProfileDTO.endDate = val;
+                        }
+                        if (key == "statusEmp")
+                        {
+                            saveUserProfileDTO.statusEmp = int.Parse(string.IsNullOrEmpty(val) ? "0" : val);
+                        }
+                    }
+                }
+
                 string json = JsonConvert.SerializeObject(saveUserProfileDTO);
                 int logID = _sql.InsertLogReceiveData("SaveUserProfile", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
+                        data.user_id, platform.ToLower());
 
+                #region msgCheck
                 string checkMissingOptional = "";
 
                 if (saveUserProfileDTO.mode.ToLower().Equals("insert"))
@@ -180,21 +256,87 @@ namespace Chaithit_Market.Controllers
                         checkMissingOptional += "userProfileID ";
                     }
                 }
-                else 
+                else
                 {
                     throw new Exception("Choose Mode Insert or Update or Delete");
                 }
-                
+
                 if (checkMissingOptional != "")
                 {
                     throw new Exception("Missing Parameter : " + checkMissingOptional);
                 }
-                
-                SaveService srv = new SaveService();
-                var obj = new object();
-                obj = srv.SaveUserProfileService(authHeader, lang, platform.ToLower(), logID, saveUserProfileDTO, data.user_id);
+                #endregion
 
-                return Ok(obj);
+                ReturnIdModel userProfileID = new ReturnIdModel();
+                SaveService srv = new SaveService();
+                userProfileID = srv.SaveUserProfileService(authHeader, lang, platform.ToLower(), logID, saveUserProfileDTO, data.user_id);
+
+                if (userProfileID.data != null && !userProfileID.data.id.Equals(0))
+                {
+                    foreach (MultipartFileData dataitem in streamProvider.FileData)
+                    {
+                        try
+                        {
+                            fileSize = new FileInfo(dataitem.LocalFileName).Length;
+                            if (fileSize > 3100000)
+                            {
+                                throw new Exception("error file size limit 3.00 MB");
+                            }
+                        
+                            subFolder = data.user_id + "\\ProFilePath";
+                            diskFolderPath = string.Format(WebConfigurationManager.AppSettings["file_user_path"], subFolder);
+                            
+
+                            keyName = dataitem.Headers.ContentDisposition.Name.Replace("\"", "");
+                            fileName = dataitem.Headers.ContentDisposition.FileName.Replace("\"", "");
+                            newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
+
+                            var fullPath = Path.Combine(diskFolderPath, newFileName);
+                            var fileInfo = new FileInfo(fullPath);
+                            while (fileInfo.Exists)
+                            {
+                                newFileName = fileInfo.Name.Replace(fileInfo.Extension, "");
+                                newFileName = newFileName + Guid.NewGuid().ToString() + fileInfo.Extension;
+
+                                fullPath = Path.Combine(diskFolderPath, newFileName);
+                                fileInfo = new FileInfo(fullPath);
+                            }
+
+                            fileURL = string.Format(WebConfigurationManager.AppSettings["file_user_url"], data.user_id + "/ProFilePath", newFileName);
+
+                            if (!Directory.Exists(fileInfo.Directory.FullName))
+                            {
+                                Directory.CreateDirectory(fileInfo.Directory.FullName);
+                            }
+                            File.Move(dataitem.LocalFileName, fullPath);
+
+                            if (userProfileID.data.id != 0 && !string.IsNullOrEmpty(newFileName))
+                            {
+                                UploadFileDTO uploadFileDTO = new UploadFileDTO();
+                                uploadFileDTO.actionID = userProfileID.data.id;
+                                uploadFileDTO.actionName = "user_profile";
+                                uploadFileDTO.fileCode = "PF";
+                                uploadFileDTO.fileExtension = fileInfo.Extension.Split('.')[1];
+                                uploadFileDTO.name = newFileName;
+                                uploadFileDTO.url = fileURL;
+
+                                _sql.InsertUploadFile(uploadFileDTO, data.user_id);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            string message = ex.StackTrace;
+                        }
+                    }
+                }
+                else
+                {
+                    //insert fail
+                }
+
+                obj = userProfileID;
+
+                return Request.CreateResponse(HttpStatusCode.OK, obj, Configuration.Formatters.JsonFormatter);
             }
             catch (Exception ex)
             {
@@ -392,6 +534,59 @@ namespace Chaithit_Market.Controllers
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, value, Configuration.Formatters.JsonFormatter);
+        }
+
+        [Route("delete/file")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> DeleteFile()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] ?? WebConfigurationManager.AppSettings["default_language"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            { 
+                UploadModel value = new UploadModel();
+                value.data = new _ServiceUploadData();
+
+                string fullPath = "", authorsFile = "6ad16852-7fd1-45d9-b1a5-c9c844a4c461.jpg", subFolder = "";
+                subFolder = data.user_id + "\\ProFilePath";
+                fullPath = string.Format(WebConfigurationManager.AppSettings["file_user_path"], subFolder);
+                
+
+                if (File.Exists(Path.Combine(fullPath, authorsFile)))
+                {
+                    // If file found, delete it    
+                    File.Delete(Path.Combine(fullPath, authorsFile));
+                    Console.WriteLine("File deleted.");
+                }
+                
+                if (!File.Exists(fullPath))
+                {
+                    value.success = false;
+                    //value.data.file_size = fileSize.ToString();
+                    value.msg = new MsgModel() { code = 0, text = "อัพโหลดไม่สำเร็จ", topic = "ไม่สำเร็จ" };
+                }
+                else
+                {
+                    value.success = true;
+                    //value.data.img_url = fileURL;
+                    //value.data.file_size = fileSize.ToString();
+                    value.msg = new MsgModel() { code = 0, text = "อัพโหลดสำเร็จ", topic = "สำเร็จ" };
+                }
+                
+
+                return Request.CreateResponse(HttpStatusCode.OK, value, Configuration.Formatters.JsonFormatter);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
         }
 
         [Route("search/userProfile")]
@@ -779,7 +974,7 @@ namespace Chaithit_Market.Controllers
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
             string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"]; //
+            string platform = request.Headers["platform"];
             string version = request.Headers["version"];
 
             AuthenticationController _auth = AuthenticationController.Instance;

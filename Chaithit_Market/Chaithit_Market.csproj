@@ -180,6 +180,7 @@
     <Compile Include="DTO\SearchRentDTO.cs" />
     <Compile Include="DTO\SearchRentStandDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />
+    <Compile Include="DTO\UploadFileDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

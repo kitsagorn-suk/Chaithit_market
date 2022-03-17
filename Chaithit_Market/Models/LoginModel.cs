@@ -18,7 +18,7 @@ namespace Chaithit_Market.Models
         public int id { get; set; } = 0;
         public string username { get; set; } = "";
         public string employeeName { get; set; } = "";
-        public string imageUrl { get; set; } = "";
+        public string[] imageUrl { get; set; } = { "" };
         public string token { get; set; } = "";
         public string platform { get; set; } = "";
 
@@ -27,7 +27,6 @@ namespace Chaithit_Market.Models
             id = int.Parse(dr["id"].ToString());
             username = dr["username"].ToString();
             employeeName = dr["firstname"].ToString() + " " + dr["lastname"].ToString();
-            imageUrl = dr["image_name"].ToString();
         }
     }
 }
