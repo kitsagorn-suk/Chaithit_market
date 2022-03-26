@@ -11,7 +11,7 @@ namespace Chaithit_Market.Services
     {
         private SQLManager _sql = SQLManager.Instance;
 
-        public LoginModel Login(string authorization, string lang, string username, string password, string platform, int logID)
+        public LoginModel Login(string authorization, string lang, string username, string password, int type, string platform, int logID)
         {
             if (_sql == null)
             {
@@ -22,7 +22,7 @@ namespace Chaithit_Market.Services
             try
             {
                 value.data = new LoginData();
-                ValidationModel validation = ValidationManager.CheckValidationLogin(username, password.Trim(), lang, value.data.id);
+                ValidationModel validation = ValidationManager.CheckValidationLogin(username, password.Trim(), type, lang, value.data.id);
 
                 if (validation.Success == true)
                 {

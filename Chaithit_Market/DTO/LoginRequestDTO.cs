@@ -9,5 +9,6 @@ namespace Chaithit_Market.DTO
     {
         public string username { set; get; } = "";
         public string password { set; get; } = "";
+        public string type { set; get; } = "";
     }
 }

@@ -240,8 +240,6 @@ namespace Chaithit_Market.Core
                 data.loadData(table.Rows[0]);
             }
 
-            data.imageUrl = GetImageUrl(data.id, "user_profile");
-
             return data;
         }
 
@@ -299,6 +297,29 @@ namespace Chaithit_Market.Core
                 total = int.Parse(dr["total"].ToString());
             }
             return total;
+        }
+
+        public int CheckUserType(string pUserName)
+        {
+            int statusEmp = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec check_user_type @pUserName");
+
+            SqlParameter paramUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar, 100);
+            paramUserName.Direction = ParameterDirection.Input;
+            paramUserName.Value = pUserName;
+
+            sql.Parameters.Add(paramUserName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                DataRow dr = table.Rows[0];
+                statusEmp = int.Parse(dr["status_emp"].ToString());
+            }
+            return statusEmp;
         }
 
         public bool CheckToken(string pToken)
@@ -663,12 +684,18 @@ namespace Chaithit_Market.Core
         {
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_transection_rent " +
-                "@pTransCode ");
+                "@pTransCode, " +
+                "@pRentID");
 
             SqlParameter pTransCode = new SqlParameter(@"pTransCode", SqlDbType.VarChar, 10);
             pTransCode.Direction = ParameterDirection.Input;
             pTransCode.Value = insertTransectionRentDTO.transCode;
             sql.Parameters.Add(pTransCode);
+
+            SqlParameter pRentID = new SqlParameter(@"pRentID", SqlDbType.Int);
+            pRentID.Direction = ParameterDirection.Input;
+            pRentID.Value = insertTransectionRentDTO.rentalID;
+            sql.Parameters.Add(pRentID);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -704,6 +731,7 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pEndDate," +
                 "@pStatusEmp," +
+                "@pEmpType," + 
                 "@pCreateBy ");
 
             SqlParameter pUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar);
@@ -751,6 +779,11 @@ namespace Chaithit_Market.Core
             pStatusEmp.Value = saveUserProfileDTO.statusEmp;
             sql.Parameters.Add(pStatusEmp);
 
+            SqlParameter pEmpType = new SqlParameter(@"pEmpType", SqlDbType.Int);
+            pEmpType.Direction = ParameterDirection.Input;
+            pEmpType.Value = saveUserProfileDTO.empType;
+            sql.Parameters.Add(pEmpType);
+
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
             pCreateBy.Value = userID;
@@ -783,6 +816,7 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pEndDate," +
                 "@pStatusEmp," +
+                "@pEmpType," +
                 "@pUpdateBy ");
 
             SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
@@ -824,6 +858,11 @@ namespace Chaithit_Market.Core
             pStatusEmp.Direction = ParameterDirection.Input;
             pStatusEmp.Value = saveUserProfileDTO.statusEmp;
             sql.Parameters.Add(pStatusEmp);
+
+            SqlParameter pEmpType = new SqlParameter(@"pEmpType", SqlDbType.Int);
+            pEmpType.Direction = ParameterDirection.Input;
+            pEmpType.Value = saveUserProfileDTO.empType;
+            sql.Parameters.Add(pEmpType);
 
             SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -882,9 +921,8 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec insert_rental " +
                 "@pRentCode," +
+                "@pPlaceSubID," +
                 "@pName," +
-                "@pRentAmount," +
-                "@pPlaceID," +
                 "@pIsUsed," +
                 "@pCreateBy");
 
@@ -893,21 +931,16 @@ namespace Chaithit_Market.Core
             pRentCode.Value = saveRentalDTO.rentCode;
             sql.Parameters.Add(pRentCode);
 
+            SqlParameter pPlaceSubID = new SqlParameter(@"pPlaceSubID", SqlDbType.Int);
+            pPlaceSubID.Direction = ParameterDirection.Input;
+            pPlaceSubID.Value = saveRentalDTO.placeSubID;
+            sql.Parameters.Add(pPlaceSubID);
+
             SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
             pName.Direction = ParameterDirection.Input;
             pName.Value = saveRentalDTO.name;
             sql.Parameters.Add(pName);
-
-            SqlParameter pRentAmount = new SqlParameter(@"pRentAmount", SqlDbType.Decimal);
-            pRentAmount.Direction = ParameterDirection.Input;
-            pRentAmount.Value = saveRentalDTO.rentAmount;
-            sql.Parameters.Add(pRentAmount);
-
-            SqlParameter pPlaceID = new SqlParameter(@"pPlaceID", SqlDbType.Int);
-            pPlaceID.Direction = ParameterDirection.Input;
-            pPlaceID.Value = saveRentalDTO.placeID;
-            sql.Parameters.Add(pPlaceID);
-
+            
             SqlParameter pIsUsed = new SqlParameter(@"pIsUsed", SqlDbType.Int);
             pIsUsed.Direction = ParameterDirection.Input;
             pIsUsed.Value = saveRentalDTO.isUsed;
@@ -940,8 +973,7 @@ namespace Chaithit_Market.Core
                 "@pRentalID," +
                 "@pRentCode," +
                 "@pName," +
-                "@pRentAmount," +
-                "@pPlaceID," +
+                "@pPlaceSubID," +
                 "@pIsUsed," +
                 "@pUpdateBy ");
 
@@ -959,16 +991,11 @@ namespace Chaithit_Market.Core
             pName.Direction = ParameterDirection.Input;
             pName.Value = saveRentalDTO.name;
             sql.Parameters.Add(pName);
-
-            SqlParameter pRentAmount = new SqlParameter(@"pRentAmount", SqlDbType.Decimal);
-            pRentAmount.Direction = ParameterDirection.Input;
-            pRentAmount.Value = saveRentalDTO.rentAmount;
-            sql.Parameters.Add(pRentAmount);
-
-            SqlParameter pPlaceID = new SqlParameter(@"pPlaceID", SqlDbType.Int);
-            pPlaceID.Direction = ParameterDirection.Input;
-            pPlaceID.Value = saveRentalDTO.placeID;
-            sql.Parameters.Add(pPlaceID);
+            
+            SqlParameter pPlaceSubID = new SqlParameter(@"pPlaceSubID", SqlDbType.Int);
+            pPlaceSubID.Direction = ParameterDirection.Input;
+            pPlaceSubID.Value = saveRentalDTO.placeSubID;
+            sql.Parameters.Add(pPlaceSubID);
 
             SqlParameter pIsUsed = new SqlParameter(@"pIsUsed", SqlDbType.Int);
             pIsUsed.Direction = ParameterDirection.Input;
@@ -1162,6 +1189,7 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
 
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_user_profile_page " +
+                "@pUserProfileID, " +
                 "@pUserName, " +
                 "@pFirstName, " +
                 "@pLastName, " +
@@ -1171,6 +1199,11 @@ namespace Chaithit_Market.Core
                 "@pPerPage, " +
                 "@pSortField, " +
                 "@pSortType");
+
+            SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
+            pUserProfileID.Direction = ParameterDirection.Input;
+            pUserProfileID.Value = searchUserProfileDTO.userProfileID;
+            sql.Parameters.Add(pUserProfileID);
 
             SqlParameter pUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar, 255);
             pUserName.Direction = ParameterDirection.Input;
@@ -1245,11 +1278,17 @@ namespace Chaithit_Market.Core
 
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_user_profile_total " +
+                "@pUserProfileID, " +
                 "@pUserName, " +
                 "@pFirstName, " +
                 "@pLastName, " +
                 "@pMobile, " +
                 "@pPosition ");
+
+            SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
+            pUserProfileID.Direction = ParameterDirection.Input;
+            pUserProfileID.Value = searchUserProfileDTO.userProfileID;
+            sql.Parameters.Add(pUserProfileID);
 
             SqlParameter pUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar, 255);
             pUserName.Direction = ParameterDirection.Input;
@@ -1478,7 +1517,6 @@ namespace Chaithit_Market.Core
             SQLCustomExecute sql = new SQLCustomExecute("exec insert_file_detail " +
                 "@pActionID," +
                 "@pActionName," +
-                "@pFileCode," +
                 "@pFileExtension," +
                 "@pName," +
                 "@pUrl," +
@@ -1493,11 +1531,6 @@ namespace Chaithit_Market.Core
             pActionName.Direction = ParameterDirection.Input;
             pActionName.Value = uploadFileDTO.actionName;
             sql.Parameters.Add(pActionName);
-
-            SqlParameter pFileCode = new SqlParameter(@"pFileCode", SqlDbType.VarChar);
-            pFileCode.Direction = ParameterDirection.Input;
-            pFileCode.Value = uploadFileDTO.fileCode;
-            sql.Parameters.Add(pFileCode);
 
             SqlParameter pFileExtension = new SqlParameter(@"pFileExtension", SqlDbType.VarChar);
             pFileExtension.Direction = ParameterDirection.Input;
@@ -1566,17 +1599,17 @@ namespace Chaithit_Market.Core
             return data;
         }
 
-        public string[] GetImageUrl(int ActionID, string ActionName)
+        public string[] GetImageUrl(string FileCode, string ActionName)
         {
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_image_url " +
-                "@pActionID, " +
+                "@pFileCode, " +
                 "@pActionName");
 
-            SqlParameter pActionID = new SqlParameter(@"pActionID", SqlDbType.Int);
-            pActionID.Direction = ParameterDirection.Input;
-            pActionID.Value = ActionID;
-            sql.Parameters.Add(pActionID);
+            SqlParameter pFileCode = new SqlParameter(@"pFileCode", SqlDbType.VarChar);
+            pFileCode.Direction = ParameterDirection.Input;
+            pFileCode.Value = FileCode;
+            sql.Parameters.Add(pFileCode);
 
             SqlParameter pActionName = new SqlParameter(@"pActionName", SqlDbType.VarChar);
             pActionName.Direction = ParameterDirection.Input;
@@ -1597,6 +1630,832 @@ namespace Chaithit_Market.Core
             String[] strArry = list.ToArray();
 
             return strArry;
+        }
+
+        public UserProfileModel GetUserProfile(int userProfileID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_user_profile " +
+                "@pUserProfileID");
+
+            SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
+            pUserProfileID.Direction = ParameterDirection.Input;
+            pUserProfileID.Value = userProfileID;
+            sql.Parameters.Add(pUserProfileID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            UserProfileModel data = new UserProfileModel();
+            
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            data.imageUrl = GetImageUrl(data.fileCode, "user_profile");
+
+            return data;
+        }
+
+        public List<MarketDetail> GetUserMarket(int userProfileID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_user_market " +
+                "@pUserProfileID");
+
+            SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
+            pUserProfileID.Direction = ParameterDirection.Input;
+            pUserProfileID.Value = userProfileID;
+            sql.Parameters.Add(pUserProfileID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            List<MarketDetail> list = new List<MarketDetail>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    MarketDetail data = new MarketDetail();
+                    data.loadData(row);
+                    list.Add(data);
+                }
+            }
+            else
+            {
+                MarketDetail data = new MarketDetail();
+                list.Add(data);
+            }
+
+            return list;
+        }
+
+        public Pagination<SearchHistoryPaidBill> SearchHistoryPaidBill(SearchBillDTO searchBillDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_history_paid_bill_page " +
+                "@pUserID, " +
+                "@pBillCode, " +
+                "@pStartDate, " +
+                "@pEndDate, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = searchBillDTO.userID;
+            sql.Parameters.Add(pUserID);
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = searchBillDTO.billCode;
+            sql.Parameters.Add(pBillCode);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = searchBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = searchBillDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchBillDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchBillDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchBillDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchBillDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchHistoryPaidBill> pagination = new Pagination<SearchHistoryPaidBill>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchHistoryPaidBill data = new SearchHistoryPaidBill();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchHistoryPaidBill(searchBillDTO);
+
+            pagination.SetPagination(total, searchBillDTO.perPage, searchBillDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchHistoryPaidBill(SearchBillDTO searchBillDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_history_paid_bill_total " +
+                "@pUserID, " +
+                "@pBillCode, " +
+                "@pStartDate, " +
+                "@pEndDate ");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = searchBillDTO.userID;
+            sql.Parameters.Add(pUserID);
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = searchBillDTO.billCode;
+            sql.Parameters.Add(pBillCode);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = searchBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = searchBillDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public UserProfileModel GetUserRental(int userProfileID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_user_profile " +
+                "@pUserProfileID");
+
+            SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
+            pUserProfileID.Direction = ParameterDirection.Input;
+            pUserProfileID.Value = userProfileID;
+            sql.Parameters.Add(pUserProfileID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            UserProfileModel data = new UserProfileModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            data.imageUrl = GetImageUrl("", "user_profile");
+
+            return data;
+        }
+
+        public DataTable CheckDuplicatePlaceSub(MasterPlaceSubDTO masterPlaceSubDTO)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("");
+
+            sql = new SQLCustomExecute("exec check_duplicate_place_sub @pMasterID,@pTableName,@pNameEN, @pNameTH");
+
+            SqlParameter pMasterID = new SqlParameter(@"pMasterID", SqlDbType.Int);
+            pMasterID.Direction = ParameterDirection.Input;
+            pMasterID.Value = masterPlaceSubDTO.placeSubID;
+            sql.Parameters.Add(pMasterID);
+
+            SqlParameter pNameEN = new SqlParameter(@"pNameEN", SqlDbType.VarChar);
+            pNameEN.Direction = ParameterDirection.Input;
+            pNameEN.Value = masterPlaceSubDTO.nameEN;
+            sql.Parameters.Add(pNameEN);
+
+            SqlParameter pNameTH = new SqlParameter(@"pNameTH", SqlDbType.VarChar);
+            pNameTH.Direction = ParameterDirection.Input;
+            pNameTH.Value = masterPlaceSubDTO.nameTH;
+            sql.Parameters.Add(pNameTH);
+
+            table = sql.executeQueryWithReturnTable();
+
+            return table;
+        }
+
+        public _ReturnIdModel InsertMasterPlaceSubData(MasterPlaceSubDTO masterPlaceSubDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec insert_master_place_sub " +
+                "@pPlaceID," +
+                "@pNameEN," +
+                "@pNameTH," +
+                "@pAmountRentDay," +
+                "@pAmountRentMonth," +
+                "@pAmountRentSpecial," +
+                "@pSpecialExpireDate," +
+                "@pAmountWater," +
+                "@pAmountElectricity," +
+                "@pUserID ");
+
+            SqlParameter pPlaceID = new SqlParameter(@"pPlaceID", SqlDbType.Int);
+            pPlaceID.Direction = ParameterDirection.Input;
+            pPlaceID.Value = masterPlaceSubDTO.placeSubID;
+            sql.Parameters.Add(pPlaceID);
+
+            SqlParameter pNameEN = new SqlParameter(@"pNameEN", SqlDbType.VarChar);
+            pNameEN.Direction = ParameterDirection.Input;
+            pNameEN.Value = masterPlaceSubDTO.nameEN;
+            sql.Parameters.Add(pNameEN);
+
+            SqlParameter pNameTH = new SqlParameter(@"pNameTH", SqlDbType.VarChar);
+            pNameTH.Direction = ParameterDirection.Input;
+            pNameTH.Value = masterPlaceSubDTO.nameTH;
+            sql.Parameters.Add(pNameTH);
+
+            SqlParameter pAmountRentDay = new SqlParameter(@"pAmountRentDay", SqlDbType.Decimal);
+            pAmountRentDay.Direction = ParameterDirection.Input;
+            pAmountRentDay.Value = masterPlaceSubDTO.amountRentDay;
+            sql.Parameters.Add(pAmountRentDay);
+
+            SqlParameter pAmountRentMonth = new SqlParameter(@"pAmountRentMonth", SqlDbType.Decimal);
+            pAmountRentMonth.Direction = ParameterDirection.Input;
+            pAmountRentMonth.Value = masterPlaceSubDTO.amountRentMonth;
+            sql.Parameters.Add(pAmountRentMonth);
+
+            SqlParameter pAmountRentSpecial = new SqlParameter(@"pAmountRentSpecial", SqlDbType.Decimal);
+            pAmountRentSpecial.Direction = ParameterDirection.Input;
+            pAmountRentSpecial.Value = masterPlaceSubDTO.amountRentSpecial;
+            sql.Parameters.Add(pAmountRentSpecial);
+
+            SqlParameter pSpecialExpireDate = new SqlParameter(@"pSpecialExpireDate", SqlDbType.VarChar);
+            pSpecialExpireDate.Direction = ParameterDirection.Input;
+            pSpecialExpireDate.Value = masterPlaceSubDTO.specialExpireDate;
+            sql.Parameters.Add(pNameEN);
+
+            SqlParameter pAmountWater = new SqlParameter(@"pAmountWater", SqlDbType.Decimal);
+            pAmountWater.Direction = ParameterDirection.Input;
+            pAmountWater.Value = masterPlaceSubDTO.amountRentSpecial;
+            sql.Parameters.Add(pAmountWater);
+
+            SqlParameter pAmountElectricity = new SqlParameter(@"pAmountElectricity", SqlDbType.Decimal);
+            pAmountElectricity.Direction = ParameterDirection.Input;
+            pAmountElectricity.Value = masterPlaceSubDTO.amountElectricity;
+            sql.Parameters.Add(pAmountElectricity);
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public DataTable CheckDupicateZone(SaveZoneDTO saveZoneDTO, int pUserID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_zone " +
+                "@pZoneID, " +
+                "@pName ");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveZoneDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 150);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveZoneDTO.name;
+            sql.Parameters.Add(pName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            return table;
+        }
+
+        public _ReturnIdModel InsertZone(SaveZoneDTO saveZoneDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec insert_zone " +
+                "@pName," +
+                "@pCreateBy");
+            
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveZoneDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public _ReturnIdModel UpdateZone(SaveZoneDTO saveZoneDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec update_zone " +
+                "@pZoneID," +
+                "@pName," +
+                "@pUpdateBy ");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveZoneDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveZoneDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public _ReturnIdModel DeleteZone(SaveZoneDTO saveZoneDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec delete_zone " +
+                "@pZoneID," +
+                "@pUpdateBy ");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveZoneDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public DataTable CheckDupicateZoneSub(SaveZoneSubDTO saveZoneSubDTO, int pUserID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_zone_sub " +
+                "@pZoneSubID, " +
+                "@pZoneID, " +
+                "@pName ");
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = saveZoneSubDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveZoneSubDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 150);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveZoneSubDTO.name;
+            sql.Parameters.Add(pName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            return table;
+        }
+
+        public _ReturnIdModel InsertZoneSub(SaveZoneSubDTO saveZoneSubDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec insert_zone_sub " +
+                "@pZoneID," +
+                "@pName," +
+                "@pCreateBy");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveZoneSubDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveZoneSubDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public _ReturnIdModel UpdateZoneSub(SaveZoneSubDTO saveZoneSubDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec update_zone_sub " +
+                "@pZoneSubID," +
+                "@pZoneID," +
+                "@pName," +
+                "@pUpdateBy ");
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = saveZoneSubDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveZoneSubDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveZoneSubDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public _ReturnIdModel DeleteZoneSub(SaveZoneSubDTO saveZoneSubDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec delete_zone_sub " +
+                "@pZoneSubID," +
+                "@pUpdateBy ");
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = saveZoneSubDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public DataTable CheckDupicateUnit(SaveUnitDTO saveUnitDTO, int pUserID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_unit " +
+                "@pUnitID, " +
+                "@pZoneSubID, " +
+                "@pZoneID, " +
+                "@pName, " +
+                "@pUnitCode, " +
+                "@pRateID ");
+
+            SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
+            pUnitID.Direction = ParameterDirection.Input;
+            pUnitID.Value = saveUnitDTO.unitID;
+            sql.Parameters.Add(pUnitID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = saveUnitDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveUnitDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveUnitDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pUnitCode = new SqlParameter(@"pUnitCode", SqlDbType.VarChar, 10);
+            pUnitCode.Direction = ParameterDirection.Input;
+            pUnitCode.Value = saveUnitDTO.unitCode;
+            sql.Parameters.Add(pUnitCode);
+
+            SqlParameter pRateID = new SqlParameter(@"pRateID", SqlDbType.Int);
+            pRateID.Direction = ParameterDirection.Input;
+            pRateID.Value = saveUnitDTO.rateID;
+            sql.Parameters.Add(pRateID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            return table;
+        }
+
+        public _ReturnIdModel InsertUnit(SaveUnitDTO saveUnitDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec insert_unit " +
+                "@pZoneID," +
+                "@pZoneSubID," +
+                "@pUnitCode," +
+                "@pName," +
+                "@pRateID," +
+                "@pCreateBy");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveUnitDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = saveUnitDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pUnitCode = new SqlParameter(@"pUnitCode", SqlDbType.VarChar);
+            pUnitCode.Direction = ParameterDirection.Input;
+            pUnitCode.Value = saveUnitDTO.unitCode;
+            sql.Parameters.Add(pUnitCode);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveUnitDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pRateID = new SqlParameter(@"pRateID", SqlDbType.Int);
+            pRateID.Direction = ParameterDirection.Input;
+            pRateID.Value = saveUnitDTO.rateID;
+            sql.Parameters.Add(pRateID);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public _ReturnIdModel UpdateUnit(SaveUnitDTO saveUnitDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec update_unit " +
+                "@pUnitID," +
+                "@pZoneID," +
+                "@pZoneSubID," +
+                "@pUnitCode," +
+                "@pName," +
+                "@pRateID," +
+                "@pUpdateBy ");
+
+            SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
+            pUnitID.Direction = ParameterDirection.Input;
+            pUnitID.Value = saveUnitDTO.unitID;
+            sql.Parameters.Add(pUnitID);
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveUnitDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = saveUnitDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pUnitCode = new SqlParameter(@"pUnitCode", SqlDbType.VarChar);
+            pUnitCode.Direction = ParameterDirection.Input;
+            pUnitCode.Value = saveUnitDTO.unitCode;
+            sql.Parameters.Add(pUnitCode);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveUnitDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pRateID = new SqlParameter(@"pRateID", SqlDbType.Int);
+            pRateID.Direction = ParameterDirection.Input;
+            pRateID.Value = saveUnitDTO.rateID;
+            sql.Parameters.Add(pRateID);
+
+            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public _ReturnIdModel DeleteUnit(SaveUnitDTO saveUnitDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec delete_unit " +
+                "@pUnitID," +
+                "@pUpdateBy ");
+
+            SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
+            pUnitID.Direction = ParameterDirection.Input;
+            pUnitID.Value = saveUnitDTO.zoneSubID;
+            sql.Parameters.Add(pUnitID);
+
+            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+        
+        public DataTable CheckDupicateRateAmount(SaveRateAmountDTO saveRateAmountDTO, int pUserID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_rate_amount " +
+                "@pRateID, " +
+                "@pRentAmountDay, " +
+                "@pRentAmountMonth, " +
+                "@pElectricAmount, " +
+                "@pWaterAmount, " +
+                "@pLampAmountPerOne, " +
+                "@pElectricEquipAmount ");
+
+            SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
+            pUnitID.Direction = ParameterDirection.Input;
+            pUnitID.Value = saveUnitDTO.unitID;
+            sql.Parameters.Add(pUnitID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = saveUnitDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = saveUnitDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = saveUnitDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pUnitCode = new SqlParameter(@"pUnitCode", SqlDbType.VarChar, 10);
+            pUnitCode.Direction = ParameterDirection.Input;
+            pUnitCode.Value = saveUnitDTO.unitCode;
+            sql.Parameters.Add(pUnitCode);
+
+            SqlParameter pRateID = new SqlParameter(@"pRateID", SqlDbType.Int);
+            pRateID.Direction = ParameterDirection.Input;
+            pRateID.Value = saveUnitDTO.rateID;
+            sql.Parameters.Add(pRateID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            return table;
         }
     }
 

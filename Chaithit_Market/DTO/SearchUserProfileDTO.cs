@@ -7,6 +7,7 @@ namespace Chaithit_Market.DTO
 {
     public class SearchUserProfileDTO
     {
+        public int userProfileID { set; get; } = 0;
         public string userName { set; get; } = "";
         public string firstName { set; get; } = "";
         public string lastName { set; get; } = "";

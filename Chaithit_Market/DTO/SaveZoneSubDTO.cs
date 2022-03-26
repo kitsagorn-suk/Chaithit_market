@@ -5,13 +5,11 @@ using System.Web;
 
 namespace Chaithit_Market.DTO
 {
-    public class SaveRentalDTO
+    public class SaveZoneSubDTO
     {
         public string mode { set; get; } = "";
-        public int rentalID { set; get; } = 0;
-        public int placeSubID { set; get; } = 0;
-        public string rentCode { set; get; } = "";
+        public int zoneSubID { set; get; } = 0;
+        public int zoneID { set; get; } = 0;
         public string name { set; get; } = "";
-        public int isUsed { set; get; } = 0;
     }
 }

@@ -54,6 +54,7 @@ namespace Chaithit_Market.Services
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "start_date", saveUserProfileDTO.startDate, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "end_date", saveUserProfileDTO.endDate, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "status_emp", saveUserProfileDTO.statusEmp.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "emp_type", saveUserProfileDTO.empType.ToString(), userID);
                             value.data = _sql.UpdateUserProfile(saveUserProfileDTO, userID);
                         }
                         else
@@ -135,8 +136,7 @@ namespace Chaithit_Market.Services
                         {
                             _sql.InsertSystemLogChange(saveRentalDTO.rentalID, TableName, "rent_code", saveRentalDTO.rentCode, userID);
                             _sql.InsertSystemLogChange(saveRentalDTO.rentalID, TableName, "name", saveRentalDTO.name, userID);
-                            _sql.InsertSystemLogChange(saveRentalDTO.rentalID, TableName, "rent_amount", saveRentalDTO.rentAmount.ToString(), userID);
-                            _sql.InsertSystemLogChange(saveRentalDTO.rentalID, TableName, "place_id", saveRentalDTO.placeID.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveRentalDTO.rentalID, TableName, "place_sub_id", saveRentalDTO.placeSubID.ToString(), userID);
                             _sql.InsertSystemLogChange(saveRentalDTO.rentalID, TableName, "is_used", saveRentalDTO.isUsed.ToString(), userID);
                             value.data = _sql.UpdateRental(saveRentalDTO, userID);
                         }
@@ -269,36 +269,73 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public SearchUserProfileModel SearchUserProfileService(string authorization, string lang, string platform, int logID, SearchUserProfileDTO searchUserProfileDTO)
+        public ReturnIdModel SaveZoneService(string authorization, string lang, string platform, int logID,
+                   SaveZoneDTO saveZoneDTO, int userID)
         {
             if (_sql == null)
             {
                 _sql = SQLManager.Instance;
             }
 
-            SearchUserProfileModel value = new SearchUserProfileModel();
+            ReturnIdModel value = new ReturnIdModel();
             try
             {
-                Pagination<SearchUserProfile> data = new Pagination<SearchUserProfile>();
-                
-                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+                value.data = new _ReturnIdModel();
+                string TableName = "system_zone";
+                ValidationModel validation = new ValidationModel();
 
-                if (validation.Success == true)
+                if (saveZoneDTO.mode.ToLower() == "insert")
                 {
-                    data = _sql.SearchUserProfile(searchUserProfileDTO);
+                    validation = ValidationManager.CheckValidationDupicateZone(lang, saveZoneDTO);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.InsertZone(saveZoneDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
                 }
-                else
+                else if (saveZoneDTO.mode.ToLower() == "update")
                 {
-                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    validation = ValidationManager.CheckValidationDupicateZone(lang, saveZoneDTO);
+                    if (validation.Success == true)
+                    {
+                        validation = ValidationManager.CheckValidationIDUpdate(saveZoneDTO.zoneID, TableName, lang);
+                        if (validation.Success == true)
+                        {
+                            _sql.InsertSystemLogChange(saveZoneDTO.zoneID, TableName, "name", saveZoneDTO.name, userID);
+                            value.data = _sql.UpdateZone(saveZoneDTO, userID);
+                        }
+                        else
+                        {
+                            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                        }
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
+                }
+                else if (saveZoneDTO.mode.ToLower() == "delete")
+                {
+                    validation = ValidationManager.CheckValidationIDUpdate(saveZoneDTO.zoneID, TableName, lang);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.DeleteZone(saveZoneDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
                 }
 
                 value.success = validation.Success;
-                value.data = data;
                 value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
             }
             catch (Exception ex)
             {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchUserProfileService:");
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SaveZoneService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());
@@ -312,36 +349,74 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public SearchRentalModel SearchRentalService(string authorization, string lang, string platform, int logID, SearchRentDTO searchRentDTO)
+        public ReturnIdModel SaveZoneSubService(string authorization, string lang, string platform, int logID,
+                   SaveZoneSubDTO saveZoneSubDTO, int userID)
         {
             if (_sql == null)
             {
                 _sql = SQLManager.Instance;
             }
 
-            SearchRentalModel value = new SearchRentalModel();
+            ReturnIdModel value = new ReturnIdModel();
             try
             {
-                Pagination<SearchRental> data = new Pagination<SearchRental>();
+                value.data = new _ReturnIdModel();
+                string TableName = "system_zone_sub";
+                ValidationModel validation = new ValidationModel();
 
-                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
-
-                if (validation.Success == true)
+                if (saveZoneSubDTO.mode.ToLower() == "insert")
                 {
-                    data = _sql.SearchRental(searchRentDTO);
+                    validation = ValidationManager.CheckValidationDupicateZoneSub(lang, saveZoneSubDTO);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.InsertZoneSub(saveZoneSubDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
                 }
-                else
+                else if (saveZoneSubDTO.mode.ToLower() == "update")
                 {
-                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    validation = ValidationManager.CheckValidationDupicateZoneSub(lang, saveZoneSubDTO);
+                    if (validation.Success == true)
+                    {
+                        validation = ValidationManager.CheckValidationIDUpdate(saveZoneSubDTO.zoneSubID, TableName, lang);
+                        if (validation.Success == true)
+                        {
+                            _sql.InsertSystemLogChange(saveZoneSubDTO.zoneSubID, TableName, "zone_id", saveZoneSubDTO.zoneID.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveZoneSubDTO.zoneSubID, TableName, "name", saveZoneSubDTO.name, userID);
+                            value.data = _sql.UpdateZoneSub(saveZoneSubDTO, userID);
+                        }
+                        else
+                        {
+                            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                        }
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
+                }
+                else if (saveZoneSubDTO.mode.ToLower() == "delete")
+                {
+                    validation = ValidationManager.CheckValidationIDUpdate(saveZoneSubDTO.zoneSubID, TableName, lang);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.DeleteZoneSub(saveZoneSubDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
                 }
 
                 value.success = validation.Success;
-                value.data = data;
                 value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
             }
             catch (Exception ex)
             {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchRentalService:");
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SaveZoneSubService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());
@@ -354,37 +429,162 @@ namespace Chaithit_Market.Services
             }
             return value;
         }
-
-        public SearchRentalStandModel SearchRentalStandService(string authorization, string lang, string platform, int logID, SearchRentStandDTO searchRentStandDTO)
+        
+        public ReturnIdModel SaveUnitService(string authorization, string lang, string platform, int logID,
+                   SaveUnitDTO saveUnitDTO, int userID)
         {
             if (_sql == null)
             {
                 _sql = SQLManager.Instance;
             }
 
-            SearchRentalStandModel value = new SearchRentalStandModel();
+            ReturnIdModel value = new ReturnIdModel();
             try
             {
-                Pagination<SearchRentalStand> data = new Pagination<SearchRentalStand>();
+                value.data = new _ReturnIdModel();
+                string TableName = "system_unit";
+                ValidationModel validation = new ValidationModel();
 
-                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
-
-                if (validation.Success == true)
+                if (saveUnitDTO.mode.ToLower() == "insert")
                 {
-                    data = _sql.SearchRentalStand(searchRentStandDTO);
+                    validation = ValidationManager.CheckValidationDupicateUnit(lang, saveUnitDTO);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.InsertUnit(saveUnitDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
                 }
-                else
+                else if (saveUnitDTO.mode.ToLower() == "update")
                 {
-                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    validation = ValidationManager.CheckValidationDupicateUnit(lang, saveUnitDTO);
+                    if (validation.Success == true)
+                    {
+                        validation = ValidationManager.CheckValidationIDUpdate(saveUnitDTO.unitID, TableName, lang);
+                        if (validation.Success == true)
+                        {
+                            _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "zone_id", saveUnitDTO.zoneID.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "zone_sub_id", saveUnitDTO.zoneSubID.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "unit_code", saveUnitDTO.unitCode, userID);
+                            _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "name", saveUnitDTO.name, userID);
+                            _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "rate_id", saveUnitDTO.rateID.ToString(), userID);
+                            value.data = _sql.UpdateUnit(saveUnitDTO, userID);
+                        }
+                        else
+                        {
+                            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                        }
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
+                }
+                else if (saveUnitDTO.mode.ToLower() == "delete")
+                {
+                    validation = ValidationManager.CheckValidationIDUpdate(saveUnitDTO.unitID, TableName, lang);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.DeleteUnit(saveUnitDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
                 }
 
                 value.success = validation.Success;
-                value.data = data;
                 value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
             }
             catch (Exception ex)
             {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchRentalStandService:");
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SaveUnitService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+        
+        public ReturnIdModel SaveRateAmountService(string authorization, string lang, string platform, int logID,
+                SaveRateAmountDTO saveRateAmountDTO, int userID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            ReturnIdModel value = new ReturnIdModel();
+            try
+            {
+                value.data = new _ReturnIdModel();
+                string TableName = "system_rate_amount";
+                ValidationModel validation = new ValidationModel();
+
+                if (saveRateAmountDTO.mode.ToLower() == "insert")
+                {
+                    validation = ValidationManager.CheckValidationDupicateRateAmount(lang, saveRateAmountDTO);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.InsertUnit(saveRateAmountDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
+                }
+                else if (saveRateAmountDTO.mode.ToLower() == "update")
+                {
+                    validation = ValidationManager.CheckValidationDupicateUnit(lang, saveRateAmountDTO);
+                    if (validation.Success == true)
+                    {
+                        validation = ValidationManager.CheckValidationIDUpdate(saveRateAmountDTO.unitID, TableName, lang);
+                        if (validation.Success == true)
+                        {
+                            _sql.InsertSystemLogChange(saveRateAmountDTO.unitID, TableName, "zone_id", saveRateAmountDTO.zoneID.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveRateAmountDTO.unitID, TableName, "zone_sub_id", saveRateAmountDTO.zoneSubID.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveRateAmountDTO.unitID, TableName, "unit_code", saveRateAmountDTO.unitCode, userID);
+                            _sql.InsertSystemLogChange(saveRateAmountDTO.unitID, TableName, "name", saveRateAmountDTO.name, userID);
+                            _sql.InsertSystemLogChange(saveRateAmountDTO.unitID, TableName, "rate_id", saveRateAmountDTO.rateID.ToString(), userID);
+                            value.data = _sql.UpdateUnit(saveRateAmountDTO, userID);
+                        }
+                        else
+                        {
+                            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                        }
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
+                }
+                else if (saveRateAmountDTO.mode.ToLower() == "delete")
+                {
+                    validation = ValidationManager.CheckValidationIDUpdate(saveRateAmountDTO.unitID, TableName, lang);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.DeleteUnit(saveRateAmountDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SaveRateAmountService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());

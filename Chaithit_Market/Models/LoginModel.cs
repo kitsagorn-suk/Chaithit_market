@@ -18,7 +18,6 @@ namespace Chaithit_Market.Models
         public int id { get; set; } = 0;
         public string username { get; set; } = "";
         public string employeeName { get; set; } = "";
-        public string[] imageUrl { get; set; } = { "" };
         public string token { get; set; } = "";
         public string platform { get; set; } = "";
 

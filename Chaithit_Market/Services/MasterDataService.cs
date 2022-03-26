@@ -83,7 +83,7 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public GetMasterDataModel GetMasterPlaceService(string authorization, string lang, string platform, int logID, int masterID, string TableName)
+        public GetMasterDataModel GetMasterService(string authorization, string lang, string platform, int logID, int masterID, string TableName)
         {
             if (_sql == null)
             {
@@ -112,7 +112,80 @@ namespace Chaithit_Market.Services
             }
             catch (Exception ex)
             {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "GetMasterPlaceService:");
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetMasterService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public ReturnIdModel SaveMasterPlaceSubService(string authorization, string lang, string platform, int logID,
+            MasterPlaceSubDTO masterPlaceSubDTO, string TableName, int userID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            ReturnIdModel value = new ReturnIdModel();
+            try
+            {
+                _ReturnIdModel data = new _ReturnIdModel();
+
+                //ValidationModel validation = ValidationManager.CheckValidationDupicateMasterData(lang, TableName, masterPlaceSubDTO);
+                //if (validation.Success == true)
+                //{
+                //    if (masterPlaceSubDTO.mode.ToLower() == "insert")
+                //    {
+                //        value.data = _sql.InsertMasterPlaceSubData(masterPlaceSubDTO, userID);
+                //    }
+                //    else if (masterPlaceSubDTO.mode.ToLower() == "update")
+                //    {
+                //        validation = ValidationManager.CheckValidationIDUpdate(masterPlaceSubDTO.masterID, TableName, lang);
+                //        if (validation.Success == true)
+                //        {
+                //            _sql.InsertSystemLogChange(masterPlaceSubDTO.masterID, TableName, "name_en", masterPlaceSubDTO.nameEN, userID);
+                //            _sql.InsertSystemLogChange(masterPlaceSubDTO.masterID, TableName, "name_th", masterPlaceSubDTO.nameTH, userID);
+                //            value.data = _sql.UpdateMasterData(masterPlaceSubDTO, TableName, userID);
+                //        }
+                //        else
+                //        {
+                //            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                //        }
+                //    }
+                //    else if (masterPlaceSubDTO.mode.ToLower() == "delete")
+                //    {
+                //        validation = ValidationManager.CheckValidationIDUpdate(masterPlaceSubDTO.masterID, TableName, lang);
+                //        if (validation.Success == true)
+                //        {
+                //            value.data = _sql.DeleteMasterData(masterPlaceSubDTO, TableName, userID);
+                //        }
+                //        else
+                //        {
+                //            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                //}
+
+                ValidationModel validation = ValidationManager.CheckValidation(1,lang, platform);
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SaveMasterPlaceSubService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());
