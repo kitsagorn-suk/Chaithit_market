@@ -2719,7 +2719,7 @@ namespace Chaithit_Market.Core
         {
             DataTable table = new DataTable();
 
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_page " +
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_zone_page " +
                 "@pName, " +
                 "@pPage, " +
                 "@pPerPage, " +
@@ -2779,6 +2779,273 @@ namespace Chaithit_Market.Core
 
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_zone_total " +
+                "@pName ");
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = searchNameCenterDTO.name;
+            sql.Parameters.Add(pName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public Pagination<SearchMasterUnit> SearchUnit(SearchUnitDTO searchUnitDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_unit_page " +
+                "@pZoneID, " +
+                "@pZoneSubID, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = searchUnitDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = searchUnitDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchUnitDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchUnitDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchUnitDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchUnitDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchMasterUnit> pagination = new Pagination<SearchMasterUnit>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchMasterUnit data = new SearchMasterUnit();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchUnit(searchUnitDTO);
+
+            pagination.SetPagination(total, searchUnitDTO.perPage, searchUnitDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchUnit(SearchUnitDTO searchUnitDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_unit_total " +
+                "@pZoneID, " +
+                "@pZoneSubID ");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = searchUnitDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = searchUnitDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public Pagination<SearchMasterZoneSub> SearchZoneSub(SearchNameCenterDTO searchNameCenterDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_zone_sub_page " +
+                "@pName, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = searchNameCenterDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchNameCenterDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchNameCenterDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchNameCenterDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchNameCenterDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchMasterZoneSub> pagination = new Pagination<SearchMasterZoneSub>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchMasterZoneSub data = new SearchMasterZoneSub();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchZoneSub(searchNameCenterDTO);
+
+            pagination.SetPagination(total, searchNameCenterDTO.perPage, searchNameCenterDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchZoneSub(SearchNameCenterDTO searchNameCenterDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_zone_sub_total " +
+                "@pName ");
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = searchNameCenterDTO.name;
+            sql.Parameters.Add(pName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public Pagination<SearchMasterRateAmount> SearchRateAmount(SearchNameCenterDTO searchNameCenterDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rate_amount_page " +
+                "@pName, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = searchNameCenterDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchNameCenterDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchNameCenterDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchNameCenterDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchNameCenterDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchMasterRateAmount> pagination = new Pagination<SearchMasterRateAmount>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchMasterRateAmount data = new SearchMasterRateAmount();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchRateAmount(searchNameCenterDTO);
+
+            pagination.SetPagination(total, searchNameCenterDTO.perPage, searchNameCenterDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchRateAmount(SearchNameCenterDTO searchNameCenterDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rate_amount_total " +
                 "@pName ");
 
             SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);

@@ -627,7 +627,50 @@ namespace Chaithit_Market.Services
             }
             return value;
         }
-        
+
+        public SearchMasterZoneSubModel SearchZoneSubService(string authorization, string lang, string platform, int logID, SearchNameCenterDTO searchNameCenterDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            SearchMasterZoneSubModel value = new SearchMasterZoneSubModel();
+            try
+            {
+                Pagination<SearchMasterZoneSub> data = new Pagination<SearchMasterZoneSub>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    data = _sql.SearchZoneSub(searchNameCenterDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.data = data;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchZoneSubService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
         public SearchMasterUnitModel SearchUnitService(string authorization, string lang, string platform, int logID, SearchUnitDTO searchUnitDTO)
         {
             if (_sql == null)
@@ -635,10 +678,10 @@ namespace Chaithit_Market.Services
                 _sql = SQLManager.Instance;
             }
 
-            SearchMasterZoneModel value = new SearchMasterZoneModel();
+            SearchMasterUnitModel value = new SearchMasterUnitModel();
             try
             {
-                Pagination<SearchMasterZone> data = new Pagination<SearchMasterZone>();
+                Pagination<SearchMasterUnit> data = new Pagination<SearchMasterUnit>();
 
                 ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
 
@@ -658,6 +701,49 @@ namespace Chaithit_Market.Services
             catch (Exception ex)
             {
                 LogManager.ServiceLog.WriteExceptionLog(ex, "SearchUnitService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+        
+        public SearchMasterRateAmountModel SearchRateAmountService(string authorization, string lang, string platform, int logID, SearchNameCenterDTO searchNameCenterDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            SearchMasterRateAmountModel value = new SearchMasterRateAmountModel();
+            try
+            {
+                Pagination<SearchMasterRateAmount> data = new Pagination<SearchMasterRateAmount>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    data = _sql.SearchRateAmount(searchNameCenterDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.data = data;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchRateAmountService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());

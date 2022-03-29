@@ -17,7 +17,7 @@ using System.Web.Http.Cors;
 
 namespace Chaithit_Market.Controllers
 {
-    [RoutePrefix("api/2.0")]
+    [RoutePrefix("api/1.0")]
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ValuesController : ApiController
     {
@@ -1490,6 +1490,59 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+        [Route("search/master/zoneSub")]
+        [HttpPost]
+        public IHttpActionResult SearchZoneSub(SearchNameCenterDTO searchNameCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("SearchZoneSub", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = new object();
+
+                if (searchNameCenterDTO.pageInt.Equals(null) || searchNameCenterDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchNameCenterDTO.perPage.Equals(null) || searchNameCenterDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchNameCenterDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchNameCenterDTO.sortField);
+                }
+
+                if (!(searchNameCenterDTO.sortType == "a" || searchNameCenterDTO.sortType == "d" || searchNameCenterDTO.sortType == "A" || searchNameCenterDTO.sortType == "D" || searchNameCenterDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchZoneSubService(authHeader, lang, platform.ToLower(), logID, searchNameCenterDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         [Route("search/master/unit")]
         [HttpPost]
         public IHttpActionResult SearchUnit(SearchUnitDTO searchUnitDTO)
@@ -1534,6 +1587,59 @@ namespace Chaithit_Market.Controllers
                 }
 
                 obj = srv.SearchUnitService(authHeader, lang, platform.ToLower(), logID, searchUnitDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("search/master/rateAmount")]
+        [HttpPost]
+        public IHttpActionResult SearchRateAmount(SearchNameCenterDTO searchNameCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("SearchRateAmount", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = new object();
+
+                if (searchNameCenterDTO.pageInt.Equals(null) || searchNameCenterDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchNameCenterDTO.perPage.Equals(null) || searchNameCenterDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchNameCenterDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchNameCenterDTO.sortField);
+                }
+
+                if (!(searchNameCenterDTO.sortType == "a" || searchNameCenterDTO.sortType == "d" || searchNameCenterDTO.sortType == "A" || searchNameCenterDTO.sortType == "D" || searchNameCenterDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchRateAmountService(authHeader, lang, platform.ToLower(), logID, searchNameCenterDTO);
 
                 return Ok(obj);
             }

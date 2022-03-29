@@ -187,6 +187,7 @@
     <Compile Include="DTO\SearchNameCenterDTO.cs" />
     <Compile Include="DTO\SearchRentDTO.cs" />
     <Compile Include="DTO\SearchRentStandDTO.cs" />
+    <Compile Include="DTO\SearchUnitDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />
     <Compile Include="DTO\UploadFileDTO.cs" />
     <Compile Include="Global.asax.cs">
@@ -203,6 +204,10 @@
     <Compile Include="Models\Pagination.cs" />
     <Compile Include="Models\ReturnIdModel.cs" />
     <Compile Include="Models\SearchHistoryPaidBillModel.cs" />
+    <Compile Include="Models\SearchMasterRateAmountModel.cs" />
+    <Compile Include="Models\SearchMasterUnitModel.cs" />
+    <Compile Include="Models\SearchMasterZoneModel.cs" />
+    <Compile Include="Models\SearchMasterZoneSubModel.cs" />
     <Compile Include="Models\SearchRentalModel.cs" />
     <Compile Include="Models\SearchRentalStandModel.cs" />
     <Compile Include="Models\SearchUserProfileModel.cs" />
