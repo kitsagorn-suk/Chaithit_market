@@ -19,7 +19,7 @@ namespace Chaithit_Market.Models
             E501, E502,
             S200001, S201001, S200002, S200003, S200004,
             E300001, E300002, E300003, E300004, E300005, E300006, E300007, E300008,
-            E301001, E301002, E301003, E301004, E301005, E301006, E301007, E301008, E301009, E301010, E301011, E301012, E301013, E301014, E301015, E301016,
+            E301001, E301002, E301003, E301004, E301005, E301006, E301007, E301008, E301009, E301010, E301011, E301012, E301013, E301014, E301015, E301016, E301017,
             E302001, E302002, E302003,
             E303001, E303002
 
@@ -62,6 +62,8 @@ namespace Chaithit_Market.Models
                 case InvalidState.E301015:
                     return 301015;
                 case InvalidState.E301016:
+                    return 301016;
+                case InvalidState.E301017:
                     return 301016;
                 case InvalidState.E302001:
                     return 302001;
@@ -150,6 +152,10 @@ namespace Chaithit_Market.Models
                     return message;
                 case InvalidState.E301016:
                     messagecode = 301016;
+                    message = _sql.GetMessageLang(lang.ToLower(), messagecode);
+                    return message;
+                case InvalidState.E301017:
+                    messagecode = 301017;
                     message = _sql.GetMessageLang(lang.ToLower(), messagecode);
                     return message;
                 case InvalidState.E302001:

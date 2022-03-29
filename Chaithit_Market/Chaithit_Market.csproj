@@ -184,6 +184,7 @@
     <Compile Include="DTO\SaveZoneDTO.cs" />
     <Compile Include="DTO\SaveZoneSubDTO.cs" />
     <Compile Include="DTO\SearchBillDTO.cs" />
+    <Compile Include="DTO\SearchNameCenterDTO.cs" />
     <Compile Include="DTO\SearchRentDTO.cs" />
     <Compile Include="DTO\SearchRentStandDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />
@@ -193,6 +194,7 @@
     </Compile>
     <Compile Include="Models\AuthorizationModel.cs" />
     <Compile Include="Models\CheckUserByTokenModel.cs" />
+    <Compile Include="Models\GetAllDropdownModel.cs" />
     <Compile Include="Models\GetMasterDataModel.cs" />
     <Compile Include="Models\GetUserProfileModel.cs" />
     <Compile Include="Models\LoginModel.cs" />

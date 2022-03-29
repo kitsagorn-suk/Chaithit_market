@@ -471,320 +471,6 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("save/zone")]
-        [HttpPost]
-        public IHttpActionResult SaveZone(SaveZoneDTO saveZoneDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(saveZoneDTO);
-                int logID = _sql.InsertLogReceiveData("SaveZone", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                string checkMissingOptional = "";
-
-                if (saveZoneDTO.mode.ToLower().Equals("insert"))
-                {
-                    if (string.IsNullOrEmpty(saveZoneDTO.name))
-                    {
-                        checkMissingOptional += "name ";
-                    }
-                }
-                else if (saveZoneDTO.mode.ToLower().Equals("update"))
-                {
-                    if (saveZoneDTO.zoneID == 0)
-                    {
-                        checkMissingOptional += "zoneID ";
-                    }
-                    if (string.IsNullOrEmpty(saveZoneDTO.name))
-                    {
-                        checkMissingOptional += "name ";
-                    }
-                }
-                else if (saveZoneDTO.mode.ToLower().Equals("delete"))
-                {
-                    if (saveZoneDTO.zoneID == 0)
-                    {
-                        checkMissingOptional += "zoneID ";
-                    }
-                }
-                else
-                {
-                    throw new Exception("Choose Mode Insert or Update or Delete");
-                }
-
-                if (checkMissingOptional != "")
-                {
-                    throw new Exception("Missing Parameter : " + checkMissingOptional);
-                }
-
-                SaveService srv = new SaveService();
-                var obj = new object();
-                obj = srv.SaveZoneService(authHeader, lang, platform.ToLower(), logID, saveZoneDTO, data.user_id);
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("save/zoneSub")]
-        [HttpPost]
-        public IHttpActionResult SaveZoneSub(SaveZoneSubDTO saveZoneSubDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(saveZoneSubDTO);
-                int logID = _sql.InsertLogReceiveData("SaveZoneSub", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                string checkMissingOptional = "";
-
-                if (saveZoneSubDTO.mode.ToLower().Equals("insert"))
-                {
-                    if (saveZoneSubDTO.zoneID == 0)
-                    {
-                        checkMissingOptional += "zoneID ";
-                    }
-                    if (string.IsNullOrEmpty(saveZoneSubDTO.name))
-                    {
-                        checkMissingOptional += "name ";
-                    }
-                }
-                else if (saveZoneSubDTO.mode.ToLower().Equals("update"))
-                {
-                    if (saveZoneSubDTO.zoneSubID == 0)
-                    {
-                        checkMissingOptional += "zoneSubID ";
-                    }
-                    if (saveZoneSubDTO.zoneID == 0)
-                    {
-                        checkMissingOptional += "zoneID ";
-                    }
-                    if (string.IsNullOrEmpty(saveZoneSubDTO.name))
-                    {
-                        checkMissingOptional += "name ";
-                    }
-                }
-                else if (saveZoneSubDTO.mode.ToLower().Equals("delete"))
-                {
-                    if (saveZoneSubDTO.zoneSubID == 0)
-                    {
-                        checkMissingOptional += "zoneSubID ";
-                    }
-                }
-                else
-                {
-                    throw new Exception("Choose Mode Insert or Update or Delete");
-                }
-
-                if (checkMissingOptional != "")
-                {
-                    throw new Exception("Missing Parameter : " + checkMissingOptional);
-                }
-
-                SaveService srv = new SaveService();
-                var obj = new object();
-                obj = srv.SaveZoneSubService(authHeader, lang, platform.ToLower(), logID, saveZoneSubDTO, data.user_id);
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("save/unit")]
-        [HttpPost]
-        public IHttpActionResult SaveUnit(SaveUnitDTO saveUnitDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(saveUnitDTO);
-                int logID = _sql.InsertLogReceiveData("SaveUnit", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                string checkMissingOptional = "";
-
-                if (saveUnitDTO.mode.ToLower().Equals("insert"))
-                {
-                    if (saveUnitDTO.zoneID != 0)
-                    {
-                        checkMissingOptional += "zoneID Must 0 ";
-                    }
-                    if (saveUnitDTO.zoneSubID != 0)
-                    {
-                        checkMissingOptional += "zoneSubID Must 0 ";
-                    }
-                    if (string.IsNullOrEmpty(saveUnitDTO.unitCode))
-                    {
-                        checkMissingOptional += "unitCode ";
-                    }
-                    if (string.IsNullOrEmpty(saveUnitDTO.name))
-                    {
-                        checkMissingOptional += "name ";
-                    }
-                    if (saveUnitDTO.rateID != 0)
-                    {
-                        checkMissingOptional += "rateID Must 0 ";
-                    }
-                }
-                else if (saveUnitDTO.mode.ToLower().Equals("update"))
-                {
-                    if (saveUnitDTO.unitID != 0)
-                    {
-                        checkMissingOptional += "unitID Must 0 ";
-                    }
-                    if (saveUnitDTO.zoneID != 0)
-                    {
-                        checkMissingOptional += "zoneID Must 0 ";
-                    }
-                    if (saveUnitDTO.zoneSubID != 0)
-                    {
-                        checkMissingOptional += "zoneSubID Must 0 ";
-                    }
-                    if (string.IsNullOrEmpty(saveUnitDTO.unitCode))
-                    {
-                        checkMissingOptional += "unitCode ";
-                    }
-                    if (string.IsNullOrEmpty(saveUnitDTO.name))
-                    {
-                        checkMissingOptional += "name ";
-                    }
-                    if (saveUnitDTO.rateID != 0)
-                    {
-                        checkMissingOptional += "rateID Must 0 ";
-                    }
-                }
-                else if (saveUnitDTO.mode.ToLower().Equals("delete"))
-                {
-                    if (saveUnitDTO.unitID == 0)
-                    {
-                        checkMissingOptional += "unitID Must 0 ";
-                    }
-                }
-                else
-                {
-                    throw new Exception("Choose Mode Insert or Update or Delete");
-                }
-
-                if (checkMissingOptional != "")
-                {
-                    throw new Exception("Missing Parameter : " + checkMissingOptional);
-                }
-
-                SaveService srv = new SaveService();
-                var obj = new object();
-                obj = srv.SaveUnitService(authHeader, lang, platform.ToLower(), logID, saveUnitDTO, data.user_id);
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("save/rateAmount")]
-        [HttpPost]
-        public IHttpActionResult SaveRateAmount(SaveRateAmountDTO saveRateAmountDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(saveRateAmountDTO);
-                int logID = _sql.InsertLogReceiveData("SaveRateAmount", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                string checkMissingOptional = "";
-
-                if (saveRateAmountDTO.mode.ToLower().Equals("insert"))
-                {
-                    if (saveRateAmountDTO.rentAmountDay != 0 && saveRateAmountDTO.rentAmountMonth != 0 && saveRateAmountDTO.electricAmount != 0 
-                            && saveRateAmountDTO.waterAmount != 0 && saveRateAmountDTO.lampAmountPerOne != 0 && saveRateAmountDTO.electricEquipAmount != 0)
-                    {
-                        checkMissingOptional += "rentAmountDay, rentAmountMonth, electricAmount, waterAmount, lampAmountPerOne, electricEquipAmount Must 0 ";
-                    }
-                }
-                else if (saveRateAmountDTO.mode.ToLower().Equals("update"))
-                {
-                    if (saveRateAmountDTO.RateID != 0)
-                    {
-                        checkMissingOptional += "RateID Must 0 ";
-                    }
-                    if (saveRateAmountDTO.rentAmountDay != 0 && saveRateAmountDTO.rentAmountMonth != 0 && saveRateAmountDTO.electricAmount != 0
-                            && saveRateAmountDTO.waterAmount != 0 && saveRateAmountDTO.lampAmountPerOne != 0 && saveRateAmountDTO.electricEquipAmount != 0)
-                    {
-                        checkMissingOptional += "rentAmountDay, rentAmountMonth, electricAmount, waterAmount, lampAmountPerOne, electricEquipAmount Must 0 ";
-                    }
-                }
-                else if (saveRateAmountDTO.mode.ToLower().Equals("delete"))
-                {
-                    if (saveRateAmountDTO.RateID == 0)
-                    {
-                        checkMissingOptional += "RateID Must 0 ";
-                    }
-                }
-                else
-                {
-                    throw new Exception("Choose Mode Insert or Update or Delete");
-                }
-
-                if (checkMissingOptional != "")
-                {
-                    throw new Exception("Missing Parameter : " + checkMissingOptional);
-                }
-
-                SaveService srv = new SaveService();
-                var obj = new object();
-                obj = srv.SaveRateAmountService(authHeader, lang, platform.ToLower(), logID, saveRateAmountDTO, data.user_id);
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
         [Route("save/rental")]
         [HttpPost]
         public IHttpActionResult SaveRental(SaveRentalDTO saveRentalDTO)
@@ -1354,9 +1040,9 @@ namespace Chaithit_Market.Controllers
         #endregion
 
         #region Master
-        [Route("save/master/place")]
+        [Route("save/master/zone")]
         [HttpPost]
-        public IHttpActionResult SaveMasterPlace(MasterDataDTO masterDataDTO)
+        public IHttpActionResult SaveZone(SaveZoneDTO saveZoneDTO)
         {
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
@@ -1369,230 +1055,35 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject(masterDataDTO);
-                int logID = _sql.InsertLogReceiveData("SaveMasterPlace", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-                
-                string checkMissingOptional = "";
-
-                if (string.IsNullOrEmpty(masterDataDTO.mode))
-                {
-                    throw new Exception("Missing Parameter : mode ");
-                }
-
-                if (masterDataDTO.mode.ToLower().Equals("insert"))
-                {
-                    if (masterDataDTO.masterID != 0)
-                    {
-                        checkMissingOptional += "masterID Must 0 ";
-                    }
-                    if (string.IsNullOrEmpty(masterDataDTO.nameEN))
-                    {
-                        checkMissingOptional += "nameEN ";
-                    }
-                    if (string.IsNullOrEmpty(masterDataDTO.nameTH))
-                    {
-                        checkMissingOptional += "nameTH ";
-                    }
-                }
-                else if (masterDataDTO.mode.ToLower().Equals("update"))
-                {
-                    if (masterDataDTO.masterID == 0)
-                    {
-                        checkMissingOptional += "masterID ";
-                    }
-                    if (string.IsNullOrEmpty(masterDataDTO.nameEN))
-                    {
-                        checkMissingOptional += "nameEN ";
-                    }
-                    if (string.IsNullOrEmpty(masterDataDTO.nameTH))
-                    {
-                        checkMissingOptional += "nameTH ";
-                    }
-                }
-                else if (masterDataDTO.mode.ToLower().Equals("delete"))
-                {
-                    if (masterDataDTO.masterID == 0)
-                    {
-                        checkMissingOptional += "masterID ";
-                    }
-                }
-                else
-                {
-                    throw new Exception("Choose Mode Insert or Update or Delete");
-                }
-                
-                if (checkMissingOptional != "")
-                {
-                    throw new Exception("Missing Parameter : " + checkMissingOptional);
-                }
-
-                MasterDataService srv = new MasterDataService();
-                var obj = new object();
-                obj = srv.SaveMasterService(authHeader, lang, platform.ToLower(), logID, masterDataDTO, "system_place", data.user_id);
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("get/master/place")]
-        [HttpPost]
-        public IHttpActionResult GetMasterPlace(MasterDataDTO masterDataDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(masterDataDTO);
-                int logID = _sql.InsertLogReceiveData("GetMasterPlace", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                MasterDataService srv = new MasterDataService();
-
-                var obj = new object();
-
-                if (masterDataDTO.masterID != 0)
-                {
-                    obj = srv.GetMasterService(authHeader, lang, platform.ToLower(), logID, masterDataDTO.masterID, "system_place");
-                }
-                else
-                {
-                    throw new Exception("Missing Parameter : ID ");
-                }
-
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("save/master/subPlace")]
-        [HttpPost]
-        public IHttpActionResult SaveMasterSubPlace(MasterPlaceSubDTO masterPlaceSubDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(masterPlaceSubDTO);
-                int logID = _sql.InsertLogReceiveData("SaveMasterSubPlace", json, timestampNow.ToString(), authHeader,
+                string json = JsonConvert.SerializeObject(saveZoneDTO);
+                int logID = _sql.InsertLogReceiveData("SaveZone", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
                 string checkMissingOptional = "";
 
-                if (string.IsNullOrEmpty(masterPlaceSubDTO.mode))
+                if (saveZoneDTO.mode.ToLower().Equals("insert"))
                 {
-                    throw new Exception("Missing Parameter : mode ");
-                }
-
-                if (masterPlaceSubDTO.mode.ToLower().Equals("insert"))
-                {
-                    if (masterPlaceSubDTO.placeID != 0)
+                    if (string.IsNullOrEmpty(saveZoneDTO.name))
                     {
-                        checkMissingOptional += "placeID Must 0 ";
-                    }
-                    if (string.IsNullOrEmpty(masterPlaceSubDTO.nameEN))
-                    {
-                        checkMissingOptional += "nameEN ";
-                    }
-                    if (string.IsNullOrEmpty(masterPlaceSubDTO.nameTH))
-                    {
-                        checkMissingOptional += "nameTH ";
-                    }
-                    if (masterPlaceSubDTO.amountRentDay != 0)
-                    {
-                        checkMissingOptional += "amountRentDay Must 0 ";
-                    }
-                    if (masterPlaceSubDTO.amountRentMonth != 0)
-                    {
-                        checkMissingOptional += "amountRentMonth Must 0 ";
-                    }
-                    if (masterPlaceSubDTO.amountRentSpecial != 0)
-                    {
-                        checkMissingOptional += "amountRentSpecial Must 0 ";
-                    }
-                    if (string.IsNullOrEmpty(masterPlaceSubDTO.specialExpireDate))
-                    {
-                        checkMissingOptional += "specialExpireDate ";
-                    }
-                    if (masterPlaceSubDTO.amountWater != 0)
-                    {
-                        checkMissingOptional += "amountWater Must 0 ";
-                    }
-                    if (masterPlaceSubDTO.amountElectricity != 0)
-                    {
-                        checkMissingOptional += "amountElectricity Must 0 ";
+                        checkMissingOptional += "name ";
                     }
                 }
-                else if (masterPlaceSubDTO.mode.ToLower().Equals("update"))
+                else if (saveZoneDTO.mode.ToLower().Equals("update"))
                 {
-                    if (masterPlaceSubDTO.placeSubID == 0)
+                    if (saveZoneDTO.zoneID == 0)
                     {
-                        checkMissingOptional += "placeSubID ";
+                        checkMissingOptional += "zoneID ";
                     }
-                    if (masterPlaceSubDTO.placeID == 0)
+                    if (string.IsNullOrEmpty(saveZoneDTO.name))
                     {
-                        checkMissingOptional += "placeID ";
-                    }
-                    if (string.IsNullOrEmpty(masterPlaceSubDTO.nameEN))
-                    {
-                        checkMissingOptional += "nameEN ";
-                    }
-                    if (string.IsNullOrEmpty(masterPlaceSubDTO.nameTH))
-                    {
-                        checkMissingOptional += "nameTH ";
-                    }
-                    if (masterPlaceSubDTO.amountRentDay != 0)
-                    {
-                        checkMissingOptional += "amountRentDay Must 0 ";
-                    }
-                    if (masterPlaceSubDTO.amountRentMonth != 0)
-                    {
-                        checkMissingOptional += "amountRentMonth Must 0 ";
-                    }
-                    if (masterPlaceSubDTO.amountRentSpecial != 0)
-                    {
-                        checkMissingOptional += "amountRentSpecial Must 0 ";
-                    }
-                    if (string.IsNullOrEmpty(masterPlaceSubDTO.specialExpireDate))
-                    {
-                        checkMissingOptional += "specialExpireDate ";
-                    }
-                    if (masterPlaceSubDTO.amountWater != 0)
-                    {
-                        checkMissingOptional += "amountWater Must 0 ";
-                    }
-                    if (masterPlaceSubDTO.amountElectricity != 0)
-                    {
-                        checkMissingOptional += "amountElectricity Must 0 ";
+                        checkMissingOptional += "name ";
                     }
                 }
-                else if (masterPlaceSubDTO.mode.ToLower().Equals("delete"))
+                else if (saveZoneDTO.mode.ToLower().Equals("delete"))
                 {
-                    if (masterPlaceSubDTO.placeSubID == 0)
+                    if (saveZoneDTO.zoneID == 0)
                     {
-                        checkMissingOptional += "placeSubID ";
+                        checkMissingOptional += "zoneID ";
                     }
                 }
                 else
@@ -1607,7 +1098,7 @@ namespace Chaithit_Market.Controllers
 
                 MasterDataService srv = new MasterDataService();
                 var obj = new object();
-                obj = srv.SaveMasterPlaceSubService(authHeader, lang, platform.ToLower(), logID, masterPlaceSubDTO, "system_place_sub", data.user_id);
+                obj = srv.SaveZoneService(authHeader, lang, platform.ToLower(), logID, saveZoneDTO, data.user_id);
 
                 return Ok(obj);
             }
@@ -1616,6 +1107,442 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
+
+        [Route("save/master/zoneSub")]
+        [HttpPost]
+        public IHttpActionResult SaveZoneSub(SaveZoneSubDTO saveZoneSubDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(saveZoneSubDTO);
+                int logID = _sql.InsertLogReceiveData("SaveZoneSub", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                string checkMissingOptional = "";
+
+                if (saveZoneSubDTO.mode.ToLower().Equals("insert"))
+                {
+                    if (saveZoneSubDTO.zoneID == 0)
+                    {
+                        checkMissingOptional += "zoneID ";
+                    }
+                    if (string.IsNullOrEmpty(saveZoneSubDTO.name))
+                    {
+                        checkMissingOptional += "name ";
+                    }
+                }
+                else if (saveZoneSubDTO.mode.ToLower().Equals("update"))
+                {
+                    if (saveZoneSubDTO.zoneSubID == 0)
+                    {
+                        checkMissingOptional += "zoneSubID ";
+                    }
+                    if (saveZoneSubDTO.zoneID == 0)
+                    {
+                        checkMissingOptional += "zoneID ";
+                    }
+                    if (string.IsNullOrEmpty(saveZoneSubDTO.name))
+                    {
+                        checkMissingOptional += "name ";
+                    }
+                }
+                else if (saveZoneSubDTO.mode.ToLower().Equals("delete"))
+                {
+                    if (saveZoneSubDTO.zoneSubID == 0)
+                    {
+                        checkMissingOptional += "zoneSubID ";
+                    }
+                }
+                else
+                {
+                    throw new Exception("Choose Mode Insert or Update or Delete");
+                }
+
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
+
+                MasterDataService srv = new MasterDataService();
+                var obj = new object();
+                obj = srv.SaveZoneSubService(authHeader, lang, platform.ToLower(), logID, saveZoneSubDTO, data.user_id);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("save/master/unit")]
+        [HttpPost]
+        public IHttpActionResult SaveUnit(SaveUnitDTO saveUnitDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(saveUnitDTO);
+                int logID = _sql.InsertLogReceiveData("SaveUnit", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                string checkMissingOptional = "";
+
+                if (saveUnitDTO.mode.ToLower().Equals("insert"))
+                {
+                    if (saveUnitDTO.zoneID == 0)
+                    {
+                        checkMissingOptional += "zoneID Must 0 ";
+                    }
+                    if (string.IsNullOrEmpty(saveUnitDTO.unitCode))
+                    {
+                        checkMissingOptional += "unitCode ";
+                    }
+                    if (string.IsNullOrEmpty(saveUnitDTO.name))
+                    {
+                        checkMissingOptional += "name ";
+                    }
+                }
+                else if (saveUnitDTO.mode.ToLower().Equals("update"))
+                {
+                    if (saveUnitDTO.unitID == 0)
+                    {
+                        checkMissingOptional += "unitID Must 0 ";
+                    }
+                    if (saveUnitDTO.zoneID == 0)
+                    {
+                        checkMissingOptional += "zoneID Must 0 ";
+                    }
+                    if (string.IsNullOrEmpty(saveUnitDTO.unitCode))
+                    {
+                        checkMissingOptional += "unitCode ";
+                    }
+                    if (string.IsNullOrEmpty(saveUnitDTO.name))
+                    {
+                        checkMissingOptional += "name ";
+                    }
+                }
+                else if (saveUnitDTO.mode.ToLower().Equals("delete"))
+                {
+                    if (saveUnitDTO.unitID == 0)
+                    {
+                        checkMissingOptional += "unitID Must 0 ";
+                    }
+                }
+                else
+                {
+                    throw new Exception("Choose Mode Insert or Update or Delete");
+                }
+
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
+
+                MasterDataService srv = new MasterDataService();
+                var obj = new object();
+                obj = srv.SaveUnitService(authHeader, lang, platform.ToLower(), logID, saveUnitDTO, data.user_id);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("save/master/rateAmount")]
+        [HttpPost]
+        public IHttpActionResult SaveRateAmount(SaveRateAmountDTO saveRateAmountDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(saveRateAmountDTO);
+                int logID = _sql.InsertLogReceiveData("SaveRateAmount", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                string checkMissingOptional = "";
+
+                if (saveRateAmountDTO.mode.ToLower().Equals("insert"))
+                {
+                    if (string.IsNullOrEmpty(saveRateAmountDTO.name))
+                    {
+                        checkMissingOptional += "name ";
+                    }
+                }
+                else if (saveRateAmountDTO.mode.ToLower().Equals("update"))
+                {
+                    if (saveRateAmountDTO.rateID == 0)
+                    {
+                        checkMissingOptional += "RateID Must 0 ";
+                    }
+                    if (string.IsNullOrEmpty(saveRateAmountDTO.name))
+                    {
+                        checkMissingOptional += "name ";
+                    }
+                }
+                else if (saveRateAmountDTO.mode.ToLower().Equals("delete"))
+                {
+                    if (saveRateAmountDTO.rateID == 0)
+                    {
+                        checkMissingOptional += "RateID Must 0 ";
+                    }
+                }
+                else
+                {
+                    throw new Exception("Choose Mode Insert or Update or Delete");
+                }
+
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
+
+                MasterDataService srv = new MasterDataService();
+                var obj = new object();
+                obj = srv.SaveRateAmountService(authHeader, lang, platform.ToLower(), logID, saveRateAmountDTO, data.user_id);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/master/zone")]
+        [HttpPost]
+        public IHttpActionResult GetZone()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("GetZone", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+                
+                var obj = srv.GetZoneService(authHeader, lang, platform.ToLower(), logID);
+                
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/master/zoneSub")]
+        [HttpPost]
+        public IHttpActionResult GetZoneSub(GetIDCenterDTO getIDCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(getIDCenterDTO);
+                int logID = _sql.InsertLogReceiveData("GetZoneSub", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = new object();
+                if (getIDCenterDTO.id != 0)
+                {
+                    obj = srv.GetZoneSubService(authHeader, lang, platform.ToLower(), logID, getIDCenterDTO.id);
+                }
+                else
+                {
+                    throw new Exception("Missing Parameter : ID");
+                }
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/master/rateAmount")]
+        [HttpPost]
+        public IHttpActionResult GetRateAmount()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("GetRateAmount", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = srv.GetRateAmountService(authHeader, lang, platform.ToLower(), logID);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("search/master/zone")]
+        [HttpPost]
+        public IHttpActionResult SearchZone(SearchNameCenterDTO searchNameCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("SearchZone", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = new object();
+
+                if (searchNameCenterDTO.pageInt.Equals(null) || searchNameCenterDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchNameCenterDTO.perPage.Equals(null) || searchNameCenterDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchNameCenterDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchNameCenterDTO.sortField);
+                }
+
+                if (!(searchNameCenterDTO.sortType == "a" || searchNameCenterDTO.sortType == "d" || searchNameCenterDTO.sortType == "A" || searchNameCenterDTO.sortType == "D" || searchNameCenterDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchZoneService(authHeader, lang, platform.ToLower(), logID, searchNameCenterDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("search/master/unit")]
+        [HttpPost]
+        public IHttpActionResult SearchUnit(SearchUnitDTO searchUnitDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("SearchUnit", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = new object();
+
+                if (searchUnitDTO.pageInt.Equals(null) || searchUnitDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchUnitDTO.perPage.Equals(null) || searchUnitDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchUnitDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchUnitDTO.sortField);
+                }
+
+                if (!(searchUnitDTO.sortType == "a" || searchUnitDTO.sortType == "d" || searchUnitDTO.sortType == "A" || searchUnitDTO.sortType == "D" || searchUnitDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchUnitService(authHeader, lang, platform.ToLower(), logID, searchUnitDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         #endregion
     }
 }

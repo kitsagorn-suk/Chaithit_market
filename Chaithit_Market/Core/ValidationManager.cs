@@ -507,15 +507,21 @@ namespace Chaithit_Market.Core
                     }
                     if (dt.Rows[0]["HaveZoneSub"].ToString() == "0")
                     {
-                        state = ValidationModel.InvalidState.E301015;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                        if (saveUnitDTO.zoneSubID != 0)
+                        {
+                            state = ValidationModel.InvalidState.E301015;
+                            getMessage = ValidationModel.GetInvalidMessage(state, lang);
+                            return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                        }
                     }
                     if (dt.Rows[0]["HaveRate"].ToString() == "0")
                     {
-                        state = ValidationModel.InvalidState.E301016;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                        if (saveUnitDTO.rateID != 0)
+                        {
+                            state = ValidationModel.InvalidState.E301016;
+                            getMessage = ValidationModel.GetInvalidMessage(state, lang);
+                            return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                        }
                     }
                 }
 
@@ -550,27 +556,9 @@ namespace Chaithit_Market.Core
                         getMessage = ValidationModel.GetInvalidMessage(state, lang);
                         return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                     }
-                    if (dt.Rows[0]["UnitCode"].ToString() != "0")
+                    if (dt.Rows[0]["Rate"].ToString() != "0")
                     {
-                        state = ValidationModel.InvalidState.E301014;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
-                    }
-                    if (dt.Rows[0]["HaveZone"].ToString() == "0")
-                    {
-                        state = ValidationModel.InvalidState.E301013;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
-                    }
-                    if (dt.Rows[0]["HaveZoneSub"].ToString() == "0")
-                    {
-                        state = ValidationModel.InvalidState.E301015;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
-                    }
-                    if (dt.Rows[0]["HaveRate"].ToString() == "0")
-                    {
-                        state = ValidationModel.InvalidState.E301016;
+                        state = ValidationModel.InvalidState.E301017;
                         getMessage = ValidationModel.GetInvalidMessage(state, lang);
                         return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                     }
