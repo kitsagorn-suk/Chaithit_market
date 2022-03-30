@@ -23,6 +23,7 @@ namespace Chaithit_Market.Models
         public string position { set; get; } = "";
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
+        public int empType { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -34,6 +35,7 @@ namespace Chaithit_Market.Models
             position = dr["position"].ToString();
             startDate = dr["start_date"].ToString();
             endDate = dr["end_date"].ToString();
+            empType = int.Parse(dr["emp_type"].ToString());
         }
     }
 }

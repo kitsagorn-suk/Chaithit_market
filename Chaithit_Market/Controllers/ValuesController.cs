@@ -433,7 +433,7 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject("");
+                string json = JsonConvert.SerializeObject(searchUserProfileDTO);
                 int logID = _sql.InsertLogReceiveData("SearchUserProfile", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
@@ -462,94 +462,6 @@ namespace Chaithit_Market.Controllers
                 }
 
                 obj = srv.SearchUserProfileService(authHeader, lang, platform.ToLower(), logID, searchUserProfileDTO);
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("save/rental")]
-        [HttpPost]
-        public IHttpActionResult SaveRental(SaveRentalDTO saveRentalDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(saveRentalDTO);
-                int logID = _sql.InsertLogReceiveData("SaveRental", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                string checkMissingOptional = "";
-
-                if (saveRentalDTO.mode.ToLower().Equals("insert"))
-                {
-                    if (saveRentalDTO.rentalID != 0)
-                    {
-                        checkMissingOptional += "rentalID Must 0 ";
-                    }
-                    if (string.IsNullOrEmpty(saveRentalDTO.rentCode))
-                    {
-                        checkMissingOptional += "rentCode ";
-                    }
-                    if (string.IsNullOrEmpty(saveRentalDTO.name))
-                    {
-                        checkMissingOptional += "name ";
-                    }
-                    if (saveRentalDTO.placeSubID == 0)
-                    {
-                        checkMissingOptional += "placeSubID ";
-                    }
-                }
-                else if (saveRentalDTO.mode.ToLower().Equals("update"))
-                {
-                    if (saveRentalDTO.rentalID == 0)
-                    {
-                        checkMissingOptional += "rentalID ";
-                    }
-                    if (string.IsNullOrEmpty(saveRentalDTO.rentCode))
-                    {
-                        checkMissingOptional += "rentCode ";
-                    }
-                    if (string.IsNullOrEmpty(saveRentalDTO.name))
-                    {
-                        checkMissingOptional += "name ";
-                    }
-                    if (saveRentalDTO.placeSubID == 0)
-                    {
-                        checkMissingOptional += "placeSubID ";
-                    }
-                }
-                else if (saveRentalDTO.mode.ToLower().Equals("delete"))
-                {
-                    if (saveRentalDTO.rentalID == 0)
-                    {
-                        checkMissingOptional += "rentalID ";
-                    }
-                }
-                else
-                {
-                    throw new Exception("Choose Mode Insert or Update or Delete");
-                }
-
-                if (checkMissingOptional != "")
-                {
-                    throw new Exception("Missing Parameter : " + checkMissingOptional);
-                }
-
-                SaveService srv = new SaveService();
-                var obj = new object();
-                obj = srv.SaveRentalService(authHeader, lang, platform.ToLower(), logID, saveRentalDTO, data.user_id);
 
                 return Ok(obj);
             }
@@ -590,59 +502,6 @@ namespace Chaithit_Market.Controllers
                 {
                     throw new Exception("Missing Parameter : userID");
                 }
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("search/rental")]
-        [HttpPost]
-        public IHttpActionResult SearchRental(SearchRentDTO searchRentDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject("");
-                int logID = _sql.InsertLogReceiveData("SearchRental", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                GetService srv = new GetService();
-
-                var obj = new object();
-
-                if (searchRentDTO.pageInt.Equals(null) || searchRentDTO.pageInt.Equals(0))
-                {
-                    throw new Exception("invalid : pageInt ");
-                }
-
-                if (searchRentDTO.perPage.Equals(null) || searchRentDTO.perPage.Equals(0))
-                {
-                    throw new Exception("invalid : perPage ");
-                }
-
-                if (searchRentDTO.sortField > 4)
-                {
-                    throw new Exception("invalid : sortField " + searchRentDTO.sortField);
-                }
-
-                if (!(searchRentDTO.sortType == "a" || searchRentDTO.sortType == "d" || searchRentDTO.sortType == "A" || searchRentDTO.sortType == "D" || searchRentDTO.sortType == ""))
-                {
-                    throw new Exception("invalid sortType");
-                }
-
-                obj = srv.SearchRentalService(authHeader, lang, platform.ToLower(), logID, searchRentDTO);
 
                 return Ok(obj);
             }
@@ -811,7 +670,7 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject("");
+                string json = JsonConvert.SerializeObject(searchRentStandDTO);
                 int logID = _sql.InsertLogReceiveData("SearchRentalStand", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
@@ -849,6 +708,59 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+        [Route("search/unit/stand")]
+        [HttpPost]
+        public IHttpActionResult SearchUnitStand(SearchUnitstandDTO searchUnitstandDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(searchUnitstandDTO);
+                int logID = _sql.InsertLogReceiveData("SearchUnitStand", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                var obj = new object();
+
+                if (searchUnitstandDTO.pageInt.Equals(null) || searchUnitstandDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchUnitstandDTO.perPage.Equals(null) || searchUnitstandDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchUnitstandDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchUnitstandDTO.sortField);
+                }
+
+                if (!(searchUnitstandDTO.sortType == "a" || searchUnitstandDTO.sortType == "d" || searchUnitstandDTO.sortType == "A" || searchUnitstandDTO.sortType == "D" || searchUnitstandDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchUnitStandService(authHeader, lang, platform.ToLower(), logID, searchUnitstandDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         [Route("search/history/paidBill")]
         [HttpPost]
         public IHttpActionResult SearchHistoryPaidBill(SearchBillDTO searchBillDTO)
@@ -864,7 +776,7 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject("");
+                string json = JsonConvert.SerializeObject(searchBillDTO);
                 int logID = _sql.InsertLogReceiveData("SearchHistoryPaidBill", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
@@ -1040,6 +952,74 @@ namespace Chaithit_Market.Controllers
         #endregion
 
         #region Master
+        [Route("save/master/empType")]
+        [HttpPost]
+        public IHttpActionResult SaveEmpType(MasterDataDTO masterDataDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(masterDataDTO);
+                int logID = _sql.InsertLogReceiveData("SaveEmpType", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                string checkMissingOptional = "";
+
+                if (masterDataDTO.mode.ToLower().Equals("insert"))
+                {
+                    if (string.IsNullOrEmpty(masterDataDTO.name))
+                    {
+                        checkMissingOptional += "name ";
+                    }
+                }
+                else if (masterDataDTO.mode.ToLower().Equals("update"))
+                {
+                    if (masterDataDTO.masterID == 0)
+                    {
+                        checkMissingOptional += "masterID ";
+                    }
+                    if (string.IsNullOrEmpty(masterDataDTO.name))
+                    {
+                        checkMissingOptional += "name ";
+                    }
+                }
+                else if (masterDataDTO.mode.ToLower().Equals("delete"))
+                {
+                    if (masterDataDTO.masterID == 0)
+                    {
+                        checkMissingOptional += "masterID ";
+                    }
+                }
+                else
+                {
+                    throw new Exception("Choose Mode Insert or Update or Delete");
+                }
+
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
+
+                MasterDataService srv = new MasterDataService();
+                var obj = new object();
+                obj = srv.SaveMasterService(authHeader, lang, platform.ToLower(), logID, masterDataDTO, "system_emptype", data.user_id);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+        
         [Route("save/master/zone")]
         [HttpPost]
         public IHttpActionResult SaveZone(SaveZoneDTO saveZoneDTO)
@@ -1336,6 +1316,37 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+        [Route("get/master/empType")]
+        [HttpPost]
+        public IHttpActionResult GetEmpType()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("GetEmpType", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = srv.GetMasterService(authHeader, lang, platform.ToLower(), logID, 0, "system_emptype");
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         [Route("get/master/zone")]
         [HttpPost]
         public IHttpActionResult GetZone()
@@ -1437,6 +1448,59 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+        [Route("search/master/empType")]
+        [HttpPost]
+        public IHttpActionResult SearchEmpType(SearchNameCenterDTO searchNameCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(searchNameCenterDTO);
+                int logID = _sql.InsertLogReceiveData("SearchEmpType", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = new object();
+
+                if (searchNameCenterDTO.pageInt.Equals(null) || searchNameCenterDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchNameCenterDTO.perPage.Equals(null) || searchNameCenterDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchNameCenterDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchNameCenterDTO.sortField);
+                }
+
+                if (!(searchNameCenterDTO.sortType == "a" || searchNameCenterDTO.sortType == "d" || searchNameCenterDTO.sortType == "A" || searchNameCenterDTO.sortType == "D" || searchNameCenterDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchMasterDataService(authHeader, lang, platform.ToLower(), logID, searchNameCenterDTO, "system_emptype");
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         [Route("search/master/zone")]
         [HttpPost]
         public IHttpActionResult SearchZone(SearchNameCenterDTO searchNameCenterDTO)
@@ -1452,7 +1516,7 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject("");
+                string json = JsonConvert.SerializeObject(searchNameCenterDTO);
                 int logID = _sql.InsertLogReceiveData("SearchZone", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
@@ -1505,7 +1569,7 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject("");
+                string json = JsonConvert.SerializeObject(searchNameCenterDTO);
                 int logID = _sql.InsertLogReceiveData("SearchZoneSub", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
@@ -1558,7 +1622,7 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject("");
+                string json = JsonConvert.SerializeObject(searchUnitDTO);
                 int logID = _sql.InsertLogReceiveData("SearchUnit", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
@@ -1611,7 +1675,7 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject("");
+                string json = JsonConvert.SerializeObject(searchNameCenterDTO);
                 int logID = _sql.InsertLogReceiveData("SearchRateAmount", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 

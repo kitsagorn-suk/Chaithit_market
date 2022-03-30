@@ -9,7 +9,6 @@ namespace Chaithit_Market.DTO
     {
         public int masterID { set; get; } = 0;
         public string mode { set; get; } = "";
-        public string nameEN { set; get; } = "";
-        public string nameTH { set; get; } = "";
+        public string name { set; get; } = "";
     }
 }

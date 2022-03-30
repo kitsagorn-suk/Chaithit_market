@@ -15,7 +15,6 @@ namespace Chaithit_Market.Services
         public ReturnIdModel SaveMasterService(string authorization, string lang, string platform, int logID,
             MasterDataDTO masterDataDTO, string TableName, int userID)
         {
-            //ฟังชั่นมาสเตอร์กลางถ้ามีเเค่ชื่อกับid
             if (_sql == null)
             {
                 _sql = SQLManager.Instance;
@@ -38,8 +37,7 @@ namespace Chaithit_Market.Services
                         validation = ValidationManager.CheckValidationIDUpdate(masterDataDTO.masterID, TableName, lang);
                         if (validation.Success == true)
                         {
-                            _sql.InsertSystemLogChange(masterDataDTO.masterID, TableName, "name_en", masterDataDTO.nameEN, userID);
-                            _sql.InsertSystemLogChange(masterDataDTO.masterID, TableName, "name_th", masterDataDTO.nameTH, userID);
+                            _sql.InsertSystemLogChange(masterDataDTO.masterID, TableName, "name", masterDataDTO.name, userID);
                             value.data = _sql.UpdateMasterData(masterDataDTO, TableName, userID);
                         }
                         else
@@ -84,25 +82,23 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public GetMasterDataModel GetMasterService(string authorization, string lang, string platform, int logID, int masterID, string TableName)
+        public GetAllDropdownModel GetMasterService(string authorization, string lang, string platform, int logID, int masterID, string TableName)
         {
-            //ฟังชั่นมาสเตอร์กลางถ้ามีเเค่ชื่อกับid
             if (_sql == null)
             {
                 _sql = SQLManager.Instance;
             }
 
-            GetMasterDataModel value = new GetMasterDataModel();
+            GetAllDropdownModel value = new GetAllDropdownModel();
             try
             {
-                MasterData data = new MasterData();
+                value.data = new List<DropdownAllData>();
 
                 ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
 
                 if (validation.Success == true)
                 {
-                    data = _sql.GetMasterData(masterID, TableName);
-                    value.data = data;
+                    value.data = _sql.GetMasterData(masterID, TableName);
                     value.success = validation.Success;
                 }
                 else
@@ -572,6 +568,49 @@ namespace Chaithit_Market.Services
             catch (Exception ex)
             {
                 LogManager.ServiceLog.WriteExceptionLog(ex, "GetRateAmountService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public SearchMasterDataModel SearchMasterDataService(string authorization, string lang, string platform, int logID, SearchNameCenterDTO searchNameCenterDTO, string TableName)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            SearchMasterDataModel value = new SearchMasterDataModel();
+            try
+            {
+                Pagination<SearchMasterData> data = new Pagination<SearchMasterData>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    data = _sql.SearchMasterData(searchNameCenterDTO, TableName);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.data = data;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchZoneService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());

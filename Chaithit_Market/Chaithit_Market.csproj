@@ -188,6 +188,7 @@
     <Compile Include="DTO\SearchRentDTO.cs" />
     <Compile Include="DTO\SearchRentStandDTO.cs" />
     <Compile Include="DTO\SearchUnitDTO.cs" />
+    <Compile Include="DTO\SearchUnitstandDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />
     <Compile Include="DTO\UploadFileDTO.cs" />
     <Compile Include="Global.asax.cs">
@@ -196,7 +197,6 @@
     <Compile Include="Models\AuthorizationModel.cs" />
     <Compile Include="Models\CheckUserByTokenModel.cs" />
     <Compile Include="Models\GetAllDropdownModel.cs" />
-    <Compile Include="Models\GetMasterDataModel.cs" />
     <Compile Include="Models\GetUserProfileModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\LogModel.cs" />
@@ -204,12 +204,14 @@
     <Compile Include="Models\Pagination.cs" />
     <Compile Include="Models\ReturnIdModel.cs" />
     <Compile Include="Models\SearchHistoryPaidBillModel.cs" />
+    <Compile Include="Models\SearchMasterDataModel.cs" />
     <Compile Include="Models\SearchMasterRateAmountModel.cs" />
     <Compile Include="Models\SearchMasterUnitModel.cs" />
     <Compile Include="Models\SearchMasterZoneModel.cs" />
     <Compile Include="Models\SearchMasterZoneSubModel.cs" />
     <Compile Include="Models\SearchRentalModel.cs" />
     <Compile Include="Models\SearchRentalStandModel.cs" />
+    <Compile Include="Models\SearchUnitStandModel.cs" />
     <Compile Include="Models\SearchUserProfileModel.cs" />
     <Compile Include="Models\UploadModel.cs" />
     <Compile Include="Models\ValidationModel.cs" />

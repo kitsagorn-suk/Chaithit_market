@@ -140,15 +140,9 @@ namespace Chaithit_Market.Core
 
                 if (dt.Rows.Count > 0)
                 {
-                    if (dt.Rows[0]["status_name_en"].ToString() != "0")
+                    if (dt.Rows[0]["Name"].ToString() != "0")
                     {
-                        state = ValidationModel.InvalidState.E301008;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
-                    }
-                    if (dt.Rows[0]["status_name_th"].ToString() != "0")
-                    {
-                        state = ValidationModel.InvalidState.E301009;
+                        state = ValidationModel.InvalidState.E301006;
                         getMessage = ValidationModel.GetInvalidMessage(state, lang);
                         return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                     }
@@ -194,45 +188,6 @@ namespace Chaithit_Market.Core
                     if (dt.Rows[0]["Mobile"].ToString() != "0")
                     {
                         state = ValidationModel.InvalidState.E301003;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
-                    }
-                }
-
-                getMessage = ValidationModel.GetInvalidMessage(ValidationModel.InvalidState.S201001, lang);
-                value.Success = true;
-                value.InvalidCode = ValidationModel.GetInvalidCode(ValidationModel.InvalidState.S201001);
-                value.InvalidMessage = getMessage.message;
-                value.InvalidText = getMessage.topic;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return value;
-        }
-
-        public static ValidationModel CheckValidationDupicateRental(string lang, SaveRentalDTO saveRentalDTO)
-        {
-            ValidationModel value = new ValidationModel();
-            try
-            {
-                GetMessageTopicDTO getMessage = new GetMessageTopicDTO();
-                ValidationModel.InvalidState state;
-
-                DataTable dt = _sql.CheckDupicateRental(saveRentalDTO, 0);
-
-                if (dt.Rows.Count > 0)
-                {
-                    if (dt.Rows[0]["RentCode"].ToString() != "0")
-                    {
-                        state = ValidationModel.InvalidState.E301005;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
-                    }
-                    if (dt.Rows[0]["Name"].ToString() != "0")
-                    {
-                        state = ValidationModel.InvalidState.E301006;
                         getMessage = ValidationModel.GetInvalidMessage(state, lang);
                         return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                     }

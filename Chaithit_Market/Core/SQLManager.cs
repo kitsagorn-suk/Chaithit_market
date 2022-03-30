@@ -349,7 +349,7 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("");
 
-            sql = new SQLCustomExecute("exec check_duplicate_master @pMasterID,@pTableName,@pNameEN, @pNameTH");
+            sql = new SQLCustomExecute("exec check_duplicate_master @pMasterID,@pTableName,@pName");
             
             SqlParameter pMasterID = new SqlParameter(@"pMasterID", SqlDbType.Int);
             pMasterID.Direction = ParameterDirection.Input;
@@ -361,15 +361,10 @@ namespace Chaithit_Market.Core
             pTableName.Value = TableName;
             sql.Parameters.Add(pTableName);
 
-            SqlParameter pNameEN = new SqlParameter(@"pNameEN", SqlDbType.VarChar);
-            pNameEN.Direction = ParameterDirection.Input;
-            pNameEN.Value = masterDataDTO.nameEN;
-            sql.Parameters.Add(pNameEN);
-
-            SqlParameter pNameTH = new SqlParameter(@"pNameTH", SqlDbType.VarChar);
-            pNameTH.Direction = ParameterDirection.Input;
-            pNameTH.Value = masterDataDTO.nameTH;
-            sql.Parameters.Add(pNameTH);
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = masterDataDTO.name;
+            sql.Parameters.Add(pName);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -381,8 +376,7 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec insert_master_data " +
                 "@pTableName," +
-                "@pNameEN," +
-                "@pNameTH," +
+                "@pName," +
                 "@pUserID ");
 
             SqlParameter pTableName = new SqlParameter(@"pTableName", SqlDbType.VarChar);
@@ -390,15 +384,10 @@ namespace Chaithit_Market.Core
             pTableName.Value = TableName;
             sql.Parameters.Add(pTableName);
 
-            SqlParameter pNameEN = new SqlParameter(@"pNameEN", SqlDbType.VarChar);
-            pNameEN.Direction = ParameterDirection.Input;
-            pNameEN.Value = masterDataDTO.nameEN;
-            sql.Parameters.Add(pNameEN);
-
-            SqlParameter pNameTH = new SqlParameter(@"pNameTH", SqlDbType.VarChar);
-            pNameTH.Direction = ParameterDirection.Input;
-            pNameTH.Value = masterDataDTO.nameTH;
-            sql.Parameters.Add(pNameTH);
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = masterDataDTO.name;
+            sql.Parameters.Add(pName);
 
             SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -426,8 +415,7 @@ namespace Chaithit_Market.Core
             SQLCustomExecute sql = new SQLCustomExecute("exec update_master_data " +
                 "@pMasterID," +
                 "@pTableName," +
-                "@pNameEN," +
-                "@pNameTH," +
+                "@pName," +
                 "@pUserID ");
 
             SqlParameter pMasterID = new SqlParameter(@"pMasterID", SqlDbType.Int);
@@ -440,15 +428,10 @@ namespace Chaithit_Market.Core
             pTableName.Value = TableName;
             sql.Parameters.Add(pTableName);
 
-            SqlParameter pNameEN = new SqlParameter(@"pNameEN", SqlDbType.VarChar);
-            pNameEN.Direction = ParameterDirection.Input;
-            pNameEN.Value = masterDataDTO.nameEN;
-            sql.Parameters.Add(pNameEN);
-
-            SqlParameter pNameTH = new SqlParameter(@"pNameTH", SqlDbType.VarChar);
-            pNameTH.Direction = ParameterDirection.Input;
-            pNameTH.Value = masterDataDTO.nameTH;
-            sql.Parameters.Add(pNameTH);
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = masterDataDTO.name;
+            sql.Parameters.Add(pName);
 
             SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -508,7 +491,7 @@ namespace Chaithit_Market.Core
             return data;
         }
 
-        public MasterData GetMasterData(int id, string TableName)
+        public List<DropdownAllData> GetMasterData(int id, string TableName)
         {
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_master_data " +
@@ -527,17 +510,19 @@ namespace Chaithit_Market.Core
 
             table = sql.executeQueryWithReturnTable();
 
-            MasterData data = new MasterData();
+            List<DropdownAllData> listData = new List<DropdownAllData>();
 
             if (table != null && table.Rows.Count > 0)
             {
                 foreach (DataRow row in table.Rows)
                 {
+                    DropdownAllData data = new DropdownAllData();
                     data.loadData(row);
+                    listData.Add(data);
                 }
             }
 
-            return data;
+            return listData;
         }
 
         public DataTable CheckValidationUpdateByID(int ID, string TableName)
@@ -646,34 +631,6 @@ namespace Chaithit_Market.Core
             pMobile.Direction = ParameterDirection.Input;
             pMobile.Value = saveUserProfileDTO.mobile;
             sql.Parameters.Add(pMobile);
-
-            table = sql.executeQueryWithReturnTable();
-
-            return table;
-        }
-
-        public DataTable CheckDupicateRental(SaveRentalDTO saveRentalDTO, int pUserID)
-        {
-            DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_rental " +
-                "@pRentID, " +
-                "@pRentCode, " +
-                "@pName " );
-
-            SqlParameter pRentID = new SqlParameter(@"pRentID", SqlDbType.Int);
-            pRentID.Direction = ParameterDirection.Input;
-            pRentID.Value = saveRentalDTO.rentalID;
-            sql.Parameters.Add(pRentID);
-
-            SqlParameter pRentCode = new SqlParameter(@"pRentCode", SqlDbType.VarChar, 150);
-            pRentCode.Direction = ParameterDirection.Input;
-            pRentCode.Value = saveRentalDTO.rentCode;
-            sql.Parameters.Add(pRentCode);
-
-            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 150);
-            pName.Direction = ParameterDirection.Input;
-            pName.Value = saveRentalDTO.name;
-            sql.Parameters.Add(pName);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -895,144 +852,6 @@ namespace Chaithit_Market.Core
             pUserProfileID.Direction = ParameterDirection.Input;
             pUserProfileID.Value = saveUserProfileDTO.userProfileID;
             sql.Parameters.Add(pUserProfileID);
-
-            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
-            pUserID.Direction = ParameterDirection.Input;
-            pUserID.Value = userID;
-            sql.Parameters.Add(pUserID);
-
-            table = sql.executeQueryWithReturnTable();
-
-            _ReturnIdModel data = new _ReturnIdModel();
-
-            if (table != null && table.Rows.Count > 0)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    data.loadData(row);
-                }
-            }
-
-            return data;
-        }
-
-        public _ReturnIdModel InsertRental(SaveRentalDTO saveRentalDTO, int userID)
-        {
-            DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec insert_rental " +
-                "@pRentCode," +
-                "@pPlaceSubID," +
-                "@pName," +
-                "@pIsUsed," +
-                "@pCreateBy");
-
-            SqlParameter pRentCode = new SqlParameter(@"pRentCode", SqlDbType.VarChar);
-            pRentCode.Direction = ParameterDirection.Input;
-            pRentCode.Value = saveRentalDTO.rentCode;
-            sql.Parameters.Add(pRentCode);
-
-            SqlParameter pPlaceSubID = new SqlParameter(@"pPlaceSubID", SqlDbType.Int);
-            pPlaceSubID.Direction = ParameterDirection.Input;
-            pPlaceSubID.Value = saveRentalDTO.placeSubID;
-            sql.Parameters.Add(pPlaceSubID);
-
-            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
-            pName.Direction = ParameterDirection.Input;
-            pName.Value = saveRentalDTO.name;
-            sql.Parameters.Add(pName);
-            
-            SqlParameter pIsUsed = new SqlParameter(@"pIsUsed", SqlDbType.Int);
-            pIsUsed.Direction = ParameterDirection.Input;
-            pIsUsed.Value = saveRentalDTO.isUsed;
-            sql.Parameters.Add(pIsUsed);
-
-            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
-            pCreateBy.Direction = ParameterDirection.Input;
-            pCreateBy.Value = userID;
-            sql.Parameters.Add(pCreateBy);
-
-            table = sql.executeQueryWithReturnTable();
-
-            _ReturnIdModel data = new _ReturnIdModel();
-
-            if (table != null && table.Rows.Count > 0)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    data.loadData(row);
-                }
-            }
-
-            return data;
-        }
-
-        public _ReturnIdModel UpdateRental(SaveRentalDTO saveRentalDTO, int userID)
-        {
-            DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec update_rental " +
-                "@pRentalID," +
-                "@pRentCode," +
-                "@pName," +
-                "@pPlaceSubID," +
-                "@pIsUsed," +
-                "@pUpdateBy ");
-
-            SqlParameter pRentalID = new SqlParameter(@"pRentalID", SqlDbType.Int);
-            pRentalID.Direction = ParameterDirection.Input;
-            pRentalID.Value = saveRentalDTO.rentalID;
-            sql.Parameters.Add(pRentalID);
-
-            SqlParameter pRentCode = new SqlParameter(@"pRentCode", SqlDbType.VarChar);
-            pRentCode.Direction = ParameterDirection.Input;
-            pRentCode.Value = saveRentalDTO.rentCode;
-            sql.Parameters.Add(pRentCode);
-
-            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar);
-            pName.Direction = ParameterDirection.Input;
-            pName.Value = saveRentalDTO.name;
-            sql.Parameters.Add(pName);
-            
-            SqlParameter pPlaceSubID = new SqlParameter(@"pPlaceSubID", SqlDbType.Int);
-            pPlaceSubID.Direction = ParameterDirection.Input;
-            pPlaceSubID.Value = saveRentalDTO.placeSubID;
-            sql.Parameters.Add(pPlaceSubID);
-
-            SqlParameter pIsUsed = new SqlParameter(@"pIsUsed", SqlDbType.Int);
-            pIsUsed.Direction = ParameterDirection.Input;
-            pIsUsed.Value = saveRentalDTO.isUsed;
-            sql.Parameters.Add(pIsUsed);
-
-            SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
-            pUserID.Direction = ParameterDirection.Input;
-            pUserID.Value = userID;
-            sql.Parameters.Add(pUserID);
-
-            table = sql.executeQueryWithReturnTable();
-
-            _ReturnIdModel data = new _ReturnIdModel();
-
-            if (table != null && table.Rows.Count > 0)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    data.loadData(row);
-                }
-            }
-
-            return data;
-        }
-
-        public _ReturnIdModel DeleteRental(SaveRentalDTO saveRentalDTO, int userID)
-        {
-            DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec delete_rental " +
-                "@pRentalID," +
-                "@pUpdateBy ");
-
-            SqlParameter pRentalID = new SqlParameter(@"pRentalID", SqlDbType.Int);
-            pRentalID.Direction = ParameterDirection.Input;
-            pRentalID.Value = saveRentalDTO.rentalID;
-            sql.Parameters.Add(pRentalID);
 
             SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -1329,64 +1148,6 @@ namespace Chaithit_Market.Core
             return total;
         }
 
-        public Pagination<SearchRental> SearchRental(SearchRentDTO searchRentDTO)
-        {
-            DataTable table = new DataTable();
-
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_page " +
-                "@pName, " +
-                "@pPage, " +
-                "@pPerPage, " +
-                "@pSortField, " +
-                "@pSortType");
-
-            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 255);
-            pName.Direction = ParameterDirection.Input;
-            pName.Value = searchRentDTO.name;
-            sql.Parameters.Add(pName);
-            
-            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
-            pPage.Direction = ParameterDirection.Input;
-            pPage.Value = searchRentDTO.pageInt;
-            sql.Parameters.Add(pPage);
-
-            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
-            pPerPage.Direction = ParameterDirection.Input;
-            pPerPage.Value = searchRentDTO.perPage;
-            sql.Parameters.Add(pPerPage);
-
-            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
-            pSortField.Direction = ParameterDirection.Input;
-            pSortField.Value = searchRentDTO.sortField;
-            sql.Parameters.Add(pSortField);
-
-            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
-            pSortType.Direction = ParameterDirection.Input;
-            pSortType.Value = searchRentDTO.sortType;
-            sql.Parameters.Add(pSortType);
-
-            table = sql.executeQueryWithReturnTable();
-
-            Pagination<SearchRental> pagination = new Pagination<SearchRental>();
-
-
-            if (table != null && table.Rows.Count > 0)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    SearchRental data = new SearchRental();
-                    data.loadData(row);
-                    pagination.data.Add(data);
-                }
-            }
-
-            int total = GetTotalSearchRent(searchRentDTO);
-
-            pagination.SetPagination(total, searchRentDTO.perPage, searchRentDTO.pageInt);
-
-            return pagination;
-        }
-
         public int GetTotalSearchRent(SearchRentDTO searchRentDTO)
         {
             int total = 0;
@@ -1496,6 +1257,103 @@ namespace Chaithit_Market.Core
             pRentName.Direction = ParameterDirection.Input;
             pRentName.Value = searchRentStandDTO.rentName;
             sql.Parameters.Add(pRentName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public Pagination<SearchUnitStand> SearchUnitStand(SearchUnitstandDTO searchUnitstandDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_unit_stand_page " +
+                "@pUnitCode, " +
+                "@pUnitName, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pUnitCode = new SqlParameter(@"pUnitCode", SqlDbType.VarChar, 255);
+            pUnitCode.Direction = ParameterDirection.Input;
+            pUnitCode.Value = searchUnitstandDTO.unitCode;
+            sql.Parameters.Add(pUnitCode);
+
+            SqlParameter pUnitName = new SqlParameter(@"pUnitName", SqlDbType.VarChar, 255);
+            pUnitName.Direction = ParameterDirection.Input;
+            pUnitName.Value = searchUnitstandDTO.unitName;
+            sql.Parameters.Add(pUnitName);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchUnitstandDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchUnitstandDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchUnitstandDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchUnitstandDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchUnitStand> pagination = new Pagination<SearchUnitStand>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchUnitStand data = new SearchUnitStand();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchUnitStand(searchUnitstandDTO);
+
+            pagination.SetPagination(total, searchUnitstandDTO.perPage, searchUnitstandDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchUnitStand(SearchUnitstandDTO searchUnitstandDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_unit_stand_total " +
+                "@pUnitCode, " +
+                "@pUnitName ");
+
+            SqlParameter pUnitCode = new SqlParameter(@"pUnitCode", SqlDbType.VarChar, 255);
+            pUnitCode.Direction = ParameterDirection.Input;
+            pUnitCode.Value = searchUnitstandDTO.unitCode;
+            sql.Parameters.Add(pUnitCode);
+
+            SqlParameter pUnitName = new SqlParameter(@"pUnitName", SqlDbType.VarChar, 255);
+            pUnitName.Direction = ParameterDirection.Input;
+            pUnitName.Value = searchUnitstandDTO.unitName;
+            sql.Parameters.Add(pUnitName);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -2713,6 +2571,103 @@ namespace Chaithit_Market.Core
             }
 
             return listData;
+        }
+
+        public Pagination<SearchMasterData> SearchMasterData(SearchNameCenterDTO searchNameCenterDTO, string TableName)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_master_data_page " +
+                "@pTableName, " +
+                "@pName, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pTableName = new SqlParameter(@"pTableName", SqlDbType.VarChar, 250);
+            pTableName.Direction = ParameterDirection.Input;
+            pTableName.Value = TableName;
+            sql.Parameters.Add(pTableName);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = searchNameCenterDTO.name;
+            sql.Parameters.Add(pName);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchNameCenterDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchNameCenterDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchNameCenterDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchNameCenterDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchMasterData> pagination = new Pagination<SearchMasterData>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchMasterData data = new SearchMasterData();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchMasterData(searchNameCenterDTO, TableName);
+
+            pagination.SetPagination(total, searchNameCenterDTO.perPage, searchNameCenterDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchMasterData(SearchNameCenterDTO searchNameCenterDTO, string TableName)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_master_data_total " +
+                "@pTableName, " +
+                "@pName ");
+
+            SqlParameter pTableName = new SqlParameter(@"pTableName", SqlDbType.VarChar, 250);
+            pTableName.Direction = ParameterDirection.Input;
+            pTableName.Value = TableName;
+            sql.Parameters.Add(pTableName);
+
+            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
+            pName.Direction = ParameterDirection.Input;
+            pName.Value = searchNameCenterDTO.name;
+            sql.Parameters.Add(pName);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
         }
 
         public Pagination<SearchMasterZone> SearchZone(SearchNameCenterDTO searchNameCenterDTO)
