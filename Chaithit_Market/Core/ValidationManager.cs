@@ -224,7 +224,7 @@ namespace Chaithit_Market.Core
                         getMessage = ValidationModel.GetInvalidMessage(state, lang);
                         return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                     }
-                    if (dt.Rows[0]["CheckLent"].ToString() == "0")
+                    if (dt.Rows[0]["CheckUnit"].ToString() == "0")
                     {
                         state = ValidationModel.InvalidState.E301011;
                         getMessage = ValidationModel.GetInvalidMessage(state, lang);
@@ -266,6 +266,12 @@ namespace Chaithit_Market.Core
                     if (dt.Rows[0]["BillCode"].ToString() != "0")
                     {
                         state = ValidationModel.InvalidState.E301008;
+                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
+                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                    }
+                    if (dt.Rows[0]["HaveTranRent"].ToString() == "0")
+                    {
+                        state = ValidationModel.InvalidState.E301018;
                         getMessage = ValidationModel.GetInvalidMessage(state, lang);
                         return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                     }

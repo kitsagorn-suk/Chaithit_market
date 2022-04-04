@@ -187,8 +187,6 @@
     <Compile Include="DTO\SaveZoneSubDTO.cs" />
     <Compile Include="DTO\SearchBillDTO.cs" />
     <Compile Include="DTO\SearchNameCenterDTO.cs" />
-    <Compile Include="DTO\SearchRentDTO.cs" />
-    <Compile Include="DTO\SearchRentStandDTO.cs" />
     <Compile Include="DTO\SearchUnitDTO.cs" />
     <Compile Include="DTO\SearchUnitstandDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />
@@ -211,8 +209,6 @@
     <Compile Include="Models\SearchMasterUnitModel.cs" />
     <Compile Include="Models\SearchMasterZoneModel.cs" />
     <Compile Include="Models\SearchMasterZoneSubModel.cs" />
-    <Compile Include="Models\SearchRentalModel.cs" />
-    <Compile Include="Models\SearchRentalStandModel.cs" />
     <Compile Include="Models\SearchUnitStandModel.cs" />
     <Compile Include="Models\SearchUserProfileModel.cs" />
     <Compile Include="Models\UploadModel.cs" />

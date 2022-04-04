@@ -654,60 +654,7 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
-
-        [Route("search/rental/stand")]
-        [HttpPost]
-        public IHttpActionResult SearchRentalStand(SearchRentStandDTO searchRentStandDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(searchRentStandDTO);
-                int logID = _sql.InsertLogReceiveData("SearchRentalStand", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                GetService srv = new GetService();
-
-                var obj = new object();
-
-                if (searchRentStandDTO.pageInt.Equals(null) || searchRentStandDTO.pageInt.Equals(0))
-                {
-                    throw new Exception("invalid : pageInt ");
-                }
-
-                if (searchRentStandDTO.perPage.Equals(null) || searchRentStandDTO.perPage.Equals(0))
-                {
-                    throw new Exception("invalid : perPage ");
-                }
-
-                if (searchRentStandDTO.sortField > 4)
-                {
-                    throw new Exception("invalid : sortField " + searchRentStandDTO.sortField);
-                }
-
-                if (!(searchRentStandDTO.sortType == "a" || searchRentStandDTO.sortType == "d" || searchRentStandDTO.sortType == "A" || searchRentStandDTO.sortType == "D" || searchRentStandDTO.sortType == ""))
-                {
-                    throw new Exception("invalid sortType");
-                }
-
-                obj = srv.SearchRentalStandService(authHeader, lang, platform.ToLower(), logID, searchRentStandDTO);
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
+        
         [Route("search/unit/stand")]
         [HttpPost]
         public IHttpActionResult SearchUnitStand(SearchUnitstandDTO searchUnitstandDTO)
@@ -845,9 +792,9 @@ namespace Chaithit_Market.Controllers
                 {
                     checkMissingOptional += "userID ";
                 }
-                if (insertTransectionRentDTO.rentalID == 0)
+                if (insertTransectionRentDTO.unitID == 0)
                 {
-                    checkMissingOptional += "rentalID ";
+                    checkMissingOptional += "unitID ";
                 }
                 if (string.IsNullOrEmpty(insertTransectionRentDTO.startDate))
                 {
@@ -856,6 +803,14 @@ namespace Chaithit_Market.Controllers
                 if (string.IsNullOrEmpty(insertTransectionRentDTO.endDate))
                 {
                     checkMissingOptional += "endDate ";
+                }
+                if (insertTransectionRentDTO.rentType == 0)
+                {
+                    checkMissingOptional += "rentType ";
+                }
+                if (string.IsNullOrEmpty(insertTransectionRentDTO.payDate))
+                {
+                    checkMissingOptional += "payDate ";
                 }
 
                 if (checkMissingOptional != "")
@@ -896,13 +851,17 @@ namespace Chaithit_Market.Controllers
 
                 string checkMissingOptional = "";
 
-                if (string.IsNullOrEmpty(insertTransectionBillDTO.billCode))
+                if (insertTransectionBillDTO.zoneID == 0)
                 {
-                    checkMissingOptional += "billCode ";
+                    checkMissingOptional += "zoneID ";
                 }
                 if (insertTransectionBillDTO.tranRentID == 0)
                 {
                     checkMissingOptional += "tranRentID ";
+                }
+                if (string.IsNullOrEmpty(insertTransectionBillDTO.billCode))
+                {
+                    checkMissingOptional += "billCode ";
                 }
                 if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
                 {
@@ -912,25 +871,63 @@ namespace Chaithit_Market.Controllers
                 {
                     checkMissingOptional += "endDate ";
                 }
-                if (insertTransectionBillDTO.rentalAmount == 0)
+                if (insertTransectionBillDTO.rentAmount == 0)
                 {
-                    checkMissingOptional += "rentalAmount ";
+                    checkMissingOptional += "rentAmount ";
                 }
-                if (insertTransectionBillDTO.electricAmount == 0)
+                if (insertTransectionBillDTO.zoneID == 2)
                 {
-                    checkMissingOptional += "electricAmount ";
+                    if (insertTransectionBillDTO.lampUnit == 0)
+                    {
+                        checkMissingOptional += "lampUnit ";
+                    }
+                    if (insertTransectionBillDTO.electricEquipUnit == 0)
+                    {
+                        checkMissingOptional += "electricEquipUnit ";
+                    }
+                    if (insertTransectionBillDTO.electricNightMarketAmount == 0)
+                    {
+                        checkMissingOptional += "electricNightMarketAmount ";
+                    }
                 }
-                if (insertTransectionBillDTO.waterAmount == 0)
+                else
                 {
-                    checkMissingOptional += "waterAmount ";
+                    if (insertTransectionBillDTO.electricUnit == 0)
+                    {
+                        checkMissingOptional += "electricUnit ";
+                    }
+                    if (insertTransectionBillDTO.electricAmount == 0)
+                    {
+                        checkMissingOptional += "electricAmount ";
+                    }
+                    if (insertTransectionBillDTO.waterUnit == 0)
+                    {
+                        checkMissingOptional += "waterUnit ";
+                    }
+                    if (insertTransectionBillDTO.waterAmount == 0)
+                    {
+                        checkMissingOptional += "waterAmount ";
+                    }
+                }
+                if (insertTransectionBillDTO.discountAmount == 0 && insertTransectionBillDTO.discountPercent == 0)
+                {
+                    checkMissingOptional += "discountAmount and discountPercent must be not zero ";
+                }
+                else if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
+                {
+                    checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
                 }
                 if (insertTransectionBillDTO.totalAmount == 0)
                 {
                     checkMissingOptional += "totalAmount ";
                 }
-                if ((insertTransectionBillDTO.rentalAmount + insertTransectionBillDTO.electricAmount + insertTransectionBillDTO.waterAmount) != insertTransectionBillDTO.totalAmount)
+                if (insertTransectionBillDTO.netAmount == 0)
                 {
-                    checkMissingOptional += "The amount is not related ";
+                    checkMissingOptional += "netAmount ";
+                }
+                if ((insertTransectionBillDTO.rentAmount + insertTransectionBillDTO.electricAmount + insertTransectionBillDTO.waterAmount) != insertTransectionBillDTO.totalAmount)
+                {
+                    checkMissingOptional += "TotalAmount is not related ";
                 }
 
                 if (checkMissingOptional != "")
@@ -1484,6 +1481,38 @@ namespace Chaithit_Market.Controllers
                 MasterDataService srv = new MasterDataService();
 
                 var obj = srv.GetDropdownUnitStatusService(authHeader, lang, platform.ToLower(), logID);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/dropdown/rentType")]
+        [HttpPost]
+        public IHttpActionResult GetDropdownRentType()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                //ไม่ได้ดึงจากbase ใช้hardcode 1 = Day, 2 = Month;
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("GetDropdownRentType", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = srv.GetDropdownRentTypeService(authHeader, lang, platform.ToLower(), logID);
 
                 return Ok(obj);
             }

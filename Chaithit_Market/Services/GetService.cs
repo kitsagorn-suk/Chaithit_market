@@ -54,49 +54,6 @@ namespace Chaithit_Market.Services
             }
             return value;
         }
-        
-        public SearchRentalStandModel SearchRentalStandService(string authorization, string lang, string platform, int logID, SearchRentStandDTO searchRentStandDTO)
-        {
-            if (_sql == null)
-            {
-                _sql = SQLManager.Instance;
-            }
-
-            SearchRentalStandModel value = new SearchRentalStandModel();
-            try
-            {
-                Pagination<SearchRentalStand> data = new Pagination<SearchRentalStand>();
-
-                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
-
-                if (validation.Success == true)
-                {
-                    data = _sql.SearchRentalStand(searchRentStandDTO);
-                }
-                else
-                {
-                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
-                }
-
-                value.success = validation.Success;
-                value.data = data;
-                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
-            }
-            catch (Exception ex)
-            {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchRentalStandService:");
-                if (logID > 0)
-                {
-                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
-                }
-                throw ex;
-            }
-            finally
-            {
-                _sql.UpdateStatusLog(logID, 1);
-            }
-            return value;
-        }
 
         public SearchUnitStandModel SearchUnitStandService(string authorization, string lang, string platform, int logID, SearchUnitstandDTO searchUnitstandDTO)
         {

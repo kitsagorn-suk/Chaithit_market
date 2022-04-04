@@ -648,17 +648,17 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_transection_rent " +
                 "@pTransCode, " +
-                "@pRentID");
+                "@pUnitID");
 
             SqlParameter pTransCode = new SqlParameter(@"pTransCode", SqlDbType.VarChar, 10);
             pTransCode.Direction = ParameterDirection.Input;
             pTransCode.Value = insertTransectionRentDTO.transCode;
             sql.Parameters.Add(pTransCode);
 
-            SqlParameter pRentID = new SqlParameter(@"pRentID", SqlDbType.Int);
-            pRentID.Direction = ParameterDirection.Input;
-            pRentID.Value = insertTransectionRentDTO.rentalID;
-            sql.Parameters.Add(pRentID);
+            SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
+            pUnitID.Direction = ParameterDirection.Input;
+            pUnitID.Value = insertTransectionRentDTO.unitID;
+            sql.Parameters.Add(pUnitID);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -885,9 +885,11 @@ namespace Chaithit_Market.Core
             SQLCustomExecute sql = new SQLCustomExecute("exec insert_transection_rent " +
                 "@pTransCode," +
                 "@pUserID," +
-                "@pRentalID," +
+                "@pUnitID," +
                 "@pStartDate," +
                 "@pEndDate," +
+                "@pRentType," +
+                "@pPayDate," +
                 "@pCreateBy");
 
             SqlParameter pTransCode = new SqlParameter(@"pTransCode", SqlDbType.VarChar);
@@ -900,10 +902,10 @@ namespace Chaithit_Market.Core
             pUserID.Value = insertTransectionRentDTO.userID;
             sql.Parameters.Add(pUserID);
 
-            SqlParameter pRentalID = new SqlParameter(@"pRentalID", SqlDbType.Int);
-            pRentalID.Direction = ParameterDirection.Input;
-            pRentalID.Value = insertTransectionRentDTO.rentalID;
-            sql.Parameters.Add(pRentalID);
+            SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
+            pUnitID.Direction = ParameterDirection.Input;
+            pUnitID.Value = insertTransectionRentDTO.unitID;
+            sql.Parameters.Add(pUnitID);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar);
             pStartDate.Direction = ParameterDirection.Input;
@@ -914,6 +916,16 @@ namespace Chaithit_Market.Core
             pEndDate.Direction = ParameterDirection.Input;
             pEndDate.Value = insertTransectionRentDTO.endDate;
             sql.Parameters.Add(pEndDate);
+
+            SqlParameter pRentType = new SqlParameter(@"pRentType", SqlDbType.Int);
+            pRentType.Direction = ParameterDirection.Input;
+            pRentType.Value = insertTransectionRentDTO.rentType;
+            sql.Parameters.Add(pRentType);
+
+            SqlParameter pPayDate = new SqlParameter(@"pPayDate", SqlDbType.VarChar);
+            pPayDate.Direction = ParameterDirection.Input;
+            pPayDate.Value = insertTransectionRentDTO.endDate;
+            sql.Parameters.Add(pPayDate);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
@@ -939,26 +951,34 @@ namespace Chaithit_Market.Core
         {
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec insert_transection_bill " +
-                "@pBillCode," +
                 "@pTranRentID," +
+                "@pBillCode," +
                 "@pStartDate," +
                 "@pEndDate," +
-                "@pRentalAmount," +
+                "@pRentAmount," +
+                "@pElectricUnit," +
                 "@pElectricAmount," +
+                "@pWaterUnit," +
                 "@pWaterAmount," +
+                "@pLampUnit," +
+                "@pElectricEquipUnit," +
+                "@pElectricNightMarketAmount," +
                 "@pTotalAmount," +
+                "@pDiscountPercent," +
+                "@pDiscountAmount," +
+                "@pNetAmount," +
                 "@pCreateBy");
-
-            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar);
-            pBillCode.Direction = ParameterDirection.Input;
-            pBillCode.Value = insertTransectionBillDTO.billCode;
-            sql.Parameters.Add(pBillCode);
 
             SqlParameter pTranRentID = new SqlParameter(@"pTranRentID", SqlDbType.Int);
             pTranRentID.Direction = ParameterDirection.Input;
             pTranRentID.Value = insertTransectionBillDTO.tranRentID;
             sql.Parameters.Add(pTranRentID);
-
+            
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = insertTransectionBillDTO.billCode;
+            sql.Parameters.Add(pBillCode);
+            
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar);
             pStartDate.Direction = ParameterDirection.Input;
             pStartDate.Value = insertTransectionBillDTO.startDate;
@@ -969,15 +989,25 @@ namespace Chaithit_Market.Core
             pEndDate.Value = insertTransectionBillDTO.endDate;
             sql.Parameters.Add(pEndDate);
 
-            SqlParameter pRentalAmount = new SqlParameter(@"pRentalAmount", SqlDbType.Decimal);
-            pRentalAmount.Direction = ParameterDirection.Input;
-            pRentalAmount.Value = insertTransectionBillDTO.rentalAmount;
-            sql.Parameters.Add(pRentalAmount);
+            SqlParameter pRentAmount = new SqlParameter(@"pRentAmount", SqlDbType.Decimal);
+            pRentAmount.Direction = ParameterDirection.Input;
+            pRentAmount.Value = insertTransectionBillDTO.rentAmount;
+            sql.Parameters.Add(pRentAmount);
+
+            SqlParameter pElectricUnit = new SqlParameter(@"pElectricUnit", SqlDbType.Int);
+            pElectricUnit.Direction = ParameterDirection.Input;
+            pElectricUnit.Value = insertTransectionBillDTO.electricUnit;
+            sql.Parameters.Add(pElectricUnit);
 
             SqlParameter pElectricAmount = new SqlParameter(@"pElectricAmount", SqlDbType.Decimal);
             pElectricAmount.Direction = ParameterDirection.Input;
             pElectricAmount.Value = insertTransectionBillDTO.electricAmount;
             sql.Parameters.Add(pElectricAmount);
+
+            SqlParameter pWaterUnit = new SqlParameter(@"pWaterUnit", SqlDbType.Int);
+            pWaterUnit.Direction = ParameterDirection.Input;
+            pWaterUnit.Value = insertTransectionBillDTO.waterUnit;
+            sql.Parameters.Add(pWaterUnit);
 
             SqlParameter pWaterAmount = new SqlParameter(@"pWaterAmount", SqlDbType.Decimal);
             pWaterAmount.Direction = ParameterDirection.Input;
@@ -1139,130 +1169,6 @@ namespace Chaithit_Market.Core
             pPosition.Direction = ParameterDirection.Input;
             pPosition.Value = searchUserProfileDTO.position;
             sql.Parameters.Add(pPosition);
-
-            table = sql.executeQueryWithReturnTable();
-
-            if (table != null && table.Rows.Count > 0)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    DataRow dr = table.Rows[0];
-                    total = int.Parse(dr["total"].ToString());
-                }
-            }
-
-            return total;
-        }
-
-        public int GetTotalSearchRent(SearchRentDTO searchRentDTO)
-        {
-            int total = 0;
-
-            DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_total " +
-                "@pName ");
-
-            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 255);
-            pName.Direction = ParameterDirection.Input;
-            pName.Value = searchRentDTO.name;
-            sql.Parameters.Add(pName);
-
-            table = sql.executeQueryWithReturnTable();
-
-            if (table != null && table.Rows.Count > 0)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    DataRow dr = table.Rows[0];
-                    total = int.Parse(dr["total"].ToString());
-                }
-            }
-
-            return total;
-        }
-
-        public Pagination<SearchRentalStand> SearchRentalStand(SearchRentStandDTO searchRentStandDTO)
-        {
-            DataTable table = new DataTable();
-
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_stand_page " +
-                "@pRentCode, " +
-                "@pRentName, " +
-                "@pPage, " +
-                "@pPerPage, " +
-                "@pSortField, " +
-                "@pSortType");
-
-            SqlParameter pRentCode = new SqlParameter(@"pRentCode", SqlDbType.VarChar, 255);
-            pRentCode.Direction = ParameterDirection.Input;
-            pRentCode.Value = searchRentStandDTO.rentCode;
-            sql.Parameters.Add(pRentCode);
-
-            SqlParameter pRentName = new SqlParameter(@"pRentName", SqlDbType.VarChar, 255);
-            pRentName.Direction = ParameterDirection.Input;
-            pRentName.Value = searchRentStandDTO.rentName;
-            sql.Parameters.Add(pRentName);
-
-            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
-            pPage.Direction = ParameterDirection.Input;
-            pPage.Value = searchRentStandDTO.pageInt;
-            sql.Parameters.Add(pPage);
-
-            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
-            pPerPage.Direction = ParameterDirection.Input;
-            pPerPage.Value = searchRentStandDTO.perPage;
-            sql.Parameters.Add(pPerPage);
-
-            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
-            pSortField.Direction = ParameterDirection.Input;
-            pSortField.Value = searchRentStandDTO.sortField;
-            sql.Parameters.Add(pSortField);
-
-            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
-            pSortType.Direction = ParameterDirection.Input;
-            pSortType.Value = searchRentStandDTO.sortType;
-            sql.Parameters.Add(pSortType);
-
-            table = sql.executeQueryWithReturnTable();
-
-            Pagination<SearchRentalStand> pagination = new Pagination<SearchRentalStand>();
-
-
-            if (table != null && table.Rows.Count > 0)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    SearchRentalStand data = new SearchRentalStand();
-                    data.loadData(row);
-                    pagination.data.Add(data);
-                }
-            }
-
-            int total = GetTotalSearchRentStand(searchRentStandDTO);
-
-            pagination.SetPagination(total, searchRentStandDTO.perPage, searchRentStandDTO.pageInt);
-
-            return pagination;
-        }
-
-        public int GetTotalSearchRentStand(SearchRentStandDTO searchRentStandDTO)
-        {
-            int total = 0;
-
-            DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_rent_stand_total " +
-                "@pRentCode, " +
-                "@pRentName ");
-
-            SqlParameter pRentCode = new SqlParameter(@"pRentCode", SqlDbType.VarChar, 255);
-            pRentCode.Direction = ParameterDirection.Input;
-            pRentCode.Value = searchRentStandDTO.rentCode;
-            sql.Parameters.Add(pRentCode);
-
-            SqlParameter pRentName = new SqlParameter(@"pRentName", SqlDbType.VarChar, 255);
-            pRentName.Direction = ParameterDirection.Input;
-            pRentName.Value = searchRentStandDTO.rentName;
-            sql.Parameters.Add(pRentName);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -2611,6 +2517,37 @@ namespace Chaithit_Market.Core
             DataRow dr1 = table.NewRow();
             dr1["id"] = 2;
             dr1["name"] = "ไม่ว่าง";
+            table.Rows.Add(dr1);
+
+            List<DropdownAllData> listData = new List<DropdownAllData>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DropdownAllData data = new DropdownAllData();
+                    data.loadData(row);
+                    listData.Add(data);
+                }
+            }
+
+            return listData;
+        }
+
+        public List<DropdownAllData> GetDropdownRentType()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("id");
+            table.Columns.Add("name");
+
+            DataRow dr = table.NewRow();
+            dr["id"] = 1;
+            dr["name"] = "Day";
+            table.Rows.Add(dr);
+
+            DataRow dr1 = table.NewRow();
+            dr1["id"] = 2;
+            dr1["name"] = "Month";
             table.Rows.Add(dr1);
 
             List<DropdownAllData> listData = new List<DropdownAllData>();
