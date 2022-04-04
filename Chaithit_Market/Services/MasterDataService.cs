@@ -82,7 +82,7 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public GetAllDropdownModel GetMasterService(string authorization, string lang, string platform, int logID, int masterID, string TableName)
+        public GetAllDropdownModel GetDropdownMasterService(string authorization, string lang, string platform, int logID, int masterID, string TableName, string isAll)
         {
             if (_sql == null)
             {
@@ -98,7 +98,7 @@ namespace Chaithit_Market.Services
 
                 if (validation.Success == true)
                 {
-                    value.data = _sql.GetMasterData(masterID, TableName);
+                    value.data = _sql.GetDropdownMasterData(masterID, TableName, isAll);
                     value.success = validation.Success;
                 }
                 else
@@ -110,7 +110,7 @@ namespace Chaithit_Market.Services
             }
             catch (Exception ex)
             {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "GetMasterService:");
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetDropdownMasterService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());
@@ -455,7 +455,7 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public GetAllDropdownModel GetZoneService(string authorization, string lang, string platform, int logID)
+        public GetAllDropdownModel GetDropdownZoneService(string authorization, string lang, string platform, int logID, string isAll)
         {
             if (_sql == null)
             {
@@ -471,7 +471,7 @@ namespace Chaithit_Market.Services
 
                 if (validation.Success == true)
                 {
-                    value.data = _sql.GetZone();
+                    value.data = _sql.GetDropdownZone(isAll);
                     value.success = validation.Success;
                 }
                 else
@@ -483,7 +483,7 @@ namespace Chaithit_Market.Services
             }
             catch (Exception ex)
             {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "GetZoneService:");
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetDropdownZoneService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());
@@ -497,7 +497,7 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public GetAllDropdownModel GetZoneSubService(string authorization, string lang, string platform, int logID, int ZoneID)
+        public GetAllDropdownModel GetDropdownZoneSubService(string authorization, string lang, string platform, int logID, int ZoneID, string isAll)
         {
             if (_sql == null)
             {
@@ -513,7 +513,7 @@ namespace Chaithit_Market.Services
 
                 if (validation.Success == true)
                 {
-                    value.data = _sql.GetZoneSub(ZoneID);
+                    value.data = _sql.GetDropdownZoneSub(ZoneID, isAll);
                     value.success = validation.Success;
                 }
                 else
@@ -525,7 +525,7 @@ namespace Chaithit_Market.Services
             }
             catch (Exception ex)
             {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "GetZoneSubService:");
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetDropdownZoneSubService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());
@@ -539,7 +539,7 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public GetAllDropdownModel GetRateAmountService(string authorization, string lang, string platform, int logID)
+        public GetAllDropdownModel GetDropdownRateAmountService(string authorization, string lang, string platform, int logID, string isAll)
         {
             if (_sql == null)
             {
@@ -555,7 +555,7 @@ namespace Chaithit_Market.Services
 
                 if (validation.Success == true)
                 {
-                    value.data = _sql.GetRateAmount();
+                    value.data = _sql.GetDropdownRateAmount(isAll);
                     value.success = validation.Success;
                 }
                 else
@@ -567,7 +567,49 @@ namespace Chaithit_Market.Services
             }
             catch (Exception ex)
             {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "GetRateAmountService:");
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetDropdownRateAmountService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+        
+        public GetAllDropdownModel GetDropdownUnitStatusService(string authorization, string lang, string platform, int logID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            GetAllDropdownModel value = new GetAllDropdownModel();
+            try
+            {
+                value.data = new List<DropdownAllData>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.GetDropdownUnitStatus();
+                    value.success = validation.Success;
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetDropdownUnitStatusService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());

@@ -491,12 +491,13 @@ namespace Chaithit_Market.Core
             return data;
         }
 
-        public List<DropdownAllData> GetMasterData(int id, string TableName)
+        public List<DropdownAllData> GetDropdownMasterData(int id, string TableName, string isAll)
         {
             DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_master_data " +
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_master_data " +
                 "@pMasterID," +
-                "@pTableName");
+                "@pTableName," +
+                "@pIsAll");
 
             SqlParameter pMasterID = new SqlParameter(@"pMasterID", SqlDbType.Int);
             pMasterID.Direction = ParameterDirection.Input;
@@ -507,6 +508,11 @@ namespace Chaithit_Market.Core
             pTableName.Direction = ParameterDirection.Input;
             pTableName.Value = TableName;
             sql.Parameters.Add(pTableName);
+
+            SqlParameter pIsAll = new SqlParameter(@"pIsAll", SqlDbType.VarChar);
+            pIsAll.Direction = ParameterDirection.Input;
+            pIsAll.Value = isAll;
+            sql.Parameters.Add(pIsAll);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -2501,11 +2507,17 @@ namespace Chaithit_Market.Core
             return data;
         }
 
-        public List<DropdownAllData> GetZone()
+        public List<DropdownAllData> GetDropdownZone(string isAll)
         {
             DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_zone ");
-            
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_zone " +
+                "@pIsAll");
+
+            SqlParameter pIsAll = new SqlParameter(@"pIsAll", SqlDbType.VarChar);
+            pIsAll.Direction = ParameterDirection.Input;
+            pIsAll.Value = isAll;
+            sql.Parameters.Add(pIsAll);
+
             table = sql.executeQueryWithReturnTable();
 
             List<DropdownAllData> listData = new List<DropdownAllData>();
@@ -2523,17 +2535,23 @@ namespace Chaithit_Market.Core
             return listData;
         }
 
-        public List<DropdownAllData> GetZoneSub(int ZoneID)
+        public List<DropdownAllData> GetDropdownZoneSub(int ZoneID, string isAll)
         {
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_zone_sub " +
-                 "@pZoneID ");
+                 "@pZoneID, " +
+                 "@pIsAll");
 
             SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
             pZoneID.Direction = ParameterDirection.Input;
             pZoneID.Value = ZoneID;
             sql.Parameters.Add(pZoneID);
 
+            SqlParameter pIsAll = new SqlParameter(@"pIsAll", SqlDbType.VarChar);
+            pIsAll.Direction = ParameterDirection.Input;
+            pIsAll.Value = isAll;
+            sql.Parameters.Add(pIsAll);
+
             table = sql.executeQueryWithReturnTable();
 
             List<DropdownAllData> listData = new List<DropdownAllData>();
@@ -2551,12 +2569,49 @@ namespace Chaithit_Market.Core
             return listData;
         }
 
-        public List<DropdownAllData> GetRateAmount()
+        public List<DropdownAllData> GetDropdownRateAmount(string isAll)
         {
             DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_rate_amount ");
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_rate_amount " +
+                "@pIsAll");
+
+            SqlParameter pIsAll = new SqlParameter(@"pIsAll", SqlDbType.VarChar);
+            pIsAll.Direction = ParameterDirection.Input;
+            pIsAll.Value = isAll;
+            sql.Parameters.Add(pIsAll);
 
             table = sql.executeQueryWithReturnTable();
+
+            List<DropdownAllData> listData = new List<DropdownAllData>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DropdownAllData data = new DropdownAllData();
+                    data.loadData(row);
+                    listData.Add(data);
+                }
+            }
+
+            return listData;
+        }
+
+        public List<DropdownAllData> GetDropdownUnitStatus()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("id");
+            table.Columns.Add("name");
+
+            DataRow dr = table.NewRow();
+            dr["id"] = 1;
+            dr["name"] = "ว่าง";
+            table.Rows.Add(dr);
+
+            DataRow dr1 = table.NewRow();
+            dr1["id"] = 2;
+            dr1["name"] = "ไม่ว่าง";
+            table.Rows.Add(dr1);
 
             List<DropdownAllData> listData = new List<DropdownAllData>();
 

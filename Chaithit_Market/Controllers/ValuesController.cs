@@ -1316,9 +1316,9 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/master/empType")]
+        [Route("get/dropdown/master/empType")]
         [HttpPost]
-        public IHttpActionResult GetEmpType()
+        public IHttpActionResult GetDropdownEmpType(GetDropdownIsAllDTO getDropdownIsAllDTO)
         {
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
@@ -1331,83 +1331,92 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject("");
-                int logID = _sql.InsertLogReceiveData("GetEmpType", json, timestampNow.ToString(), authHeader,
+                string json = JsonConvert.SerializeObject(getDropdownIsAllDTO);
+                int logID = _sql.InsertLogReceiveData("GetDropdownEmpType", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
-
-                MasterDataService srv = new MasterDataService();
-
-                var obj = srv.GetMasterService(authHeader, lang, platform.ToLower(), logID, 0, "system_emptype");
-
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("get/master/zone")]
-        [HttpPost]
-        public IHttpActionResult GetZone()
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject("");
-                int logID = _sql.InsertLogReceiveData("GetZone", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                MasterDataService srv = new MasterDataService();
                 
-                var obj = srv.GetZoneService(authHeader, lang, platform.ToLower(), logID);
-                
-                return Ok(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-            }
-        }
-
-        [Route("get/master/zoneSub")]
-        [HttpPost]
-        public IHttpActionResult GetZoneSub(GetIDCenterDTO getIDCenterDTO)
-        {
-            var request = HttpContext.Current.Request;
-            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
-            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-            string platform = request.Headers["platform"];
-            string version = request.Headers["version"];
-
-            AuthenticationController _auth = AuthenticationController.Instance;
-            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
-
-            try
-            {
-                string json = JsonConvert.SerializeObject(getIDCenterDTO);
-                int logID = _sql.InsertLogReceiveData("GetZoneSub", json, timestampNow.ToString(), authHeader,
-                    data.user_id, platform.ToLower());
-
-                MasterDataService srv = new MasterDataService();
-
-                var obj = new object();
-                if (getIDCenterDTO.id != 0)
+                if (getDropdownIsAllDTO.isAll.ToLower() != "true" && getDropdownIsAllDTO.isAll.ToLower() != "false")
                 {
-                    obj = srv.GetZoneSubService(authHeader, lang, platform.ToLower(), logID, getIDCenterDTO.id);
+                    throw new Exception("isAll value must be true or false");
                 }
-                else
+
+                MasterDataService srv = new MasterDataService();
+                var obj = srv.GetDropdownMasterService(authHeader, lang, platform.ToLower(), logID, 0, "system_emptype", getDropdownIsAllDTO.isAll.ToLower());
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/dropdown/master/zone")]
+        [HttpPost]
+        public IHttpActionResult GetDropdownZone(GetDropdownIsAllDTO getDropdownIsAllDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(getDropdownIsAllDTO);
+                int logID = _sql.InsertLogReceiveData("GetDropdownZone", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                if (getDropdownIsAllDTO.isAll.ToLower() != "true" && getDropdownIsAllDTO.isAll.ToLower() != "false")
+                {
+                    throw new Exception("isAll value must be true or false");
+                }
+
+                MasterDataService srv = new MasterDataService();
+                var obj = srv.GetDropdownZoneService(authHeader, lang, platform.ToLower(), logID, getDropdownIsAllDTO.isAll.ToLower());
+                
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/dropdown/master/zoneSub")]
+        [HttpPost]
+        public IHttpActionResult GetDropdownZoneSub(GetDropdownZoneSubIsAllDTO getDropdownZoneSubIsAllDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(getDropdownZoneSubIsAllDTO);
+                int logID = _sql.InsertLogReceiveData("GetDropdownZoneSub", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+                
+                var obj = new object();
+                if (getDropdownZoneSubIsAllDTO.ID == 0)
                 {
                     throw new Exception("Missing Parameter : ID");
                 }
+                if (getDropdownZoneSubIsAllDTO.isAll.ToLower() != "true" && getDropdownZoneSubIsAllDTO.isAll.ToLower() != "false")
+                {
+                    throw new Exception("isAll value must be true or false");
+                }
+
+                MasterDataService srv = new MasterDataService();
+                obj = srv.GetDropdownZoneSubService(authHeader, lang, platform.ToLower(), logID, getDropdownZoneSubIsAllDTO.ID, getDropdownZoneSubIsAllDTO.isAll.ToLower());
 
                 return Ok(obj);
             }
@@ -1417,9 +1426,9 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/master/rateAmount")]
+        [Route("get/dropdown/master/rateAmount")]
         [HttpPost]
-        public IHttpActionResult GetRateAmount()
+        public IHttpActionResult GetDropdownRateAmount(GetDropdownIsAllDTO getDropdownIsAllDTO)
         {
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
@@ -1432,13 +1441,49 @@ namespace Chaithit_Market.Controllers
 
             try
             {
+                string json = JsonConvert.SerializeObject(getDropdownIsAllDTO);
+                int logID = _sql.InsertLogReceiveData("GetDropdownRateAmount", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+                
+                if (getDropdownIsAllDTO.isAll.ToLower() != "true" && getDropdownIsAllDTO.isAll.ToLower() != "false")
+                {
+                    throw new Exception("isAll value must be true or false");
+                }
+
+                MasterDataService srv = new MasterDataService();
+                var obj = srv.GetDropdownRateAmountService(authHeader, lang, platform.ToLower(), logID, getDropdownIsAllDTO.isAll.ToLower());
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/dropdown/unit/status")]
+        [HttpPost]
+        public IHttpActionResult GetDropdownUnitStatus()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                //ไม่ได้ดึงจาดbase ใช้hardcode 1 = ว่าง, 2 = ไม่ว่าง;
                 string json = JsonConvert.SerializeObject("");
-                int logID = _sql.InsertLogReceiveData("GetRateAmount", json, timestampNow.ToString(), authHeader,
+                int logID = _sql.InsertLogReceiveData("GetDropdownUnitStatus", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
                 MasterDataService srv = new MasterDataService();
 
-                var obj = srv.GetRateAmountService(authHeader, lang, platform.ToLower(), logID);
+                var obj = srv.GetDropdownUnitStatusService(authHeader, lang, platform.ToLower(), logID);
 
                 return Ok(obj);
             }

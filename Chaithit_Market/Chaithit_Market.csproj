@@ -170,6 +170,8 @@
     <Compile Include="Core\SQLManager.cs" />
     <Compile Include="Core\Utility.cs" />
     <Compile Include="Core\ValidationManager.cs" />
+    <Compile Include="DTO\GetDropdownIsAllDTO.cs" />
+    <Compile Include="DTO\GetDropdownZoneSubIsAllDTO.cs" />
     <Compile Include="DTO\GetIDCenterDTO.cs" />
     <Compile Include="DTO\GetMessageTopicDTO.cs" />
     <Compile Include="DTO\InsertTransectionBillDTO.cs" />
