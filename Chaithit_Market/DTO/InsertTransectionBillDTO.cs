@@ -7,6 +7,8 @@ namespace Chaithit_Market.DTO
 {
     public class InsertTransectionBillDTO
     {
+        public int transBillID { set; get; } = 0;
+        public string mode { set; get; } = "";
         public int zoneID { set; get; } = 0;
         public int tranRentID { set; get; } = 0;
         public string billCode { set; get; } = "";
@@ -22,7 +24,7 @@ namespace Chaithit_Market.DTO
         public decimal electricNightMarketAmount { set; get; } = 0;
         public decimal totalAmount { set; get; } = 0;
         public int discountPercent { set; get; } = 0;
-        public int discountAmount { set; get; } = 0;
-        public int netAmount { set; get; } = 0;
+        public decimal discountAmount { set; get; } = 0;
+        public decimal netAmount { set; get; } = 0;
     }
 }

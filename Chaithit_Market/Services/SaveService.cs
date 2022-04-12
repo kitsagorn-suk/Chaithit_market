@@ -111,16 +111,47 @@ namespace Chaithit_Market.Services
             try
             {
                 value.data = new _ReturnIdModel();
+                string TableName = "transaction_rent";
                 ValidationModel validation = new ValidationModel();
                 
-                validation = ValidationManager.CheckValidationDupicateTransectionRent(lang, insertTransectionRentDTO);
-                if (validation.Success == true)
+                if (insertTransectionRentDTO.mode.ToLower() == "insert")
                 {
-                    value.data = _sql.InsertTransectionRent(insertTransectionRentDTO, userID);
+                    validation = ValidationManager.CheckValidationDupicateTransectionRent(lang, insertTransectionRentDTO);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.InsertTransectionRent(insertTransectionRentDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
                 }
-                else
+                else if (insertTransectionRentDTO.mode.ToLower() == "update")
                 {
-                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    validation = ValidationManager.CheckValidationDupicateTransectionRent(lang, insertTransectionRentDTO);
+                    if (validation.Success == true)
+                    {
+                        validation = ValidationManager.CheckValidationIDUpdate(insertTransectionRentDTO.tranRentID, TableName, lang);
+                        if (validation.Success == true)
+                        {
+                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "trans_code", insertTransectionRentDTO.transCode, userID);
+                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "user_id", insertTransectionRentDTO.userID.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "unit_id", insertTransectionRentDTO.unitID.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "start_date", insertTransectionRentDTO.startDate, userID);
+                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "end_date", insertTransectionRentDTO.endDate, userID);
+                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "rent_type", insertTransectionRentDTO.rentType.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "pay_date", insertTransectionRentDTO.payDate.ToString(), userID);
+                            value.data = _sql.UpdateTransectionRent(insertTransectionRentDTO, userID);
+                        }
+                        else
+                        {
+                            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                        }
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
                 }
 
                 value.success = validation.Success;
@@ -155,7 +186,58 @@ namespace Chaithit_Market.Services
             try
             {
                 value.data = new _ReturnIdModel();
+                string TableName = "transaction_bill";
                 ValidationModel validation = new ValidationModel();
+
+
+                if (insertTransectionBillDTO.mode.ToLower() == "insert")
+                {
+                    validation = ValidationManager.CheckValidationDupicateTransectionBill(lang, insertTransectionBillDTO);
+                    if (validation.Success == true)
+                    {
+                        value.data = _sql.InsertTransectionBill(insertTransectionBillDTO, userID);
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
+                }
+                else if (insertTransectionBillDTO.mode.ToLower() == "update")
+                {
+                    validation = ValidationManager.CheckValidationDupicateTransectionBill(lang, insertTransectionBillDTO);
+                    if (validation.Success == true)
+                    {
+                        validation = ValidationManager.CheckValidationIDUpdate(insertTransectionBillDTO.tranRentID, TableName, lang);
+                        if (validation.Success == true)
+                        {
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "tran_rent_id", insertTransectionBillDTO.tranRentID.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "bill_code", insertTransectionBillDTO.transBillID.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "start_date", insertTransectionBillDTO.startDate, userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "end_date", insertTransectionBillDTO.endDate, userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "rent_amount", insertTransectionBillDTO.rentAmount.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "electric_unit", insertTransectionBillDTO.electricUnit.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "electric_amount", insertTransectionBillDTO.electricAmount.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "water_unit", insertTransectionBillDTO.waterUnit.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "water_amount", insertTransectionBillDTO.waterAmount.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "lamp_unit", insertTransectionBillDTO.lampUnit.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "electric_equip_unit", insertTransectionBillDTO.electricEquipUnit.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "electric_night_market_amount", insertTransectionBillDTO.electricNightMarketAmount.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "total_amount", insertTransectionBillDTO.totalAmount.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "discount_percent", insertTransectionBillDTO.discountPercent.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "discount_amount", insertTransectionBillDTO.discountAmount.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.transBillID, TableName, "net_amount", insertTransectionBillDTO.netAmount.ToString(), userID);
+                            value.data = _sql.UpdateTransectionBill(insertTransectionBillDTO, userID);
+                        }
+                        else
+                        {
+                            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                        }
+                    }
+                    else
+                    {
+                        _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    }
+                }
 
                 validation = ValidationManager.CheckValidationDupicateTransectionBill(lang, insertTransectionBillDTO);
                 if (validation.Success == true)

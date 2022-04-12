@@ -760,6 +760,147 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
+
+        [Route("search/manage/renter")]
+        [HttpPost]
+        public IHttpActionResult SearchManageRenter(SearchManageRenterDTO searchManageRenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(searchManageRenterDTO);
+                int logID = _sql.InsertLogReceiveData("SearchManageRenter", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                var obj = new object();
+
+                if (searchManageRenterDTO.pageInt.Equals(null) || searchManageRenterDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchManageRenterDTO.perPage.Equals(null) || searchManageRenterDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchManageRenterDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchManageRenterDTO.sortField);
+                }
+
+                if (!(searchManageRenterDTO.sortType == "a" || searchManageRenterDTO.sortType == "d" || searchManageRenterDTO.sortType == "A" || searchManageRenterDTO.sortType == "D" || searchManageRenterDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchManageRenterService(authHeader, lang, platform.ToLower(), logID, searchManageRenterDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("search/manage/unit")]
+        [HttpPost]
+        public IHttpActionResult SearchManageUnit(SearchManageUnitDTO searchManageUnitDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(searchManageUnitDTO);
+                int logID = _sql.InsertLogReceiveData("SearchManageUnit", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                var obj = new object();
+
+                if (searchManageUnitDTO.pageInt.Equals(null) || searchManageUnitDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchManageUnitDTO.perPage.Equals(null) || searchManageUnitDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchManageUnitDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchManageUnitDTO.sortField);
+                }
+
+                if (!(searchManageUnitDTO.sortType == "a" || searchManageUnitDTO.sortType == "d" || searchManageUnitDTO.sortType == "A" || searchManageUnitDTO.sortType == "D" || searchManageUnitDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchManageUnitService(authHeader, lang, platform.ToLower(), logID, searchManageUnitDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/dropdown/user")]
+        [HttpPost]
+        public IHttpActionResult GetDropdownUser(GetDropdownIsAllDTO getDropdownIsAllDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(getDropdownIsAllDTO);
+                int logID = _sql.InsertLogReceiveData("GetDropdownUser", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                if (getDropdownIsAllDTO.isAll.ToLower() != "true" && getDropdownIsAllDTO.isAll.ToLower() != "false")
+                {
+                    throw new Exception("isAll value must be true or false");
+                }
+
+                GetService srv = new GetService();
+                var obj = srv.GetDropdownUserService(authHeader, lang, platform.ToLower(), logID, getDropdownIsAllDTO.isAll.ToLower());
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
         #endregion
 
         #region Transection
@@ -781,42 +922,88 @@ namespace Chaithit_Market.Controllers
                 string json = JsonConvert.SerializeObject(insertTransectionRentDTO);
                 int logID = _sql.InsertLogReceiveData("InsertTransectionRent", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
+                
+                string currentDate = DateTime.Now.ToString("ddMMyyyy");
 
                 string checkMissingOptional = "";
-                
-                if (string.IsNullOrEmpty(insertTransectionRentDTO.transCode))
-                {
-                    checkMissingOptional += "transCode ";
-                }
-                if (insertTransectionRentDTO.userID == 0)
-                {
-                    checkMissingOptional += "userID ";
-                }
-                if (insertTransectionRentDTO.unitID == 0)
-                {
-                    checkMissingOptional += "unitID ";
-                }
-                if (string.IsNullOrEmpty(insertTransectionRentDTO.startDate))
-                {
-                    checkMissingOptional += "startDate ";
-                }
-                if (string.IsNullOrEmpty(insertTransectionRentDTO.endDate))
-                {
-                    checkMissingOptional += "endDate ";
-                }
-                if (insertTransectionRentDTO.rentType == 0)
-                {
-                    checkMissingOptional += "rentType ";
-                }
-                if (string.IsNullOrEmpty(insertTransectionRentDTO.payDate))
-                {
-                    checkMissingOptional += "payDate ";
-                }
 
+                if(insertTransectionRentDTO.mode.ToLower().Equals("insert"))
+                {
+                    if (string.IsNullOrEmpty(insertTransectionRentDTO.transCode))
+                    {
+                        checkMissingOptional += "transCode ";
+                    }
+                    if (insertTransectionRentDTO.userID == 0)
+                    {
+                        checkMissingOptional += "userID ";
+                    }
+                    if (insertTransectionRentDTO.unitID == 0)
+                    {
+                        checkMissingOptional += "unitID ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionRentDTO.startDate))
+                    {
+                        checkMissingOptional += "startDate ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionRentDTO.endDate))
+                    {
+                        checkMissingOptional += "endDate ";
+                    }
+                    if (insertTransectionRentDTO.rentType == 0)
+                    {
+                        checkMissingOptional += "rentType ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionRentDTO.payDate))
+                    {
+                        checkMissingOptional += "payDate ";
+                    }
+                }
+                else if (insertTransectionRentDTO.mode.ToLower().Equals("update"))
+                {
+                    if (insertTransectionRentDTO.tranRentID == 0)
+                    {
+                        checkMissingOptional += "tranRentID ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionRentDTO.transCode))
+                    {
+                        checkMissingOptional += "transCode ";
+                    }
+                    if (insertTransectionRentDTO.userID == 0)
+                    {
+                        checkMissingOptional += "userID ";
+                    }
+                    if (insertTransectionRentDTO.unitID == 0)
+                    {
+                        checkMissingOptional += "unitID ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionRentDTO.startDate))
+                    {
+                        checkMissingOptional += "startDate ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionRentDTO.endDate))
+                    {
+                        checkMissingOptional += "endDate ";
+                    }
+                    if (insertTransectionRentDTO.rentType == 0)
+                    {
+                        checkMissingOptional += "rentType ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionRentDTO.payDate))
+                    {
+                        checkMissingOptional += "payDate ";
+                    }
+                }
+                else
+                {
+                    throw new Exception("Choose Mode Insert or Update");
+                }
+                
                 if (checkMissingOptional != "")
                 {
                     throw new Exception("Missing Parameter : " + checkMissingOptional);
                 }
+
+                insertTransectionRentDTO.transCode += currentDate;
 
                 SaveService srv = new SaveService();
                 var obj = new object();
@@ -851,83 +1038,97 @@ namespace Chaithit_Market.Controllers
 
                 string checkMissingOptional = "";
 
-                if (insertTransectionBillDTO.zoneID == 0)
+                if (insertTransectionBillDTO.mode.ToLower().Equals("insert"))
                 {
-                    checkMissingOptional += "zoneID ";
-                }
-                if (insertTransectionBillDTO.tranRentID == 0)
-                {
-                    checkMissingOptional += "tranRentID ";
-                }
-                if (string.IsNullOrEmpty(insertTransectionBillDTO.billCode))
-                {
-                    checkMissingOptional += "billCode ";
-                }
-                if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
-                {
-                    checkMissingOptional += "startDate ";
-                }
-                if (string.IsNullOrEmpty(insertTransectionBillDTO.endDate))
-                {
-                    checkMissingOptional += "endDate ";
-                }
-                if (insertTransectionBillDTO.rentAmount == 0)
-                {
-                    checkMissingOptional += "rentAmount ";
-                }
-                if (insertTransectionBillDTO.zoneID == 2)
-                {
-                    if (insertTransectionBillDTO.lampUnit == 0)
+                    if (insertTransectionBillDTO.zoneID == 0)
                     {
-                        checkMissingOptional += "lampUnit ";
+                        checkMissingOptional += "zoneID ";
                     }
-                    if (insertTransectionBillDTO.electricEquipUnit == 0)
+                    if (insertTransectionBillDTO.tranRentID == 0)
                     {
-                        checkMissingOptional += "electricEquipUnit ";
+                        checkMissingOptional += "tranRentID ";
                     }
-                    if (insertTransectionBillDTO.electricNightMarketAmount == 0)
+                    if (string.IsNullOrEmpty(insertTransectionBillDTO.billCode))
                     {
-                        checkMissingOptional += "electricNightMarketAmount ";
+                        checkMissingOptional += "billCode ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
+                    {
+                        checkMissingOptional += "startDate ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionBillDTO.endDate))
+                    {
+                        checkMissingOptional += "endDate ";
+                    }
+                    if (insertTransectionBillDTO.rentAmount == 0)
+                    {
+                        checkMissingOptional += "rentAmount ";
+                    }
+                    if (insertTransectionBillDTO.zoneID == 2)
+                    {
+                        if (insertTransectionBillDTO.lampUnit == 0)
+                        {
+                            checkMissingOptional += "lampUnit ";
+                        }
+                        if (insertTransectionBillDTO.electricEquipUnit == 0)
+                        {
+                            checkMissingOptional += "electricEquipUnit ";
+                        }
+                        if (insertTransectionBillDTO.electricNightMarketAmount == 0)
+                        {
+                            checkMissingOptional += "electricNightMarketAmount ";
+                        }
+                    }
+                    else
+                    {
+                        if (insertTransectionBillDTO.electricUnit == 0)
+                        {
+                            checkMissingOptional += "electricUnit ";
+                        }
+                        if (insertTransectionBillDTO.electricAmount == 0)
+                        {
+                            checkMissingOptional += "electricAmount ";
+                        }
+                        if (insertTransectionBillDTO.waterUnit == 0)
+                        {
+                            checkMissingOptional += "waterUnit ";
+                        }
+                        if (insertTransectionBillDTO.waterAmount == 0)
+                        {
+                            checkMissingOptional += "waterAmount ";
+                        }
+                    }
+                    if (insertTransectionBillDTO.discountAmount == 0 && insertTransectionBillDTO.discountPercent == 0)
+                    {
+                        checkMissingOptional += "discountAmount and discountPercent must be not zero ";
+                    }
+                    else if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
+                    {
+                        checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
+                    }
+                    if (insertTransectionBillDTO.totalAmount == 0)
+                    {
+                        checkMissingOptional += "totalAmount ";
+                    }
+                    if (insertTransectionBillDTO.netAmount == 0)
+                    {
+                        checkMissingOptional += "netAmount ";
+                    }
+                    if ((insertTransectionBillDTO.rentAmount + insertTransectionBillDTO.electricAmount + insertTransectionBillDTO.waterAmount) != insertTransectionBillDTO.totalAmount)
+                    {
+                        checkMissingOptional += "TotalAmount is not related ";
+                    }
+                }
+                else if (insertTransectionBillDTO.mode.ToLower().Equals("update"))
+                {
+                    if (insertTransectionBillDTO.transBillID == 0)
+                    {
+                        checkMissingOptional += "tranRentID ";
                     }
                 }
                 else
                 {
-                    if (insertTransectionBillDTO.electricUnit == 0)
-                    {
-                        checkMissingOptional += "electricUnit ";
-                    }
-                    if (insertTransectionBillDTO.electricAmount == 0)
-                    {
-                        checkMissingOptional += "electricAmount ";
-                    }
-                    if (insertTransectionBillDTO.waterUnit == 0)
-                    {
-                        checkMissingOptional += "waterUnit ";
-                    }
-                    if (insertTransectionBillDTO.waterAmount == 0)
-                    {
-                        checkMissingOptional += "waterAmount ";
-                    }
-                }
-                if (insertTransectionBillDTO.discountAmount == 0 && insertTransectionBillDTO.discountPercent == 0)
-                {
-                    checkMissingOptional += "discountAmount and discountPercent must be not zero ";
-                }
-                else if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
-                {
-                    checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
-                }
-                if (insertTransectionBillDTO.totalAmount == 0)
-                {
-                    checkMissingOptional += "totalAmount ";
-                }
-                if (insertTransectionBillDTO.netAmount == 0)
-                {
-                    checkMissingOptional += "netAmount ";
-                }
-                if ((insertTransectionBillDTO.rentAmount + insertTransectionBillDTO.electricAmount + insertTransectionBillDTO.waterAmount) != insertTransectionBillDTO.totalAmount)
-                {
-                    checkMissingOptional += "TotalAmount is not related ";
+                    throw new Exception("Choose Mode Insert or Update");
                 }
 
                 if (checkMissingOptional != "")
@@ -1312,7 +1513,7 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
-
+        
         [Route("get/dropdown/master/empType")]
         [HttpPost]
         public IHttpActionResult GetDropdownEmpType(GetDropdownIsAllDTO getDropdownIsAllDTO)
@@ -1414,6 +1615,46 @@ namespace Chaithit_Market.Controllers
 
                 MasterDataService srv = new MasterDataService();
                 obj = srv.GetDropdownZoneSubService(authHeader, lang, platform.ToLower(), logID, getDropdownZoneSubIsAllDTO.ID, getDropdownZoneSubIsAllDTO.isAll.ToLower());
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/dropdown/master/unit")]
+        [HttpPost]
+        public IHttpActionResult GetDropdownUnit(GetDropdownUnitIsAllDTO getDropdownUnitIsAllDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(getDropdownUnitIsAllDTO);
+                int logID = _sql.InsertLogReceiveData("GetDropdownUnit", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                var obj = new object();
+                if (getDropdownUnitIsAllDTO.zoneID == 0)
+                {
+                    throw new Exception("Missing Parameter : zoneID");
+                }
+                if (getDropdownUnitIsAllDTO.isAll.ToLower() != "true" && getDropdownUnitIsAllDTO.isAll.ToLower() != "false")
+                {
+                    throw new Exception("isAll value must be true or false");
+                }
+
+                MasterDataService srv = new MasterDataService();
+                obj = srv.GetDropdownUnitService(authHeader, lang, platform.ToLower(), logID, getDropdownUnitIsAllDTO.zoneID, getDropdownUnitIsAllDTO.zoneSubID, getDropdownUnitIsAllDTO.isAll.ToLower());
 
                 return Ok(obj);
             }
@@ -1630,7 +1871,7 @@ namespace Chaithit_Market.Controllers
 
         [Route("search/master/zoneSub")]
         [HttpPost]
-        public IHttpActionResult SearchZoneSub(SearchNameCenterDTO searchNameCenterDTO)
+        public IHttpActionResult SearchZoneSub(SearchZoneSubDTO searchZoneSubDTO)
         {
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
@@ -1643,7 +1884,7 @@ namespace Chaithit_Market.Controllers
 
             try
             {
-                string json = JsonConvert.SerializeObject(searchNameCenterDTO);
+                string json = JsonConvert.SerializeObject(searchZoneSubDTO);
                 int logID = _sql.InsertLogReceiveData("SearchZoneSub", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
@@ -1651,27 +1892,27 @@ namespace Chaithit_Market.Controllers
 
                 var obj = new object();
 
-                if (searchNameCenterDTO.pageInt.Equals(null) || searchNameCenterDTO.pageInt.Equals(0))
+                if (searchZoneSubDTO.pageInt.Equals(null) || searchZoneSubDTO.pageInt.Equals(0))
                 {
                     throw new Exception("invalid : pageInt ");
                 }
 
-                if (searchNameCenterDTO.perPage.Equals(null) || searchNameCenterDTO.perPage.Equals(0))
+                if (searchZoneSubDTO.perPage.Equals(null) || searchZoneSubDTO.perPage.Equals(0))
                 {
                     throw new Exception("invalid : perPage ");
                 }
 
-                if (searchNameCenterDTO.sortField > 4)
+                if (searchZoneSubDTO.sortField > 4)
                 {
-                    throw new Exception("invalid : sortField " + searchNameCenterDTO.sortField);
+                    throw new Exception("invalid : sortField " + searchZoneSubDTO.sortField);
                 }
 
-                if (!(searchNameCenterDTO.sortType == "a" || searchNameCenterDTO.sortType == "d" || searchNameCenterDTO.sortType == "A" || searchNameCenterDTO.sortType == "D" || searchNameCenterDTO.sortType == ""))
+                if (!(searchZoneSubDTO.sortType == "a" || searchZoneSubDTO.sortType == "d" || searchZoneSubDTO.sortType == "A" || searchZoneSubDTO.sortType == "D" || searchZoneSubDTO.sortType == ""))
                 {
                     throw new Exception("invalid sortType");
                 }
 
-                obj = srv.SearchZoneSubService(authHeader, lang, platform.ToLower(), logID, searchNameCenterDTO);
+                obj = srv.SearchZoneSubService(authHeader, lang, platform.ToLower(), logID, searchZoneSubDTO);
 
                 return Ok(obj);
             }
@@ -1786,7 +2027,7 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
-
+        
         #endregion
     }
 }

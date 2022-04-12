@@ -539,6 +539,48 @@ namespace Chaithit_Market.Services
             return value;
         }
 
+        public GetAllDropdownModel GetDropdownUnitService(string authorization, string lang, string platform, int logID, int ZoneID, int ZoneSubID, string isAll)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            GetAllDropdownModel value = new GetAllDropdownModel();
+            try
+            {
+                value.data = new List<DropdownAllData>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.GetDropdownUnit(ZoneID, ZoneSubID, isAll);
+                    value.success = validation.Success;
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetDropdownZoneSubService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
         public GetAllDropdownModel GetDropdownRateAmountService(string authorization, string lang, string platform, int logID, string isAll)
         {
             if (_sql == null)
@@ -751,7 +793,7 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public SearchMasterZoneSubModel SearchZoneSubService(string authorization, string lang, string platform, int logID, SearchNameCenterDTO searchNameCenterDTO)
+        public SearchMasterZoneSubModel SearchZoneSubService(string authorization, string lang, string platform, int logID, SearchZoneSubDTO searchZoneSubDTO)
         {
             if (_sql == null)
             {
@@ -767,7 +809,7 @@ namespace Chaithit_Market.Services
 
                 if (validation.Success == true)
                 {
-                    data = _sql.SearchZoneSub(searchNameCenterDTO);
+                    data = _sql.SearchZoneSub(searchZoneSubDTO);
                 }
                 else
                 {

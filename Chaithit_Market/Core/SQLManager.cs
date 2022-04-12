@@ -647,8 +647,14 @@ namespace Chaithit_Market.Core
         {
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_transection_rent " +
+                "@pTranRentID, " +
                 "@pTransCode, " +
                 "@pUnitID");
+
+            SqlParameter pTranRentID = new SqlParameter(@"pTranRentID", SqlDbType.Int);
+            pTranRentID.Direction = ParameterDirection.Input;
+            pTranRentID.Value = insertTransectionRentDTO.tranRentID;
+            sql.Parameters.Add(pTranRentID);
 
             SqlParameter pTransCode = new SqlParameter(@"pTransCode", SqlDbType.VarChar, 10);
             pTransCode.Direction = ParameterDirection.Input;
@@ -947,6 +953,80 @@ namespace Chaithit_Market.Core
             return data;
         }
 
+        public _ReturnIdModel UpdateTransectionRent(InsertTransectionRentDTO insertTransectionRentDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec update_transection_rent " +
+                "@pTransRentID," +
+                "@pTransCode," +
+                "@pUserID," +
+                "@pUnitID," +
+                "@pStartDate," +
+                "@pEndDate," +
+                "@pRentType," +
+                "@pPayDate," +
+                "@pCreateBy");
+
+            SqlParameter pTransRentID = new SqlParameter(@"pTransRentID", SqlDbType.Int);
+            pTransRentID.Direction = ParameterDirection.Input;
+            pTransRentID.Value = insertTransectionRentDTO.tranRentID;
+            sql.Parameters.Add(pTransRentID);
+
+            SqlParameter pTransCode = new SqlParameter(@"pTransCode", SqlDbType.VarChar);
+            pTransCode.Direction = ParameterDirection.Input;
+            pTransCode.Value = insertTransectionRentDTO.transCode;
+            sql.Parameters.Add(pTransCode);
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = insertTransectionRentDTO.userID;
+            sql.Parameters.Add(pUserID);
+
+            SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
+            pUnitID.Direction = ParameterDirection.Input;
+            pUnitID.Value = insertTransectionRentDTO.unitID;
+            sql.Parameters.Add(pUnitID);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = insertTransectionRentDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = insertTransectionRentDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            SqlParameter pRentType = new SqlParameter(@"pRentType", SqlDbType.Int);
+            pRentType.Direction = ParameterDirection.Input;
+            pRentType.Value = insertTransectionRentDTO.rentType;
+            sql.Parameters.Add(pRentType);
+
+            SqlParameter pPayDate = new SqlParameter(@"pPayDate", SqlDbType.VarChar);
+            pPayDate.Direction = ParameterDirection.Input;
+            pPayDate.Value = insertTransectionRentDTO.endDate;
+            sql.Parameters.Add(pPayDate);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
         public _ReturnIdModel InsertTransectionBill(InsertTransectionBillDTO insertTransectionBillDTO, int userID)
         {
             DataTable table = new DataTable();
@@ -1014,10 +1094,148 @@ namespace Chaithit_Market.Core
             pWaterAmount.Value = insertTransectionBillDTO.waterAmount;
             sql.Parameters.Add(pWaterAmount);
 
+            SqlParameter pLampUnit = new SqlParameter(@"pLampUnit", SqlDbType.Int);
+            pLampUnit.Direction = ParameterDirection.Input;
+            pLampUnit.Value = insertTransectionBillDTO.lampUnit;
+            sql.Parameters.Add(pLampUnit);
+
+            SqlParameter pElectricEquipUnit = new SqlParameter(@"pElectricEquipUnit", SqlDbType.Int);
+            pElectricEquipUnit.Direction = ParameterDirection.Input;
+            pElectricEquipUnit.Value = insertTransectionBillDTO.electricEquipUnit;
+            sql.Parameters.Add(pElectricEquipUnit);
+
+            SqlParameter pElectricNightMarketAmount = new SqlParameter(@"pElectricNightMarketAmount", SqlDbType.Decimal);
+            pElectricNightMarketAmount.Direction = ParameterDirection.Input;
+            pElectricNightMarketAmount.Value = insertTransectionBillDTO.electricNightMarketAmount;
+            sql.Parameters.Add(pElectricNightMarketAmount); 
+
             SqlParameter pTotalAmount = new SqlParameter(@"pTotalAmount", SqlDbType.Decimal);
             pTotalAmount.Direction = ParameterDirection.Input;
             pTotalAmount.Value = insertTransectionBillDTO.totalAmount;
             sql.Parameters.Add(pTotalAmount);
+
+            SqlParameter pDiscountPercent = new SqlParameter(@"pDiscountPercent", SqlDbType.Int);
+            pDiscountPercent.Direction = ParameterDirection.Input;
+            pDiscountPercent.Value = insertTransectionBillDTO.discountPercent;
+            sql.Parameters.Add(pDiscountPercent);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public _ReturnIdModel UpdateTransectionBill(InsertTransectionBillDTO insertTransectionBillDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec insert_transection_bill " +
+                "@pTransBillID," +
+                "@pTranRentID," +
+                "@pBillCode," +
+                "@pStartDate," +
+                "@pEndDate," +
+                "@pRentAmount," +
+                "@pElectricUnit," +
+                "@pElectricAmount," +
+                "@pWaterUnit," +
+                "@pWaterAmount," +
+                "@pLampUnit," +
+                "@pElectricEquipUnit," +
+                "@pElectricNightMarketAmount," +
+                "@pTotalAmount," +
+                "@pDiscountPercent," +
+                "@pDiscountAmount," +
+                "@pNetAmount," +
+                "@pCreateBy");
+
+            SqlParameter pTransBillID = new SqlParameter(@"pTransBillID", SqlDbType.Int);
+            pTransBillID.Direction = ParameterDirection.Input;
+            pTransBillID.Value = insertTransectionBillDTO.transBillID;
+            sql.Parameters.Add(pTransBillID);
+
+            SqlParameter pTranRentID = new SqlParameter(@"pTranRentID", SqlDbType.Int);
+            pTranRentID.Direction = ParameterDirection.Input;
+            pTranRentID.Value = insertTransectionBillDTO.tranRentID;
+            sql.Parameters.Add(pTranRentID);
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = insertTransectionBillDTO.billCode;
+            sql.Parameters.Add(pBillCode);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = insertTransectionBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = insertTransectionBillDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            SqlParameter pRentAmount = new SqlParameter(@"pRentAmount", SqlDbType.Decimal);
+            pRentAmount.Direction = ParameterDirection.Input;
+            pRentAmount.Value = insertTransectionBillDTO.rentAmount;
+            sql.Parameters.Add(pRentAmount);
+
+            SqlParameter pElectricUnit = new SqlParameter(@"pElectricUnit", SqlDbType.Int);
+            pElectricUnit.Direction = ParameterDirection.Input;
+            pElectricUnit.Value = insertTransectionBillDTO.electricUnit;
+            sql.Parameters.Add(pElectricUnit);
+
+            SqlParameter pElectricAmount = new SqlParameter(@"pElectricAmount", SqlDbType.Decimal);
+            pElectricAmount.Direction = ParameterDirection.Input;
+            pElectricAmount.Value = insertTransectionBillDTO.electricAmount;
+            sql.Parameters.Add(pElectricAmount);
+
+            SqlParameter pWaterUnit = new SqlParameter(@"pWaterUnit", SqlDbType.Int);
+            pWaterUnit.Direction = ParameterDirection.Input;
+            pWaterUnit.Value = insertTransectionBillDTO.waterUnit;
+            sql.Parameters.Add(pWaterUnit);
+
+            SqlParameter pWaterAmount = new SqlParameter(@"pWaterAmount", SqlDbType.Decimal);
+            pWaterAmount.Direction = ParameterDirection.Input;
+            pWaterAmount.Value = insertTransectionBillDTO.waterAmount;
+            sql.Parameters.Add(pWaterAmount);
+
+            SqlParameter pLampUnit = new SqlParameter(@"pLampUnit", SqlDbType.Int);
+            pLampUnit.Direction = ParameterDirection.Input;
+            pLampUnit.Value = insertTransectionBillDTO.lampUnit;
+            sql.Parameters.Add(pLampUnit);
+
+            SqlParameter pElectricEquipUnit = new SqlParameter(@"pElectricEquipUnit", SqlDbType.Int);
+            pElectricEquipUnit.Direction = ParameterDirection.Input;
+            pElectricEquipUnit.Value = insertTransectionBillDTO.electricEquipUnit;
+            sql.Parameters.Add(pElectricEquipUnit);
+
+            SqlParameter pElectricNightMarketAmount = new SqlParameter(@"pElectricNightMarketAmount", SqlDbType.Decimal);
+            pElectricNightMarketAmount.Direction = ParameterDirection.Input;
+            pElectricNightMarketAmount.Value = insertTransectionBillDTO.electricNightMarketAmount;
+            sql.Parameters.Add(pElectricNightMarketAmount);
+
+            SqlParameter pTotalAmount = new SqlParameter(@"pTotalAmount", SqlDbType.Decimal);
+            pTotalAmount.Direction = ParameterDirection.Input;
+            pTotalAmount.Value = insertTransectionBillDTO.totalAmount;
+            sql.Parameters.Add(pTotalAmount);
+
+            SqlParameter pDiscountPercent = new SqlParameter(@"pDiscountPercent", SqlDbType.Int);
+            pDiscountPercent.Direction = ParameterDirection.Input;
+            pDiscountPercent.Value = insertTransectionBillDTO.discountPercent;
+            sql.Parameters.Add(pDiscountPercent);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
@@ -2475,6 +2693,46 @@ namespace Chaithit_Market.Core
             return listData;
         }
 
+        public List<DropdownAllData> GetDropdownUnit(int ZoneID, int ZoneSubID, string isAll)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_unit " +
+                 "@pZoneID, " +
+                 "@pZoneSubID, " +
+                 "@pIsAll");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = ZoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = ZoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pIsAll = new SqlParameter(@"pIsAll", SqlDbType.VarChar);
+            pIsAll.Direction = ParameterDirection.Input;
+            pIsAll.Value = isAll;
+            sql.Parameters.Add(pIsAll);
+
+            table = sql.executeQueryWithReturnTable();
+
+            List<DropdownAllData> listData = new List<DropdownAllData>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DropdownAllData data = new DropdownAllData();
+                    data.loadData(row);
+                    listData.Add(data);
+                }
+            }
+
+            return listData;
+        }
+
         public List<DropdownAllData> GetDropdownRateAmount(string isAll)
         {
             DataTable table = new DataTable();
@@ -2549,6 +2807,40 @@ namespace Chaithit_Market.Core
             dr1["id"] = 2;
             dr1["name"] = "Month";
             table.Rows.Add(dr1);
+
+            List<DropdownAllData> listData = new List<DropdownAllData>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DropdownAllData data = new DropdownAllData();
+                    data.loadData(row);
+                    listData.Add(data);
+                }
+            }
+
+            return listData;
+        }
+
+        public List<DropdownAllData> GetDropdownPrefixUnit(int ZoneID, string isAll)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_prefix_unit " +
+                 "@pZoneID, " +
+                 "@pIsAll");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = ZoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pIsAll = new SqlParameter(@"pIsAll", SqlDbType.VarChar);
+            pIsAll.Direction = ParameterDirection.Input;
+            pIsAll.Value = isAll;
+            sql.Parameters.Add(pIsAll);
+
+            table = sql.executeQueryWithReturnTable();
 
             List<DropdownAllData> listData = new List<DropdownAllData>();
 
@@ -2844,40 +3136,40 @@ namespace Chaithit_Market.Core
             return total;
         }
 
-        public Pagination<SearchMasterZoneSub> SearchZoneSub(SearchNameCenterDTO searchNameCenterDTO)
+        public Pagination<SearchMasterZoneSub> SearchZoneSub(SearchZoneSubDTO searchZoneSubDTO)
         {
             DataTable table = new DataTable();
 
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_zone_sub_page " +
-                "@pName, " +
+                "@pZoneID, " +
                 "@pPage, " +
                 "@pPerPage, " +
                 "@pSortField, " +
                 "@pSortType");
 
-            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
-            pName.Direction = ParameterDirection.Input;
-            pName.Value = searchNameCenterDTO.name;
-            sql.Parameters.Add(pName);
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.VarChar, 250);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = searchZoneSubDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
 
             SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
             pPage.Direction = ParameterDirection.Input;
-            pPage.Value = searchNameCenterDTO.pageInt;
+            pPage.Value = searchZoneSubDTO.pageInt;
             sql.Parameters.Add(pPage);
 
             SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
             pPerPage.Direction = ParameterDirection.Input;
-            pPerPage.Value = searchNameCenterDTO.perPage;
+            pPerPage.Value = searchZoneSubDTO.perPage;
             sql.Parameters.Add(pPerPage);
 
             SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
             pSortField.Direction = ParameterDirection.Input;
-            pSortField.Value = searchNameCenterDTO.sortField;
+            pSortField.Value = searchZoneSubDTO.sortField;
             sql.Parameters.Add(pSortField);
 
             SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
             pSortType.Direction = ParameterDirection.Input;
-            pSortType.Value = searchNameCenterDTO.sortType;
+            pSortType.Value = searchZoneSubDTO.sortType;
             sql.Parameters.Add(pSortType);
 
             table = sql.executeQueryWithReturnTable();
@@ -2895,25 +3187,25 @@ namespace Chaithit_Market.Core
                 }
             }
 
-            int total = GetTotalSearchZoneSub(searchNameCenterDTO);
+            int total = GetTotalSearchZoneSub(searchZoneSubDTO);
 
-            pagination.SetPagination(total, searchNameCenterDTO.perPage, searchNameCenterDTO.pageInt);
+            pagination.SetPagination(total, searchZoneSubDTO.perPage, searchZoneSubDTO.pageInt);
 
             return pagination;
         }
 
-        public int GetTotalSearchZoneSub(SearchNameCenterDTO searchNameCenterDTO)
+        public int GetTotalSearchZoneSub(SearchZoneSubDTO searchZoneSubDTO)
         {
             int total = 0;
 
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_zone_sub_total " +
-                "@pName ");
+                "@pZoneID ");
 
-            SqlParameter pName = new SqlParameter(@"pName", SqlDbType.VarChar, 250);
-            pName.Direction = ParameterDirection.Input;
-            pName.Value = searchNameCenterDTO.name;
-            sql.Parameters.Add(pName);
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.VarChar, 250);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = searchZoneSubDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -3012,6 +3304,300 @@ namespace Chaithit_Market.Core
             }
 
             return total;
+        }
+
+        public Pagination<SearchManageRenter> SearchManageRenter(SearchManageRenterDTO searchManageRenterDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_manage_renter_page " +
+                "@pNameOrMobile, " +
+                "@pEmpType, " +
+                "@pUnitNo, " +
+                "@pStartDate, " +
+                "@pEndDate, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pNameOrMobile = new SqlParameter(@"pNameOrMobile", SqlDbType.VarChar, 250);
+            pNameOrMobile.Direction = ParameterDirection.Input;
+            pNameOrMobile.Value = searchManageRenterDTO.nameOrMobile;
+            sql.Parameters.Add(pNameOrMobile);
+
+            SqlParameter pEmpType = new SqlParameter(@"pEmpType", SqlDbType.Int);
+            pEmpType.Direction = ParameterDirection.Input;
+            pEmpType.Value = searchManageRenterDTO.empType;
+            sql.Parameters.Add(pEmpType);
+
+            SqlParameter pUnitNo = new SqlParameter(@"pUnitNo", SqlDbType.VarChar, 250);
+            pUnitNo.Direction = ParameterDirection.Input;
+            pUnitNo.Value = searchManageRenterDTO.unitNo;
+            sql.Parameters.Add(pUnitNo);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 15);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = searchManageRenterDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 15);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = searchManageRenterDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            SqlParameter paramPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            paramPage.Direction = ParameterDirection.Input;
+            paramPage.Value = searchManageRenterDTO.pageInt;
+            sql.Parameters.Add(paramPage);
+
+            SqlParameter paramPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            paramPerPage.Direction = ParameterDirection.Input;
+            paramPerPage.Value = searchManageRenterDTO.perPage;
+            sql.Parameters.Add(paramPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchManageRenterDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchManageRenterDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchManageRenter> pagination = new Pagination<SearchManageRenter>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchManageRenter data = new SearchManageRenter();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchManageRenter(searchManageRenterDTO);
+
+            pagination.SetPagination(total, searchManageRenterDTO.perPage, searchManageRenterDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchManageRenter(SearchManageRenterDTO searchManageRenterDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_manage_renter_total " +
+                "@pNameOrMobile, " +
+                "@pEmpType, " +
+                "@pUnitNo, " +
+                "@pStartDate, " +
+                "@pEndDate ");
+
+            SqlParameter pNameOrMobile = new SqlParameter(@"pNameOrMobile", SqlDbType.VarChar, 250);
+            pNameOrMobile.Direction = ParameterDirection.Input;
+            pNameOrMobile.Value = searchManageRenterDTO.nameOrMobile;
+            sql.Parameters.Add(pNameOrMobile);
+
+            SqlParameter pEmpType = new SqlParameter(@"pEmpType", SqlDbType.Int);
+            pEmpType.Direction = ParameterDirection.Input;
+            pEmpType.Value = searchManageRenterDTO.empType;
+            sql.Parameters.Add(pEmpType);
+
+            SqlParameter pUnitNo = new SqlParameter(@"pUnitNo", SqlDbType.VarChar, 250);
+            pUnitNo.Direction = ParameterDirection.Input;
+            pUnitNo.Value = searchManageRenterDTO.unitNo;
+            sql.Parameters.Add(pUnitNo);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 15);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = searchManageRenterDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 15);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = searchManageRenterDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public Pagination<SearchManageUnit> SearchManageUnit(SearchManageUnitDTO searchManageUnitDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_manage_unit_page " +
+                "@pZoneID, " +
+                "@pZoneSubID, " +
+                "@pUnitNo, " +
+                "@pRentType, " +
+                "@pIsUsed, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = searchManageUnitDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = searchManageUnitDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pUnitNo = new SqlParameter(@"pUnitNo", SqlDbType.VarChar, 250);
+            pUnitNo.Direction = ParameterDirection.Input;
+            pUnitNo.Value = searchManageUnitDTO.unitNo;
+            sql.Parameters.Add(pUnitNo);
+
+            SqlParameter pRentType = new SqlParameter(@"pRentType", SqlDbType.Int);
+            pRentType.Direction = ParameterDirection.Input;
+            pRentType.Value = searchManageUnitDTO.rentType;
+            sql.Parameters.Add(pRentType);
+
+            SqlParameter pIsUsed = new SqlParameter(@"pIsUsed", SqlDbType.Int);
+            pIsUsed.Direction = ParameterDirection.Input;
+            pIsUsed.Value = searchManageUnitDTO.isUsed;
+            sql.Parameters.Add(pIsUsed);
+
+            SqlParameter paramPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            paramPage.Direction = ParameterDirection.Input;
+            paramPage.Value = searchManageUnitDTO.pageInt;
+            sql.Parameters.Add(paramPage);
+
+            SqlParameter paramPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            paramPerPage.Direction = ParameterDirection.Input;
+            paramPerPage.Value = searchManageUnitDTO.perPage;
+            sql.Parameters.Add(paramPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchManageUnitDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchManageUnitDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchManageUnit> pagination = new Pagination<SearchManageUnit>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchManageUnit data = new SearchManageUnit();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchManageUnit(searchManageUnitDTO);
+
+            pagination.SetPagination(total, searchManageUnitDTO.perPage, searchManageUnitDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchManageUnit(SearchManageUnitDTO searchManageUnitDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_manage_unit_total " +
+                "@pZoneID, " +
+                "@pZoneSubID, " +
+                "@pUnitNo, " +
+                "@pRentType, " +
+                "@pIsUsed ");
+
+            SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
+            pZoneID.Direction = ParameterDirection.Input;
+            pZoneID.Value = searchManageUnitDTO.zoneID;
+            sql.Parameters.Add(pZoneID);
+
+            SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
+            pZoneSubID.Direction = ParameterDirection.Input;
+            pZoneSubID.Value = searchManageUnitDTO.zoneSubID;
+            sql.Parameters.Add(pZoneSubID);
+
+            SqlParameter pUnitNo = new SqlParameter(@"pUnitNo", SqlDbType.VarChar, 250);
+            pUnitNo.Direction = ParameterDirection.Input;
+            pUnitNo.Value = searchManageUnitDTO.unitNo;
+            sql.Parameters.Add(pUnitNo);
+
+            SqlParameter pRentType = new SqlParameter(@"pRentType", SqlDbType.Int);
+            pRentType.Direction = ParameterDirection.Input;
+            pRentType.Value = searchManageUnitDTO.rentType;
+            sql.Parameters.Add(pRentType);
+
+            SqlParameter pIsUsed = new SqlParameter(@"pIsUsed", SqlDbType.Int);
+            pIsUsed.Direction = ParameterDirection.Input;
+            pIsUsed.Value = searchManageUnitDTO.isUsed;
+            sql.Parameters.Add(pIsUsed);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public List<DropdownAllData> GetDropdownUser(string isAll)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_dropdown_user " +
+                "@pIsAll");
+
+            SqlParameter pIsAll = new SqlParameter(@"pIsAll", SqlDbType.VarChar);
+            pIsAll.Direction = ParameterDirection.Input;
+            pIsAll.Value = isAll;
+            sql.Parameters.Add(pIsAll);
+
+            table = sql.executeQueryWithReturnTable();
+
+            List<DropdownAllData> listData = new List<DropdownAllData>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DropdownAllData data = new DropdownAllData();
+                    data.loadData(row);
+                    listData.Add(data);
+                }
+            }
+
+            return listData;
         }
     }
 

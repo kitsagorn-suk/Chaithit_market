@@ -171,6 +171,7 @@
     <Compile Include="Core\Utility.cs" />
     <Compile Include="Core\ValidationManager.cs" />
     <Compile Include="DTO\GetDropdownIsAllDTO.cs" />
+    <Compile Include="DTO\GetDropdownUnitIsAllDTO.cs" />
     <Compile Include="DTO\GetDropdownZoneSubIsAllDTO.cs" />
     <Compile Include="DTO\GetIDCenterDTO.cs" />
     <Compile Include="DTO\GetMessageTopicDTO.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="DTO\LoginRequestDTO.cs" />
     <Compile Include="DTO\MasterDataDTO.cs" />
     <Compile Include="DTO\MasterPlaceSubDTO.cs" />
+    <Compile Include="DTO\SavePrefixUnitDTO.cs" />
     <Compile Include="DTO\SaveRateAmountDTO.cs" />
     <Compile Include="DTO\SaveRentalDTO.cs" />
     <Compile Include="DTO\SaveUnitDTO.cs" />
@@ -186,10 +188,13 @@
     <Compile Include="DTO\SaveZoneDTO.cs" />
     <Compile Include="DTO\SaveZoneSubDTO.cs" />
     <Compile Include="DTO\SearchBillDTO.cs" />
+    <Compile Include="DTO\SearchManageRenterDTO.cs" />
+    <Compile Include="DTO\SearchManageUnitDTO.cs" />
     <Compile Include="DTO\SearchNameCenterDTO.cs" />
     <Compile Include="DTO\SearchUnitDTO.cs" />
     <Compile Include="DTO\SearchUnitstandDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />
+    <Compile Include="DTO\SearchZoneSubDTO.cs" />
     <Compile Include="DTO\UploadFileDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -204,7 +209,10 @@
     <Compile Include="Models\Pagination.cs" />
     <Compile Include="Models\ReturnIdModel.cs" />
     <Compile Include="Models\SearchHistoryPaidBillModel.cs" />
+    <Compile Include="Models\SearchManageRenterModel.cs" />
+    <Compile Include="Models\SearchManageUnitModel.cs" />
     <Compile Include="Models\SearchMasterDataModel.cs" />
+    <Compile Include="Models\SearchMasterPrefixUnitModel.cs" />
     <Compile Include="Models\SearchMasterRateAmountModel.cs" />
     <Compile Include="Models\SearchMasterUnitModel.cs" />
     <Compile Include="Models\SearchMasterZoneModel.cs" />
