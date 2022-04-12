@@ -167,4 +167,3 @@ C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Marke
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csproj.CopyComplete
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.dll
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.pdb
-C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csprojAssemblyReference.cache

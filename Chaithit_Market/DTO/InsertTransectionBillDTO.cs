@@ -7,7 +7,7 @@ namespace Chaithit_Market.DTO
 {
     public class InsertTransectionBillDTO
     {
-        public int transBillID { set; get; } = 0;
+        public int tranBillID { set; get; } = 0;
         public string mode { set; get; } = "";
         public int zoneID { set; get; } = 0;
         public int tranRentID { set; get; } = 0;

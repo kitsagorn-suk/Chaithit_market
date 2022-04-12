@@ -675,13 +675,25 @@ namespace Chaithit_Market.Core
         {
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_transection_bill " +
-                "@pBillCode ");
+                "@pTranBillID " +
+                "@pBillCode " +
+                "@pTranRentID ");
+
+            SqlParameter pTranBillID = new SqlParameter(@"pTranBillID", SqlDbType.Int);
+            pTranBillID.Direction = ParameterDirection.Input;
+            pTranBillID.Value = insertTransectionBillDTO.tranBillID;
+            sql.Parameters.Add(pTranBillID);
 
             SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 150);
             pBillCode.Direction = ParameterDirection.Input;
             pBillCode.Value = insertTransectionBillDTO.billCode;
             sql.Parameters.Add(pBillCode);
-            
+
+            SqlParameter pTranRentID = new SqlParameter(@"pTranRentID", SqlDbType.Int);
+            pTranRentID.Direction = ParameterDirection.Input;
+            pTranRentID.Value = insertTransectionBillDTO.tranRentID;
+            sql.Parameters.Add(pTranRentID);
+
             table = sql.executeQueryWithReturnTable();
 
             return table;
@@ -1119,6 +1131,16 @@ namespace Chaithit_Market.Core
             pDiscountPercent.Value = insertTransectionBillDTO.discountPercent;
             sql.Parameters.Add(pDiscountPercent);
 
+            SqlParameter pDiscountAmount = new SqlParameter(@"pDiscountAmount", SqlDbType.Decimal);
+            pDiscountAmount.Direction = ParameterDirection.Input;
+            pDiscountAmount.Value = insertTransectionBillDTO.discountAmount;
+            sql.Parameters.Add(pDiscountAmount);
+
+            SqlParameter pNetAmount = new SqlParameter(@"pNetAmount", SqlDbType.Decimal);
+            pNetAmount.Direction = ParameterDirection.Input;
+            pNetAmount.Value = insertTransectionBillDTO.netAmount;
+            sql.Parameters.Add(pNetAmount);
+
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
             pCreateBy.Value = userID;
@@ -1142,8 +1164,8 @@ namespace Chaithit_Market.Core
         public _ReturnIdModel UpdateTransectionBill(InsertTransectionBillDTO insertTransectionBillDTO, int userID)
         {
             DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec insert_transection_bill " +
-                "@pTransBillID," +
+            SQLCustomExecute sql = new SQLCustomExecute("exec update_transection_bill " +
+                "@pTranBillID," +
                 "@pTranRentID," +
                 "@pBillCode," +
                 "@pStartDate," +
@@ -1162,9 +1184,9 @@ namespace Chaithit_Market.Core
                 "@pNetAmount," +
                 "@pCreateBy");
 
-            SqlParameter pTransBillID = new SqlParameter(@"pTransBillID", SqlDbType.Int);
+            SqlParameter pTransBillID = new SqlParameter(@"pTranBillID", SqlDbType.Int);
             pTransBillID.Direction = ParameterDirection.Input;
-            pTransBillID.Value = insertTransectionBillDTO.transBillID;
+            pTransBillID.Value = insertTransectionBillDTO.tranBillID;
             sql.Parameters.Add(pTransBillID);
 
             SqlParameter pTranRentID = new SqlParameter(@"pTranRentID", SqlDbType.Int);
@@ -1236,6 +1258,16 @@ namespace Chaithit_Market.Core
             pDiscountPercent.Direction = ParameterDirection.Input;
             pDiscountPercent.Value = insertTransectionBillDTO.discountPercent;
             sql.Parameters.Add(pDiscountPercent);
+
+            SqlParameter pDiscountAmount = new SqlParameter(@"pDiscountAmount", SqlDbType.Decimal);
+            pDiscountAmount.Direction = ParameterDirection.Input;
+            pDiscountAmount.Value = insertTransectionBillDTO.discountAmount;
+            sql.Parameters.Add(pDiscountAmount);
+
+            SqlParameter pNetAmount = new SqlParameter(@"pNetAmount", SqlDbType.Decimal);
+            pNetAmount.Direction = ParameterDirection.Input;
+            pNetAmount.Value = insertTransectionBillDTO.netAmount;
+            sql.Parameters.Add(pNetAmount);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;

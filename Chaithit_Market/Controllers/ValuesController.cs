@@ -904,9 +904,9 @@ namespace Chaithit_Market.Controllers
         #endregion
 
         #region Transection
-        [Route("insert/transection/rent")]
+        [Route("save/transection/rent")]
         [HttpPost]
-        public IHttpActionResult InsertTransectionRent(InsertTransectionRentDTO insertTransectionRentDTO)
+        public IHttpActionResult SaveTransectionRent(InsertTransectionRentDTO insertTransectionRentDTO)
         {
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
@@ -920,7 +920,7 @@ namespace Chaithit_Market.Controllers
             try
             {
                 string json = JsonConvert.SerializeObject(insertTransectionRentDTO);
-                int logID = _sql.InsertLogReceiveData("InsertTransectionRent", json, timestampNow.ToString(), authHeader,
+                int logID = _sql.InsertLogReceiveData("SaveTransectionRent", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
                 
                 string currentDate = DateTime.Now.ToString("ddMMyyyy");
@@ -1017,9 +1017,9 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("insert/transection/bill")]
+        [Route("save/transection/bill")]
         [HttpPost]
-        public IHttpActionResult InsertTransectionBill(InsertTransectionBillDTO insertTransectionBillDTO)
+        public IHttpActionResult SaveTransectionBill(InsertTransectionBillDTO insertTransectionBillDTO)
         {
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
@@ -1033,7 +1033,7 @@ namespace Chaithit_Market.Controllers
             try
             {
                 string json = JsonConvert.SerializeObject(insertTransectionBillDTO);
-                int logID = _sql.InsertLogReceiveData("InsertTransectionBill", json, timestampNow.ToString(), authHeader,
+                int logID = _sql.InsertLogReceiveData("SaveTransectionBill", json, timestampNow.ToString(), authHeader,
                     data.user_id, platform.ToLower());
 
                 string checkMissingOptional = "";
@@ -1121,7 +1121,7 @@ namespace Chaithit_Market.Controllers
                 }
                 else if (insertTransectionBillDTO.mode.ToLower().Equals("update"))
                 {
-                    if (insertTransectionBillDTO.transBillID == 0)
+                    if (insertTransectionBillDTO.tranBillID == 0)
                     {
                         checkMissingOptional += "tranRentID ";
                     }
