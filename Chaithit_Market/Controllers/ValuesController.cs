@@ -1038,6 +1038,8 @@ namespace Chaithit_Market.Controllers
 
                 string checkMissingOptional = "";
 
+                string currentDate = DateTime.Now.ToString("ddMMyyyy");
+                
                 if (insertTransectionBillDTO.mode.ToLower().Equals("insert"))
                 {
                     if (insertTransectionBillDTO.zoneID == 0)
@@ -1047,10 +1049,6 @@ namespace Chaithit_Market.Controllers
                     if (insertTransectionBillDTO.tranRentID == 0)
                     {
                         checkMissingOptional += "tranRentID ";
-                    }
-                    if (string.IsNullOrEmpty(insertTransectionBillDTO.billCode))
-                    {
-                        checkMissingOptional += "billCode ";
                     }
                     if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
                     {
@@ -1123,7 +1121,81 @@ namespace Chaithit_Market.Controllers
                 {
                     if (insertTransectionBillDTO.tranBillID == 0)
                     {
+                        checkMissingOptional += "tranBillID ";
+                    }
+                    if (insertTransectionBillDTO.zoneID == 0)
+                    {
+                        checkMissingOptional += "zoneID ";
+                    }
+                    if (insertTransectionBillDTO.tranRentID == 0)
+                    {
                         checkMissingOptional += "tranRentID ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
+                    {
+                        checkMissingOptional += "startDate ";
+                    }
+                    if (string.IsNullOrEmpty(insertTransectionBillDTO.endDate))
+                    {
+                        checkMissingOptional += "endDate ";
+                    }
+                    if (insertTransectionBillDTO.rentAmount == 0)
+                    {
+                        checkMissingOptional += "rentAmount ";
+                    }
+                    if (insertTransectionBillDTO.zoneID == 2)
+                    {
+                        if (insertTransectionBillDTO.lampUnit == 0)
+                        {
+                            checkMissingOptional += "lampUnit ";
+                        }
+                        if (insertTransectionBillDTO.electricEquipUnit == 0)
+                        {
+                            checkMissingOptional += "electricEquipUnit ";
+                        }
+                        if (insertTransectionBillDTO.electricNightMarketAmount == 0)
+                        {
+                            checkMissingOptional += "electricNightMarketAmount ";
+                        }
+                    }
+                    else
+                    {
+                        if (insertTransectionBillDTO.electricUnit == 0)
+                        {
+                            checkMissingOptional += "electricUnit ";
+                        }
+                        if (insertTransectionBillDTO.electricAmount == 0)
+                        {
+                            checkMissingOptional += "electricAmount ";
+                        }
+                        if (insertTransectionBillDTO.waterUnit == 0)
+                        {
+                            checkMissingOptional += "waterUnit ";
+                        }
+                        if (insertTransectionBillDTO.waterAmount == 0)
+                        {
+                            checkMissingOptional += "waterAmount ";
+                        }
+                    }
+                    if (insertTransectionBillDTO.discountAmount == 0 && insertTransectionBillDTO.discountPercent == 0)
+                    {
+                        checkMissingOptional += "discountAmount and discountPercent must be not zero ";
+                    }
+                    else if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
+                    {
+                        checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
+                    }
+                    if (insertTransectionBillDTO.totalAmount == 0)
+                    {
+                        checkMissingOptional += "totalAmount ";
+                    }
+                    if (insertTransectionBillDTO.netAmount == 0)
+                    {
+                        checkMissingOptional += "netAmount ";
+                    }
+                    if ((insertTransectionBillDTO.rentAmount + insertTransectionBillDTO.electricAmount + insertTransectionBillDTO.waterAmount) != insertTransectionBillDTO.totalAmount)
+                    {
+                        checkMissingOptional += "TotalAmount is not related ";
                     }
                 }
                 else
@@ -1135,6 +1207,8 @@ namespace Chaithit_Market.Controllers
                 {
                     throw new Exception("Missing Parameter : " + checkMissingOptional);
                 }
+
+                insertTransectionBillDTO.billCode = insertTransectionBillDTO.tranRentID.ToString() + currentDate;
 
                 SaveService srv = new SaveService();
                 var obj = new object();

@@ -207,7 +207,7 @@ namespace Chaithit_Market.Services
                     validation = ValidationManager.CheckValidationDupicateTransectionBill(lang, insertTransectionBillDTO);
                     if (validation.Success == true)
                     {
-                        validation = ValidationManager.CheckValidationIDUpdate(insertTransectionBillDTO.tranRentID, TableName, lang);
+                        validation = ValidationManager.CheckValidationIDUpdate(insertTransectionBillDTO.tranBillID, TableName, lang);
                         if (validation.Success == true)
                         {
                             _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "tran_rent_id", insertTransectionBillDTO.tranRentID.ToString(), userID);
@@ -237,16 +237,6 @@ namespace Chaithit_Market.Services
                     {
                         _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
                     }
-                }
-
-                validation = ValidationManager.CheckValidationDupicateTransectionBill(lang, insertTransectionBillDTO);
-                if (validation.Success == true)
-                {
-                    value.data = _sql.InsertTransectionBill(insertTransectionBillDTO, userID);
-                }
-                else
-                {
-                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
                 }
 
                 value.success = validation.Success;

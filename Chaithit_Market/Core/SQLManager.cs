@@ -675,8 +675,8 @@ namespace Chaithit_Market.Core
         {
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_transection_bill " +
-                "@pTranBillID " +
-                "@pBillCode " +
+                "@pTranBillID, " +
+                "@pBillCode, " +
                 "@pTranRentID ");
 
             SqlParameter pTranBillID = new SqlParameter(@"pTranBillID", SqlDbType.Int);
