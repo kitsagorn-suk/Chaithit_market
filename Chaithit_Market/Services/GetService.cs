@@ -98,49 +98,6 @@ namespace Chaithit_Market.Services
             return value;
         }
 
-        public SearchHistoryPaidBillModel SearchHistoryPaidBillService(string authorization, string lang, string platform, int logID, SearchBillDTO searchBillDTO)
-        {
-            if (_sql == null)
-            {
-                _sql = SQLManager.Instance;
-            }
-
-            SearchHistoryPaidBillModel value = new SearchHistoryPaidBillModel();
-            try
-            {
-                Pagination<SearchHistoryPaidBill> data = new Pagination<SearchHistoryPaidBill>();
-
-                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
-
-                if (validation.Success == true)
-                {
-                    data = _sql.SearchHistoryPaidBill(searchBillDTO);
-                }
-                else
-                {
-                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
-                }
-
-                value.success = validation.Success;
-                value.data = data;
-                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
-            }
-            catch (Exception ex)
-            {
-                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchHistoryPaidBillService:");
-                if (logID > 0)
-                {
-                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
-                }
-                throw ex;
-            }
-            finally
-            {
-                _sql.UpdateStatusLog(logID, 1);
-            }
-            return value;
-        }
-
         public GetUserProfileModel GetUserProfileService(string authorization, string lang, string platform, int logID, int userProfileID)
         {
             if (_sql == null)
@@ -346,6 +303,225 @@ namespace Chaithit_Market.Services
             catch (Exception ex)
             {
                 LogManager.ServiceLog.WriteExceptionLog(ex, "GetDropdownUserService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public SearchManageBillModel SearchManageBillService(string authorization, string lang, string platform, int logID, SearchManageBillDTO searchManageBillDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            SearchManageBillModel value = new SearchManageBillModel();
+            try
+            {
+                Pagination<SearchManageBill> data = new Pagination<SearchManageBill>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    data = _sql.SearchManageBill(searchManageBillDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.data = data;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchManageBillService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public GetRenterByUserIDModel GetRenterByUserIDService(string authorization, string lang, string platform, int logID, int userID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            GetRenterByUserIDModel value = new GetRenterByUserIDModel();
+            try
+            {
+                value.data = new RenterByUserIDModel();
+                value.data.dataRent = new List<RentDetailModel>();
+                value.data.dataRentNight = new List<RentDetailModel>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.GetRenterByUserID(userID);
+                    value.data.dataRent = _sql.GetRenterMarketByUserID(userID);
+                    value.data.dataRentNight = _sql.GetRenterMarketNightByUserID(userID);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetRenterByUserIDService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public GetDashbordModel GetDashbordService(string authorization, string lang, string platform, int logID, GetDashbordDTO getDashbordDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            GetDashbordModel value = new GetDashbordModel();
+            try
+            {
+                value.data = new DashbordModel();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.GetDashbord(getDashbordDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetDashbordService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public SearchHistoryPaidBillAdminModel SearchHistoryPaidBillAdminService(string authorization, string lang, string platform, int logID, SearchHistoryAdminBillDTO searchHistoryAdminBillDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            SearchHistoryPaidBillAdminModel value = new SearchHistoryPaidBillAdminModel();
+            try
+            {
+                Pagination<SearchHistoryPaidBillAdmin> data = new Pagination<SearchHistoryPaidBillAdmin>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    data = _sql.SearchHistoryPaidBillAdmin(searchHistoryAdminBillDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.data = data;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchHistoryPaidBillAdminService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public SearchHistoryPaidBillUserModel SearchHistoryPaidBillUserService(string authorization, string lang, string platform, int logID, SearchHistoryUserBillDTO searchHistoryUserBillDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            SearchHistoryPaidBillUserModel value = new SearchHistoryPaidBillUserModel();
+            try
+            {
+                Pagination<SearchHistoryPaidBillUser> data = new Pagination<SearchHistoryPaidBillUser>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    data = _sql.SearchHistoryPaidBillUser(searchHistoryUserBillDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.data = data;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchHistoryPaidBillUserService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());

@@ -5,17 +5,11 @@ using System.Web;
 
 namespace Chaithit_Market.DTO
 {
-    public class SearchManageRenterDTO
+    public class SearchHistoryAdminBillDTO
     {
-        private string _nameOrMobile;
-        public string nameOrMobile {
-            get { return _nameOrMobile ?? String.Empty; }
-            set { _nameOrMobile = value; }
-        } 
-        public int empType { set; get; } = 0;
-        public string unitNo { set; get; } = "";
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
+        public int isComplete { set; get; } = 0;
         public int perPage { set; get; } = 0;
         public int pageInt { set; get; } = 0;
         public int sortField { set; get; } = 0;

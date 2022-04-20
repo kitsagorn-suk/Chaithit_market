@@ -5,10 +5,9 @@ using System.Web;
 
 namespace Chaithit_Market.DTO
 {
-    public class SearchBillDTO
+    public class SearchHistoryUserBillDTO
     {
         public int userID { set; get; } = 0;
-        public string billCode { set; get; } = "";
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
         public int perPage { set; get; } = 0;

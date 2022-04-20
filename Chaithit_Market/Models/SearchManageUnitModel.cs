@@ -40,7 +40,7 @@ namespace Chaithit_Market.Models
             waterAmount = decimal.Parse(dr["water_amount"].ToString());
             lampAmountPerOne = decimal.Parse(dr["lamp_amount_per_one"].ToString());
             electricEquipAmount = decimal.Parse(dr["electric_equip_amount"].ToString());
-            isUsed = int.Parse(dr["is_used"].ToString().ToLower() == "true" ? "1" : "0");
+            isUsed = int.Parse(dr["is_used"].ToString());
             userID = int.Parse(dr["user_id"].ToString());
             startDate = dr["start_date"].ToString();
             endDate = dr["end_date"].ToString();

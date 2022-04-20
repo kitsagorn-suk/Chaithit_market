@@ -795,10 +795,10 @@ namespace Chaithit_Market.Core
                 "@pMoblie," +
                 "@pPosition," +
                 "@pStartDate," +
-                "@pEndDate," +
                 "@pStatusEmp," +
                 "@pEmpType," +
-                "@pUpdateBy ");
+                "@pUpdateBy, " +
+                "@pPassword ");
 
             SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
             pUserProfileID.Direction = ParameterDirection.Input;
@@ -830,11 +830,6 @@ namespace Chaithit_Market.Core
             pStartDate.Value = saveUserProfileDTO.startDate;
             sql.Parameters.Add(pStartDate);
 
-            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar);
-            pEndDate.Direction = ParameterDirection.Input;
-            pEndDate.Value = saveUserProfileDTO.endDate;
-            sql.Parameters.Add(pEndDate);
-
             SqlParameter pStatusEmp = new SqlParameter(@"pStatusEmp", SqlDbType.Int);
             pStatusEmp.Direction = ParameterDirection.Input;
             pStatusEmp.Value = saveUserProfileDTO.statusEmp;
@@ -849,6 +844,11 @@ namespace Chaithit_Market.Core
             pUserID.Direction = ParameterDirection.Input;
             pUserID.Value = userID;
             sql.Parameters.Add(pUserID);
+
+            SqlParameter pPassword = new SqlParameter(@"pPassword", SqlDbType.VarChar);
+            pPassword.Direction = ParameterDirection.Input;
+            pPassword.Value = saveUserProfileDTO.password;
+            sql.Parameters.Add(pPassword);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -1712,14 +1712,122 @@ namespace Chaithit_Market.Core
 
             return list;
         }
-
-        public Pagination<SearchHistoryPaidBill> SearchHistoryPaidBill(SearchBillDTO searchBillDTO)
+        
+        public Pagination<SearchHistoryPaidBillAdmin> SearchHistoryPaidBillAdmin(SearchHistoryAdminBillDTO searchHistoryAdminBillDTO)
         {
             DataTable table = new DataTable();
 
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_history_paid_bill_page " +
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_admin_page " +
+                "@pStartDate, " +
+                "@pEndDate, " +
+                "@pIsComplete, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = searchHistoryAdminBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = searchHistoryAdminBillDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            SqlParameter pIsComplete = new SqlParameter(@"pIsComplete", SqlDbType.Int);
+            pIsComplete.Direction = ParameterDirection.Input;
+            pIsComplete.Value = searchHistoryAdminBillDTO.isComplete;
+            sql.Parameters.Add(pIsComplete);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchHistoryAdminBillDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchHistoryAdminBillDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchHistoryAdminBillDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchHistoryAdminBillDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchHistoryPaidBillAdmin> pagination = new Pagination<SearchHistoryPaidBillAdmin>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchHistoryPaidBillAdmin data = new SearchHistoryPaidBillAdmin();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchHistoryPaidBillAdmin(searchHistoryAdminBillDTO);
+
+            pagination.SetPagination(total, searchHistoryAdminBillDTO.perPage, searchHistoryAdminBillDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchHistoryPaidBillAdmin(SearchHistoryAdminBillDTO searchHistoryAdminBillDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_admin_total " +
+                "@pStartDate, " +
+                "@pEndDate, " +
+                "@pIsComplete ");
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = searchHistoryAdminBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = searchHistoryAdminBillDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            SqlParameter pIsComplete = new SqlParameter(@"pIsComplete", SqlDbType.Int);
+            pIsComplete.Direction = ParameterDirection.Input;
+            pIsComplete.Value = searchHistoryAdminBillDTO.isComplete;
+            sql.Parameters.Add(pIsComplete);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public Pagination<SearchHistoryPaidBillUser> SearchHistoryPaidBillUser(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_user_page " +
                 "@pUserID, " +
-                "@pBillCode, " +
                 "@pStartDate, " +
                 "@pEndDate, " +
                 "@pPage, " +
@@ -1729,95 +1837,84 @@ namespace Chaithit_Market.Core
 
             SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
-            pUserID.Value = searchBillDTO.userID;
+            pUserID.Value = searchHistoryUserBillDTO.userID;
             sql.Parameters.Add(pUserID);
-
-            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
-            pBillCode.Direction = ParameterDirection.Input;
-            pBillCode.Value = searchBillDTO.billCode;
-            sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
             pStartDate.Direction = ParameterDirection.Input;
-            pStartDate.Value = searchBillDTO.startDate;
+            pStartDate.Value = searchHistoryUserBillDTO.startDate;
             sql.Parameters.Add(pStartDate);
 
             SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
             pEndDate.Direction = ParameterDirection.Input;
-            pEndDate.Value = searchBillDTO.endDate;
+            pEndDate.Value = searchHistoryUserBillDTO.endDate;
             sql.Parameters.Add(pEndDate);
 
             SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
             pPage.Direction = ParameterDirection.Input;
-            pPage.Value = searchBillDTO.pageInt;
+            pPage.Value = searchHistoryUserBillDTO.pageInt;
             sql.Parameters.Add(pPage);
 
             SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
             pPerPage.Direction = ParameterDirection.Input;
-            pPerPage.Value = searchBillDTO.perPage;
+            pPerPage.Value = searchHistoryUserBillDTO.perPage;
             sql.Parameters.Add(pPerPage);
 
             SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
             pSortField.Direction = ParameterDirection.Input;
-            pSortField.Value = searchBillDTO.sortField;
+            pSortField.Value = searchHistoryUserBillDTO.sortField;
             sql.Parameters.Add(pSortField);
 
             SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
             pSortType.Direction = ParameterDirection.Input;
-            pSortType.Value = searchBillDTO.sortType;
+            pSortType.Value = searchHistoryUserBillDTO.sortType;
             sql.Parameters.Add(pSortType);
 
             table = sql.executeQueryWithReturnTable();
 
-            Pagination<SearchHistoryPaidBill> pagination = new Pagination<SearchHistoryPaidBill>();
+            Pagination<SearchHistoryPaidBillUser> pagination = new Pagination<SearchHistoryPaidBillUser>();
 
 
             if (table != null && table.Rows.Count > 0)
             {
                 foreach (DataRow row in table.Rows)
                 {
-                    SearchHistoryPaidBill data = new SearchHistoryPaidBill();
+                    SearchHistoryPaidBillUser data = new SearchHistoryPaidBillUser();
                     data.loadData(row);
                     pagination.data.Add(data);
                 }
             }
 
-            int total = GetTotalSearchHistoryPaidBill(searchBillDTO);
+            int total = GetTotalSearchHistoryPaidBillUser(searchHistoryUserBillDTO);
 
-            pagination.SetPagination(total, searchBillDTO.perPage, searchBillDTO.pageInt);
+            pagination.SetPagination(total, searchHistoryUserBillDTO.perPage, searchHistoryUserBillDTO.pageInt);
 
             return pagination;
         }
 
-        public int GetTotalSearchHistoryPaidBill(SearchBillDTO searchBillDTO)
+        public int GetTotalSearchHistoryPaidBillUser(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
         {
             int total = 0;
 
             DataTable table = new DataTable();
-            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_history_paid_bill_total " +
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_user_total " +
                 "@pUserID, " +
-                "@pBillCode, " +
                 "@pStartDate, " +
                 "@pEndDate ");
 
             SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
-            pUserID.Value = searchBillDTO.userID;
+            pUserID.Value = searchHistoryUserBillDTO.userID;
             sql.Parameters.Add(pUserID);
-
-            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
-            pBillCode.Direction = ParameterDirection.Input;
-            pBillCode.Value = searchBillDTO.billCode;
-            sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
             pStartDate.Direction = ParameterDirection.Input;
-            pStartDate.Value = searchBillDTO.startDate;
+            pStartDate.Value = searchHistoryUserBillDTO.startDate;
             sql.Parameters.Add(pStartDate);
 
             SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
             pEndDate.Direction = ParameterDirection.Input;
-            pEndDate.Value = searchBillDTO.endDate;
+            pEndDate.Value = searchHistoryUserBillDTO.endDate;
             sql.Parameters.Add(pEndDate);
 
             table = sql.executeQueryWithReturnTable();
@@ -3631,6 +3728,223 @@ namespace Chaithit_Market.Core
 
             return listData;
         }
+
+        public Pagination<SearchManageBill> SearchManageBill(SearchManageBillDTO searchManageBillDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_manage_renter_page " +
+                "@pNameOrMobile, " +
+                "@pEmpType, " +
+                "@pUnitNo, " +
+                "@pStartDate, " +
+                "@pEndDate, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter paramPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            paramPage.Direction = ParameterDirection.Input;
+            paramPage.Value = searchManageBillDTO.pageInt;
+            sql.Parameters.Add(paramPage);
+
+            SqlParameter paramPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            paramPerPage.Direction = ParameterDirection.Input;
+            paramPerPage.Value = searchManageBillDTO.perPage;
+            sql.Parameters.Add(paramPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchManageBillDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchManageBillDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchManageBill> pagination = new Pagination<SearchManageBill>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchManageBill data = new SearchManageBill();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchManageBill(searchManageBillDTO);
+
+            pagination.SetPagination(total, searchManageBillDTO.perPage, searchManageBillDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchManageBill(SearchManageBillDTO searchManageBillDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_manage_renter_total ");
+
+            //SqlParameter pNameOrMobile = new SqlParameter(@"pNameOrMobile", SqlDbType.VarChar, 250);
+            //pNameOrMobile.Direction = ParameterDirection.Input;
+            //pNameOrMobile.Value = searchManageBillDTO.nameOrMobile;
+            //sql.Parameters.Add(pNameOrMobile);
+
+            //SqlParameter pEmpType = new SqlParameter(@"pEmpType", SqlDbType.Int);
+            //pEmpType.Direction = ParameterDirection.Input;
+            //pEmpType.Value = searchManageBillDTO.empType;
+            //sql.Parameters.Add(pEmpType);
+
+            //SqlParameter pUnitNo = new SqlParameter(@"pUnitNo", SqlDbType.VarChar, 250);
+            //pUnitNo.Direction = ParameterDirection.Input;
+            //pUnitNo.Value = searchManageBillDTO.unitNo;
+            //sql.Parameters.Add(pUnitNo);
+
+            //SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 15);
+            //pStartDate.Direction = ParameterDirection.Input;
+            //pStartDate.Value = searchManageBillDTO.startDate;
+            //sql.Parameters.Add(pStartDate);
+
+            //SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 15);
+            //pEndDate.Direction = ParameterDirection.Input;
+            //pEndDate.Value = searchManageBillDTO.endDate;
+            //sql.Parameters.Add(pEndDate);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
+        }
+
+        public RenterByUserIDModel GetRenterByUserID(int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_renter_name_by_user_id " +
+                "@pUserID");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.VarChar);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            RenterByUserIDModel data = new RenterByUserIDModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public List<RentDetailModel> GetRenterMarketByUserID(int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_renter_by_user_id " +
+                "@pUserID");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.VarChar);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            List<RentDetailModel> listData = new List<RentDetailModel>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    RentDetailModel data = new RentDetailModel();
+                    data.loadData(row);
+                    listData.Add(data);
+                }
+            }
+
+            return listData;
+        }
+
+        public List<RentDetailModel> GetRenterMarketNightByUserID(int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_renter_by_user_id_night " +
+                "@pUserID");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.VarChar);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            List<RentDetailModel> listData = new List<RentDetailModel>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    RentDetailModel data = new RentDetailModel();
+                    data.loadData(row);
+                    listData.Add(data);
+                }
+            }
+
+            return listData;
+        }
+
+        public DashbordModel GetDashbord(GetDashbordDTO getDashbordDTO)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_dashboard_admin_amt " +
+                "@pStartDate," +
+                "@pEndDate");
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = getDashbordDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = getDashbordDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            table = sql.executeQueryWithReturnTable();
+
+            DashbordModel data = new DashbordModel();
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
     }
 
     public class SQLCustomExecute

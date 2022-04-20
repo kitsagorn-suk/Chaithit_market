@@ -47,12 +47,12 @@ namespace Chaithit_Market.Services
                         validation = ValidationManager.CheckValidationIDUpdate(saveUserProfileDTO.userProfileID, TableName, lang);
                         if (validation.Success == true)
                         {
+                            _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "password", saveUserProfileDTO.endDate, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "firstname", saveUserProfileDTO.firstName, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "lastname", saveUserProfileDTO.lastName, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "mobile", saveUserProfileDTO.mobile, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "position", saveUserProfileDTO.position, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "start_date", saveUserProfileDTO.startDate, userID);
-                            _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "end_date", saveUserProfileDTO.endDate, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "status_emp", saveUserProfileDTO.statusEmp.ToString(), userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "emp_type", saveUserProfileDTO.empType.ToString(), userID);
                             value.data = _sql.UpdateUserProfile(saveUserProfileDTO, userID);

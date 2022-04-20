@@ -170,6 +170,7 @@
     <Compile Include="Core\SQLManager.cs" />
     <Compile Include="Core\Utility.cs" />
     <Compile Include="Core\ValidationManager.cs" />
+    <Compile Include="DTO\GetDashbordDTO.cs" />
     <Compile Include="DTO\GetDropdownIsAllDTO.cs" />
     <Compile Include="DTO\GetDropdownUnitIsAllDTO.cs" />
     <Compile Include="DTO\GetDropdownZoneSubIsAllDTO.cs" />
@@ -187,7 +188,9 @@
     <Compile Include="DTO\SaveUserProfileDTO.cs" />
     <Compile Include="DTO\SaveZoneDTO.cs" />
     <Compile Include="DTO\SaveZoneSubDTO.cs" />
-    <Compile Include="DTO\SearchBillDTO.cs" />
+    <Compile Include="DTO\SearchHistoryAdminBillDTO.cs" />
+    <Compile Include="DTO\SearchHistoryUserBillDTO.cs" />
+    <Compile Include="DTO\SearchManageBillDTO.cs" />
     <Compile Include="DTO\SearchManageRenterDTO.cs" />
     <Compile Include="DTO\SearchManageUnitDTO.cs" />
     <Compile Include="DTO\SearchNameCenterDTO.cs" />
@@ -202,13 +205,17 @@
     <Compile Include="Models\AuthorizationModel.cs" />
     <Compile Include="Models\CheckUserByTokenModel.cs" />
     <Compile Include="Models\GetAllDropdownModel.cs" />
+    <Compile Include="Models\GetDashbordModel.cs" />
+    <Compile Include="Models\GetRenterByUserIDModel.cs" />
     <Compile Include="Models\GetUserProfileModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\MsgModel.cs" />
     <Compile Include="Models\Pagination.cs" />
     <Compile Include="Models\ReturnIdModel.cs" />
-    <Compile Include="Models\SearchHistoryPaidBillModel.cs" />
+    <Compile Include="Models\SearchHistoryPaidBillAdminModel.cs" />
+    <Compile Include="Models\SearchHistoryPaidBillUserModel.cs" />
+    <Compile Include="Models\SearchManageBillModel.cs" />
     <Compile Include="Models\SearchManageRenterModel.cs" />
     <Compile Include="Models\SearchManageUnitModel.cs" />
     <Compile Include="Models\SearchMasterDataModel.cs" />

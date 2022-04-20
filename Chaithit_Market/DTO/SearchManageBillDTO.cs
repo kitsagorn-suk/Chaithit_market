@@ -5,15 +5,10 @@ using System.Web;
 
 namespace Chaithit_Market.DTO
 {
-    public class SearchManageRenterDTO
+    public class SearchManageBillDTO
     {
-        private string _nameOrMobile;
-        public string nameOrMobile {
-            get { return _nameOrMobile ?? String.Empty; }
-            set { _nameOrMobile = value; }
-        } 
-        public int empType { set; get; } = 0;
-        public string unitNo { set; get; } = "";
+        public int zoneID { set; get; } = 0;
+        public int zoneSubID { set; get; } = 0;
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
         public int perPage { set; get; } = 0;
