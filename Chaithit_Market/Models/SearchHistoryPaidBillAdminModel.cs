@@ -17,6 +17,7 @@ namespace Chaithit_Market.Models
     {
         public int billID { set; get; } = 0;
         public string billNumber { set; get; } = "";
+        public string unitName { set; get; } = ""; 
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
         public string payDate { set; get; } = "";
@@ -35,6 +36,7 @@ namespace Chaithit_Market.Models
         {
             billID = int.Parse(dr["id"].ToString());
             billNumber = dr["bill_number"].ToString();
+            unitName = dr["unit_name"].ToString();
             startDate =dr["start_date"].ToString();
             endDate = dr["end_date"].ToString();
             payDate = dr["pay_date"].ToString();

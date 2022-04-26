@@ -26,6 +26,8 @@ namespace Chaithit_Market.Models
         public decimal electricNightMarketAmount { set; get; } = 0;
         public decimal netAmount { set; get; } = 0;
         public decimal balanceAmount { set; get; } = 0;
+        public int discountPercent { set; get; } = 0;
+        public decimal discountAmount { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -40,6 +42,8 @@ namespace Chaithit_Market.Models
             electricNightMarketAmount = decimal.Parse(dr["electric_night_market_amount"].ToString());
             netAmount = decimal.Parse(dr["net_amount"].ToString());
             balanceAmount = decimal.Parse(dr["balance_amount"].ToString());
+            discountPercent = int.Parse(dr["discount_percent"].ToString());
+            discountAmount = decimal.Parse(dr["discount_amount"].ToString());
         }
     }
 }

@@ -194,6 +194,7 @@
     <Compile Include="DTO\SearchManageRenterDTO.cs" />
     <Compile Include="DTO\SearchManageUnitDTO.cs" />
     <Compile Include="DTO\SearchNameCenterDTO.cs" />
+    <Compile Include="DTO\SearchOutstandingBillUserDTO.cs" />
     <Compile Include="DTO\SearchUnitDTO.cs" />
     <Compile Include="DTO\SearchUnitstandDTO.cs" />
     <Compile Include="DTO\SearchUserProfileDTO.cs" />

@@ -534,5 +534,49 @@ namespace Chaithit_Market.Services
             }
             return value;
         }
+
+        public SearchHistoryPaidBillAdminModel SearchOutStandingBillUserService(string authorization, string lang, string platform, int logID, SearchHistoryUserBillDTO searchHistoryUserBillDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            SearchHistoryPaidBillAdminModel value = new SearchHistoryPaidBillAdminModel();
+            try
+            {
+                Pagination<SearchHistoryPaidBillAdmin> data = new Pagination<SearchHistoryPaidBillAdmin>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    data = _sql.SearchOutStandingBillUser(searchHistoryUserBillDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.data = data;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SearchOutStandingBillUserService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+        
     }
 }

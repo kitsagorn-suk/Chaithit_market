@@ -18,8 +18,10 @@ namespace Chaithit_Market.Models
         public int tranBillID { set; get; } = 0;
         public int tranRentID { set; get; } = 0;
         public string billCode { set; get; } = "";
+        public string unitName { set; get; } = "";
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
+        public string payDate { set; get; } = "";
         public decimal rentAmount { set; get; } = 0;
         public int electricUnit { set; get; } = 0;
         public decimal electricAmount { set; get; } = 0;
@@ -35,14 +37,17 @@ namespace Chaithit_Market.Models
         public decimal completeAmount { set; get; } = 0;
         public decimal balanceAmount { set; get; } = 0;
         public decimal overpayAmount { set; get; } = 0;
+        public int isComplete { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
             tranBillID = int.Parse(dr["id"].ToString());
             tranRentID = int.Parse(dr["tran_rent_id"].ToString());
             billCode = dr["bill_code"].ToString();
+            unitName = dr["unit_name"].ToString();
             startDate = dr["start_date"].ToString();
-            endDate = dr["emp_type_name"].ToString();
+            endDate = dr["end_date"].ToString();
+            payDate = dr["pay_date"].ToString();
             rentAmount = decimal.Parse(dr["rent_amount"].ToString());
             electricUnit = int.Parse(dr["electric_unit"].ToString());
             electricAmount = decimal.Parse(dr["electric_amount"].ToString());
@@ -58,6 +63,7 @@ namespace Chaithit_Market.Models
             completeAmount = decimal.Parse(dr["complete_amount"].ToString());
             balanceAmount = decimal.Parse(dr["balance_amount"].ToString());
             overpayAmount = decimal.Parse(dr["overpay_amount"].ToString());
+            isComplete = int.Parse(dr["is_complete"].ToString());
         }
     }
 }

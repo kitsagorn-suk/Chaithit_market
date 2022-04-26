@@ -818,7 +818,65 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
-        
+
+        [Route("search/outstanding/bill/user")]
+        [HttpPost]
+        public IHttpActionResult SearchOutStandingBillUser(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(searchHistoryUserBillDTO);
+                int logID = _sql.InsertLogReceiveData("SearchOutStandingBillUser", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                var obj = new object();
+
+                if (searchHistoryUserBillDTO.userID.Equals(0))
+                {
+                    throw new Exception("invalid : userID ");
+                }
+
+                if (searchHistoryUserBillDTO.pageInt.Equals(null) || searchHistoryUserBillDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchHistoryUserBillDTO.perPage.Equals(null) || searchHistoryUserBillDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchHistoryUserBillDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchHistoryUserBillDTO.sortField);
+                }
+
+                if (!(searchHistoryUserBillDTO.sortType == "a" || searchHistoryUserBillDTO.sortType == "d" || searchHistoryUserBillDTO.sortType == "A" || searchHistoryUserBillDTO.sortType == "D" || searchHistoryUserBillDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchOutStandingBillUserService(authHeader, lang, platform.ToLower(), logID, searchHistoryUserBillDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         [Route("search/manage/renter")]
         [HttpPost]
         public IHttpActionResult SearchManageRenter(SearchManageRenterDTO searchManageRenterDTO)
