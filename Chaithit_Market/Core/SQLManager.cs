@@ -4060,6 +4060,95 @@ namespace Chaithit_Market.Core
             return data;
         }
 
+        public DataTable CheckDupicateTranPay(int billID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec check_duplicate_transaction_pay " +
+                "@pBillID ");
+
+            SqlParameter pBillID = new SqlParameter(@"pBillID", SqlDbType.Int);
+            pBillID.Direction = ParameterDirection.Input;
+            pBillID.Value = billID;
+            sql.Parameters.Add(pBillID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            return table;
+        }
+
+        public _ReturnIdModel InsertTranPay(SaveTranPayDTO saveTranPayDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec insert_billpay_file " +
+                "@pBillID," +
+                "@pPayamount," +
+                "@pComment," +
+                "@pRentIsPaid," +
+                "@pElectricIsPaid," +
+                "@pWaterIsPaid," +
+                "@pLampunitIsPaid," +
+                "@pElectricUnitIsPaid," +
+                "@pCreateBy ");
+
+            SqlParameter pBillID = new SqlParameter(@"pBillID", SqlDbType.VarChar, 100);
+            pBillID.Direction = ParameterDirection.Input;
+            pBillID.Value = saveTranPayDTO.billID;
+            sql.Parameters.Add(pBillID);
+
+            SqlParameter pPayamount = new SqlParameter(@"pPayamount", SqlDbType.Decimal);
+            pPayamount.Direction = ParameterDirection.Input;
+            pPayamount.Value = saveTranPayDTO.payAmount;
+            sql.Parameters.Add(pPayamount);
+
+            SqlParameter pComment = new SqlParameter(@"pComment", SqlDbType.VarChar);
+            pComment.Direction = ParameterDirection.Input;
+            pComment.Value = saveTranPayDTO.comment;
+            sql.Parameters.Add(pComment);
+
+            SqlParameter pRentIsPaid = new SqlParameter(@"pRentIsPaid", SqlDbType.Int);
+            pRentIsPaid.Direction = ParameterDirection.Input;
+            pRentIsPaid.Value = 1;
+            sql.Parameters.Add(pRentIsPaid);
+
+            SqlParameter pElectricIsPaid = new SqlParameter(@"pElectricIsPaid", SqlDbType.Int);
+            pElectricIsPaid.Direction = ParameterDirection.Input;
+            pElectricIsPaid.Value = 1;
+            sql.Parameters.Add(pElectricIsPaid);
+
+            SqlParameter pWaterIsPaid = new SqlParameter(@"pWaterIsPaid", SqlDbType.Int);
+            pWaterIsPaid.Direction = ParameterDirection.Input;
+            pWaterIsPaid.Value = 1;
+            sql.Parameters.Add(pWaterIsPaid);
+
+            SqlParameter pLampunitIsPaid = new SqlParameter(@"pLampunitIsPaid", SqlDbType.Int);
+            pLampunitIsPaid.Direction = ParameterDirection.Input;
+            pLampunitIsPaid.Value = 1;
+            sql.Parameters.Add(pLampunitIsPaid);
+
+            SqlParameter pElectricUnitIsPaid = new SqlParameter(@"pElectricUnitIsPaid", SqlDbType.Int);
+            pElectricUnitIsPaid.Direction = ParameterDirection.Input;
+            pElectricUnitIsPaid.Value = 1;
+            sql.Parameters.Add(pElectricUnitIsPaid);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
     }
 
     public class SQLCustomExecute

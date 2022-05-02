@@ -537,6 +537,38 @@ namespace Chaithit_Market.Core
             }
             return value;
         }
-        
+
+        public static ValidationModel CheckValidationDupicateTranPay(string lang, int billID)
+        {
+            ValidationModel value = new ValidationModel();
+            try
+            {
+                GetMessageTopicDTO getMessage = new GetMessageTopicDTO();
+                ValidationModel.InvalidState state;
+
+                DataTable dt = _sql.CheckDupicateTranPay(billID);
+
+                if (dt.Rows.Count > 0)
+                {
+                    if (dt.Rows[0]["notComplete"].ToString() == "false")
+                    {
+                        state = ValidationModel.InvalidState.E301020;
+                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
+                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                    }
+                }
+
+                getMessage = ValidationModel.GetInvalidMessage(ValidationModel.InvalidState.S201001, lang);
+                value.Success = true;
+                value.InvalidCode = ValidationModel.GetInvalidCode(ValidationModel.InvalidState.S201001);
+                value.InvalidMessage = getMessage.message;
+                value.InvalidText = getMessage.topic;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return value;
+        }
     }
 }

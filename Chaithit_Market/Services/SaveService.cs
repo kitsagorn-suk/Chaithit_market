@@ -257,5 +257,50 @@ namespace Chaithit_Market.Services
             }
             return value;
         }
+
+        public ReturnIdModel SaveTranPayService(string authorization, string lang, string platform, int logID,
+            SaveTranPayDTO saveTranPayDTO, int userID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            ReturnIdModel value = new ReturnIdModel();
+            try
+            {
+                value.data = new _ReturnIdModel();
+                ValidationModel validation = new ValidationModel();
+                
+                int billID = 0;
+                int.TryParse(p, out billID);
+                validation = ValidationManager.CheckValidationDupicateTranPay(lang, billID);
+                if (validation.Success == true)
+                {
+                    value.data = _sql.InsertTranPay(saveTranPayDTO, userID);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "SaveTranPayService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
     }
 }

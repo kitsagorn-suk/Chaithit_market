@@ -1110,6 +1110,162 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
+
+        [Route("save/tranPay")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> SaveTranPay()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] ?? WebConfigurationManager.AppSettings["default_language"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                var obj = new Object();
+                SaveTranPayDTO saveTranPayDTO = new SaveTranPayDTO();
+                string diskFolderPath = string.Empty;
+                string subFolder = string.Empty;
+                string keyName = string.Empty;
+                string fileName = string.Empty;
+                string newFileName = string.Empty;
+                string fileURL = string.Empty;
+                var fileSize = long.MinValue;
+
+                var path = WebConfigurationManager.AppSettings["body_path"];
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                if (!Request.Content.IsMimeMultipartContent("form-data"))
+                {
+                    throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType));
+                }
+
+                MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(path);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                foreach (var key in streamProvider.FormData.AllKeys)
+                {
+                    foreach (var val in streamProvider.FormData.GetValues(key))
+                    {
+                        if (key == "billID")
+                        {
+                            saveTranPayDTO.billID = val;
+                        }
+                        if (key == "payAmount")
+                        {
+                            saveTranPayDTO.payAmount = decimal.Parse(string.IsNullOrEmpty(val) ? "0" : val);
+                        }
+                        if (key == "comment")
+                        {
+                            saveTranPayDTO.comment = val;
+                        }
+                    }
+                }
+
+                string json = JsonConvert.SerializeObject(saveTranPayDTO);
+                int logID = _sql.InsertLogReceiveData("SaveTranPay", json, timestampNow.ToString(), authHeader,
+                        data.user_id, platform.ToLower());
+
+                #region msgCheck
+                string checkMissingOptional = "";
+                
+                if (string.IsNullOrEmpty(saveTranPayDTO.billID))
+                {
+                    checkMissingOptional += "saveTranPayDTO  ";
+                }
+                if (saveTranPayDTO.payAmount == 0)
+                {
+                    checkMissingOptional += "payAmount Must Not 0";
+                }
+                
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
+                #endregion
+
+                ReturnIdModel payID = new ReturnIdModel();
+                SaveService srv = new SaveService();
+                payID = srv.SaveTranPayService(authHeader, lang, platform.ToLower(), logID, saveTranPayDTO, data.user_id);
+
+                if (payID.data != null && !payID.data.id.Equals(0))
+                {
+                    foreach (MultipartFileData dataitem in streamProvider.FileData)
+                    {
+                        try
+                        {
+                            fileSize = new FileInfo(dataitem.LocalFileName).Length;
+                            if (fileSize > 3100000)
+                            {
+                                throw new Exception("error file size limit 3.00 MB");
+                            }
+
+                            subFolder = data.user_id + "\\PayPath";
+                            diskFolderPath = string.Format(WebConfigurationManager.AppSettings["file_pay_path"], subFolder);
+
+
+                            keyName = dataitem.Headers.ContentDisposition.Name.Replace("\"", "");
+                            fileName = dataitem.Headers.ContentDisposition.FileName.Replace("\"", "");
+                            newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
+
+                            var fullPath = Path.Combine(diskFolderPath, newFileName);
+                            var fileInfo = new FileInfo(fullPath);
+                            while (fileInfo.Exists)
+                            {
+                                newFileName = fileInfo.Name.Replace(fileInfo.Extension, "");
+                                newFileName = newFileName + Guid.NewGuid().ToString() + fileInfo.Extension;
+
+                                fullPath = Path.Combine(diskFolderPath, newFileName);
+                                fileInfo = new FileInfo(fullPath);
+                            }
+
+                            fileURL = string.Format(WebConfigurationManager.AppSettings["file_pay_url"], data.user_id + "/PayPath", newFileName);
+
+                            if (!Directory.Exists(fileInfo.Directory.FullName))
+                            {
+                                Directory.CreateDirectory(fileInfo.Directory.FullName);
+                            }
+                            File.Move(dataitem.LocalFileName, fullPath);
+
+                            if (payID.data.id != 0 && !string.IsNullOrEmpty(newFileName))
+                            {
+                                UploadFileDTO uploadFileDTO = new UploadFileDTO();
+                                uploadFileDTO.actionID = payID.data.id;
+                                uploadFileDTO.actionName = "transaction_pay";
+                                uploadFileDTO.fileExtension = fileInfo.Extension.Split('.')[1];
+                                uploadFileDTO.name = newFileName;
+                                uploadFileDTO.url = fileURL;
+
+                                _sql.InsertUploadFile(uploadFileDTO, data.user_id);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            string message = ex.StackTrace;
+                        }
+                    }
+                }
+                else
+                {
+                    //insert fail
+                }
+
+                obj = payID;
+
+                return Request.CreateResponse(HttpStatusCode.OK, obj, Configuration.Formatters.JsonFormatter);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
         #endregion
 
         #region Transection
