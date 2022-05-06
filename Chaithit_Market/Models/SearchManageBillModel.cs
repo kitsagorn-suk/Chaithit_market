@@ -38,6 +38,8 @@ namespace Chaithit_Market.Models
         public decimal balanceAmount { set; get; } = 0;
         public decimal overpayAmount { set; get; } = 0;
         public int isComplete { set; get; } = 0;
+        public string fileCode { set; get; } = "";
+        public string[] imageUrl { get; set; } = { "" };
 
         public void loadData(DataRow dr)
         {
@@ -64,6 +66,7 @@ namespace Chaithit_Market.Models
             balanceAmount = decimal.Parse(dr["balance_amount"].ToString());
             overpayAmount = decimal.Parse(dr["overpay_amount"].ToString());
             isComplete = int.Parse(dr["is_complete"].ToString());
+            fileCode = dr["file_code"].ToString();
         }
     }
 }

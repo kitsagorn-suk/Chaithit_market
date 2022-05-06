@@ -4178,14 +4178,25 @@ namespace Chaithit_Market.Core
 
             if (!string.IsNullOrEmpty(getDashbordDTO.month))
             {
-                int year = 0, month = 0;
-                int.TryParse(getDashbordDTO.month.Substring(0, 4), out year);
-                int.TryParse(getDashbordDTO.month.Substring(4, 2), out month);
-                var firstDayOfMonth = new DateTime(year, month, 1);
-                var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                if (getDashbordDTO.month.ToLower() == "thismonth")
+                {
+                    var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
 
-                startDate = firstDayOfMonth.ToString("yyyy-MM-dd");
-                endDate = lastDayOfMonth.ToString("yyyy-MM-dd");
+                    startDate = firstDayOfMonth.ToString("yyyy-MM-dd");
+                    endDate = lastDayOfMonth.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    int year = 0, month = 0;
+                    int.TryParse(getDashbordDTO.month.Substring(0, 4), out year);
+                    int.TryParse(getDashbordDTO.month.Substring(4, 2), out month);
+                    var firstDayOfMonth = new DateTime(year, month, 1);
+                    var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+                    startDate = firstDayOfMonth.ToString("yyyy-MM-dd");
+                    endDate = lastDayOfMonth.ToString("yyyy-MM-dd");
+                }
             }
             else if (!string.IsNullOrEmpty(getDashbordDTO.quarter))
             {

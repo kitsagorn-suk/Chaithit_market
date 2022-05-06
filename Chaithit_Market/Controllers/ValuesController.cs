@@ -1307,6 +1307,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+
         //[Route("get/tranpay/admin")]
         //[HttpPost]
         //public IHttpActionResult GetTranPayAdmin()
