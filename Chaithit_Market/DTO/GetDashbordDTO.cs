@@ -7,7 +7,7 @@ namespace Chaithit_Market.DTO
 {
     public class GetDashbordDTO
     {
-        public string startDate { set; get; } = "";
-        public string endDate { set; get; } = "";
+        public string month { set; get; } = "";
+        public string quarter { set; get; } = "";
     }
 }

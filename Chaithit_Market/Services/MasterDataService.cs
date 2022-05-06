@@ -665,6 +665,48 @@ namespace Chaithit_Market.Services
             return value;
         }
 
+        public GetDropdownMonthModel GetDropdownSixMonthAgoService(string authorization, string lang, string platform, int logID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            GetDropdownMonthModel value = new GetDropdownMonthModel();
+            try
+            {
+                value.data = new List<DropdownMonth>();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.GetDropdownSixMonthAgo();
+                    value.success = validation.Success;
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetDropdownSixMonthAgoService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
         public GetAllDropdownModel GetDropdownRentTypeService(string authorization, string lang, string platform, int logID)
         {
             if (_sql == null)

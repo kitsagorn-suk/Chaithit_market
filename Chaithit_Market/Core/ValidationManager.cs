@@ -538,7 +538,7 @@ namespace Chaithit_Market.Core
             return value;
         }
 
-        public static ValidationModel CheckValidationDupicateTranPay(string lang, int billID)
+        public static ValidationModel CheckValidationDupicateTranPay(string lang, string billID)
         {
             ValidationModel value = new ValidationModel();
             try
@@ -546,15 +546,22 @@ namespace Chaithit_Market.Core
                 GetMessageTopicDTO getMessage = new GetMessageTopicDTO();
                 ValidationModel.InvalidState state;
 
-                DataTable dt = _sql.CheckDupicateTranPay(billID);
-
-                if (dt.Rows.Count > 0)
+                string[] billArr = billID.Split(',');
+                foreach (var p in billArr)
                 {
-                    if (dt.Rows[0]["notComplete"].ToString() == "false")
+                    int bill = 0;
+                    int.TryParse(p, out bill);
+
+                    DataTable dt = _sql.CheckDupicateTranPay(bill);
+
+                    if (dt.Rows.Count > 0)
                     {
-                        state = ValidationModel.InvalidState.E301020;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                        if (dt.Rows[0]["notComplete"].ToString() == "false")
+                        {
+                            state = ValidationModel.InvalidState.E301020;
+                            getMessage = ValidationModel.GetInvalidMessage(state, lang);
+                            return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                        }
                     }
                 }
 

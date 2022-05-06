@@ -2496,6 +2496,7 @@ namespace Chaithit_Market.Core
                 "@pUnitCode," +
                 "@pName," +
                 "@pRateID," +
+                "@pDnsMeter," +
                 "@pCreateBy");
 
             SqlParameter pZoneID = new SqlParameter(@"pZoneID", SqlDbType.Int);
@@ -2522,6 +2523,11 @@ namespace Chaithit_Market.Core
             pRateID.Direction = ParameterDirection.Input;
             pRateID.Value = saveUnitDTO.rateID;
             sql.Parameters.Add(pRateID);
+
+            SqlParameter pDnsMeter = new SqlParameter(@"pDnsMeter", SqlDbType.VarChar);
+            pDnsMeter.Direction = ParameterDirection.Input;
+            pDnsMeter.Value = saveUnitDTO.electricMeter;
+            sql.Parameters.Add(pDnsMeter);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
@@ -2553,6 +2559,7 @@ namespace Chaithit_Market.Core
                 "@pUnitCode," +
                 "@pName," +
                 "@pRateID," +
+                "@pDnsMeter," +
                 "@pUpdateBy ");
 
             SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
@@ -2584,6 +2591,11 @@ namespace Chaithit_Market.Core
             pRateID.Direction = ParameterDirection.Input;
             pRateID.Value = saveUnitDTO.rateID;
             sql.Parameters.Add(pRateID);
+
+            SqlParameter pDnsMeter = new SqlParameter(@"pDnsMeter", SqlDbType.VarChar);
+            pDnsMeter.Direction = ParameterDirection.Input;
+            pDnsMeter.Value = saveUnitDTO.electricMeter;
+            sql.Parameters.Add(pDnsMeter);
 
             SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -3028,6 +3040,120 @@ namespace Chaithit_Market.Core
             }
 
             return listData;
+        }
+        
+        public List<DropdownMonth> GetDropdownSixMonthAgo()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("id");
+            table.Columns.Add("name");
+
+            DateTime curdate = DateTime.Now;
+            string[] newDateTime1 = curdate.AddMonths(0).ToString("yyyy-MM-dd").Split('-');
+            string[] newDateTime2 = curdate.AddMonths(-1).ToString("yyyy-MM-dd").Split('-');
+            string[] newDateTime3 = curdate.AddMonths(-2).ToString("yyyy-MM-dd").Split('-');
+            string[] newDateTime4 = curdate.AddMonths(-3).ToString("yyyy-MM-dd").Split('-');
+            string[] newDateTime5 = curdate.AddMonths(-4).ToString("yyyy-MM-dd").Split('-');
+            string[] newDateTime6 = curdate.AddMonths(-5).ToString("yyyy-MM-dd").Split('-');
+
+            DataRow dr = table.NewRow();
+            dr["id"] = newDateTime1[0] + newDateTime1[1];
+            dr["name"] = getFullMonthName(newDateTime1[1]) + " " + newDateTime1[0];
+            table.Rows.Add(dr);
+
+            DataRow dr1 = table.NewRow();
+            dr1["id"] = newDateTime2[0] + newDateTime2[1];
+            dr1["name"] = getFullMonthName(newDateTime2[1]) + " " + newDateTime2[0];
+            table.Rows.Add(dr1);
+
+            DataRow dr2 = table.NewRow();
+            dr2["id"] = newDateTime3[0] + newDateTime3[1];
+            dr2["name"] = getFullMonthName(newDateTime3[1]) + " " + newDateTime3[0];
+            table.Rows.Add(dr2);
+
+            DataRow dr3 = table.NewRow();
+            dr3["id"] = newDateTime4[0] + newDateTime4[1];
+            dr3["name"] = getFullMonthName(newDateTime4[1]) + " " + newDateTime4[0];
+            table.Rows.Add(dr3);
+
+            DataRow dr4 = table.NewRow();
+            dr4["id"] = newDateTime5[0] + newDateTime5[1];
+            dr4["name"] = getFullMonthName(newDateTime5[1]) + " " + newDateTime5[0];
+            table.Rows.Add(dr4);
+
+            DataRow dr5 = table.NewRow();
+            dr5["id"] = newDateTime6[0] + newDateTime6[1];
+            dr5["name"] = getFullMonthName(newDateTime6[1]) + " " + newDateTime6[0];
+            table.Rows.Add(dr5);
+
+            List<DropdownMonth> listData = new List<DropdownMonth>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DropdownMonth data = new DropdownMonth();
+                    data.loadData(row);
+                    listData.Add(data);
+                }
+            }
+
+            return listData;
+        }
+
+        public string getFullMonthName(string monthNo)
+        {
+            string fullmonth = "";
+            if (monthNo == "01")
+            {
+                fullmonth = "มกราคม";
+            }
+            else if (monthNo == "02")
+            {
+                fullmonth = "กุมภาพันธ์";
+            }
+            else if (monthNo == "03")
+            {
+                fullmonth = "มีนาคม";
+            }
+            else if (monthNo == "04")
+            {
+                fullmonth = "เมษายน";
+            }
+            else if (monthNo == "05")
+            {
+                fullmonth = "พฤษภาคม";
+            }
+            else if (monthNo == "06")
+            {
+                fullmonth = "มิถุนายน";
+            }
+            else if (monthNo == "07")
+            {
+                fullmonth = "กรกฎาคม";
+            }
+            else if (monthNo == "08")
+            {
+                fullmonth = "สิงหาคม";
+            }
+            else if (monthNo == "09")
+            {
+                fullmonth = "กันยายน";
+            }
+            else if (monthNo == "10")
+            {
+                fullmonth = "ตุลาคม";
+            }
+            else if (monthNo == "11")
+            {
+                fullmonth = "พฤศจิกายน";
+            }
+            else if (monthNo == "12")
+            {
+                fullmonth = "ธันวาคม";
+            }
+
+            return fullmonth;
         }
 
         public List<DropdownAllData> GetDropdownRentType()
@@ -3843,6 +3969,7 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
 
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_manage_bill_page " +
+                "@pBillCode, " +
                 "@pStartDate, " +
                 "@pEndDate, " +
                 "@pIsComplete, " +
@@ -3850,6 +3977,11 @@ namespace Chaithit_Market.Core
                 "@pPerPage, " +
                 "@pSortField, " +
                 "@pSortType");
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 15);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = searchManageBillDTO.billCode;
+            sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 15);
             pStartDate.Direction = ParameterDirection.Input;
@@ -3914,9 +4046,15 @@ namespace Chaithit_Market.Core
 
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_manage_bill_total " +
+                "@pBillCode, " +
                 "@pStartDate, " +
                 "@pEndDate, " +
                 "@pIsComplete ");
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 15);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = searchManageBillDTO.billCode;
+            sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 15);
             pStartDate.Direction = ParameterDirection.Input;
@@ -4036,14 +4174,76 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pEndDate");
 
+            string startDate = "", endDate = "";
+
+            if (!string.IsNullOrEmpty(getDashbordDTO.month))
+            {
+                int year = 0, month = 0;
+                int.TryParse(getDashbordDTO.month.Substring(0, 4), out year);
+                int.TryParse(getDashbordDTO.month.Substring(4, 2), out month);
+                var firstDayOfMonth = new DateTime(year, month, 1);
+                var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+                startDate = firstDayOfMonth.ToString("yyyy-MM-dd");
+                endDate = lastDayOfMonth.ToString("yyyy-MM-dd");
+            }
+            else if (!string.IsNullOrEmpty(getDashbordDTO.quarter))
+            {
+                if (getDashbordDTO.quarter == "1")
+                {
+                    int year = DateTime.Now.Year;
+                    DateTime firstDay = new DateTime(year, 1, 1);
+                    DateTime lastDay = new DateTime(year, 3, 31);
+
+                    startDate = firstDay.ToString("yyyy-MM-dd");
+                    endDate = lastDay.ToString("yyyy-MM-dd");
+                }
+                else if (getDashbordDTO.quarter == "2")
+                {
+                    int year = DateTime.Now.Year;
+                    DateTime firstDay = new DateTime(year, 4, 1);
+                    DateTime lastDay = new DateTime(year, 6, 30);
+
+                    startDate = firstDay.ToString("yyyy-MM-dd");
+                    endDate = lastDay.ToString("yyyy-MM-dd");
+                }
+                else if (getDashbordDTO.quarter == "3")
+                {
+                    int year = DateTime.Now.Year;
+                    DateTime firstDay = new DateTime(year, 7, 1);
+                    DateTime lastDay = new DateTime(year, 9, 30);
+
+                    startDate = firstDay.ToString("yyyy-MM-dd");
+                    endDate = lastDay.ToString("yyyy-MM-dd");
+                }
+                else if (getDashbordDTO.quarter == "4")
+                {
+                    int year = DateTime.Now.Year;
+                    DateTime firstDay = new DateTime(year, 10, 1);
+                    DateTime lastDay = new DateTime(year, 12, 31);
+
+                    startDate = firstDay.ToString("yyyy-MM-dd");
+                    endDate = lastDay.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    int year = DateTime.Now.Year;
+                    DateTime firstDay = new DateTime(year, 1, 1);
+                    DateTime lastDay = new DateTime(year, 12, 31);
+
+                    startDate = firstDay.ToString("yyyy-MM-dd");
+                    endDate = lastDay.ToString("yyyy-MM-dd");
+                }
+            }
+
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar);
             pStartDate.Direction = ParameterDirection.Input;
-            pStartDate.Value = getDashbordDTO.startDate;
+            pStartDate.Value = startDate;
             sql.Parameters.Add(pStartDate);
 
             SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar);
             pEndDate.Direction = ParameterDirection.Input;
-            pEndDate.Value = getDashbordDTO.endDate;
+            pEndDate.Value = endDate;
             sql.Parameters.Add(pEndDate);
 
             table = sql.executeQueryWithReturnTable();
@@ -4139,6 +4339,43 @@ namespace Chaithit_Market.Core
 
             _ReturnIdModel data = new _ReturnIdModel();
 
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public HistoryPaidBillAdminTotalModel GetOutStandingBillUserTotal(GetHistoryUserBillDTO getHistoryUserBillDTO)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_outstanding_bill_user_total " +
+                "@pUserID, " +
+                "@pStartDate, " +
+                "@pEndDate " );
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = getHistoryUserBillDTO.userID;
+            sql.Parameters.Add(pUserID);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = getHistoryUserBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = getHistoryUserBillDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            table = sql.executeQueryWithReturnTable();
+
+            HistoryPaidBillAdminTotalModel data = new HistoryPaidBillAdminTotalModel();
             if (table != null && table.Rows.Count > 0)
             {
                 foreach (DataRow row in table.Rows)
