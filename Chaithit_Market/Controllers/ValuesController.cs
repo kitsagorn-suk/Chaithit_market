@@ -14,6 +14,9 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using OfficeOpenXml;
+using System.Data;
+using System.Data.OleDb;
 
 namespace Chaithit_Market.Controllers
 {
@@ -511,9 +514,9 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("upload/file")]
+        [Route("upload/electric")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UploadFile()
+        public async Task<HttpResponseMessage> UploadFileExcel()
         {
             var request = HttpContext.Current.Request;
             string authHeader = (request.Headers["Authorization"] ?? "");
@@ -524,13 +527,11 @@ namespace Chaithit_Market.Controllers
             UploadModel value = new UploadModel();
             value.data = new _ServiceUploadData();
 
-            int userID = 0;
             string diskFolderPath = string.Empty;
-            string subFolder = string.Empty;
             string keyName = string.Empty;
             string fileName = string.Empty;
             string newFileName = string.Empty;
-            string fileURL = string.Empty;
+            string fileExtension = string.Empty;
             var fileSize = long.MinValue;
 
             var path = WebConfigurationManager.AppSettings["body_path"];
@@ -550,52 +551,91 @@ namespace Chaithit_Market.Controllers
 
             foreach (MultipartFileData fileData in streamProvider.FileData)
             {
-                fileSize = new FileInfo(fileData.LocalFileName).Length;
-                if (fileSize > 3100000)
-                {
-                    throw new Exception("error file size limit 3.00 MB");
-                }
-
-                keyName = fileData.Headers.ContentDisposition.Name.Replace("\"", "");
                 fileName = fileData.Headers.ContentDisposition.FileName.Replace("\"", "");
-                newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
-                
-                if (keyName == "upload_user_profile")
-                {
-                    subFolder = userID + "\\ProFilePath";
-                    diskFolderPath = string.Format(WebConfigurationManager.AppSettings["file_user_path"], subFolder);
-                    fileURL = string.Format(WebConfigurationManager.AppSettings["file_user_url"], userID + "/ProFilePath", newFileName);
-                }
+                fileSize = new FileInfo(fileData.LocalFileName).Length;
+                fileExtension = Path.GetExtension(fileName);
 
-                var fullPath = Path.Combine(diskFolderPath, newFileName);
-                var fileInfo = new FileInfo(fullPath);
-                while (fileInfo.Exists)
-                {
-                    newFileName = fileInfo.Name.Replace(fileInfo.Extension, "");
-                    newFileName = newFileName + Guid.NewGuid().ToString() + fileInfo.Extension;
-
-                    fullPath = Path.Combine(diskFolderPath, newFileName);
-                    fileInfo = new FileInfo(fullPath);
-                }
-
-                if (!Directory.Exists(fileInfo.Directory.FullName))
-                {
-                    Directory.CreateDirectory(fileInfo.Directory.FullName);
-                }
-                File.Move(fileData.LocalFileName, fullPath);
-
-                if (!File.Exists(fullPath))
+                if ((fileExtension != ".xls") && (fileExtension != ".xlsx"))
                 {
                     value.success = false;
                     value.data.file_size = fileSize.ToString();
-                    value.msg = new MsgModel() { code = 0, text = "อัพโหลดไม่สำเร็จ", topic = "ไม่สำเร็จ" };
+                    value.msg = new MsgModel() { code = 0, text = "กรุณาเลือกไฟล์นามสกุล xls หรือ xlsx", topic = "ไม่สำเร็จ" };
                 }
                 else
                 {
-                    value.success = true;
-                    value.data.img_url = fileURL;
-                    value.data.file_size = fileSize.ToString();
-                    value.msg = new MsgModel() { code = 0, text = "อัพโหลดสำเร็จ", topic = "สำเร็จ" };
+                    
+                    if (fileSize > 3100000)
+                    {
+                        throw new Exception("error file size limit 3.00 MB");
+                    }
+
+                    
+                    newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
+
+                    diskFolderPath = WebConfigurationManager.AppSettings["file_electric_path"];
+
+                    var fullPath = Path.Combine(diskFolderPath, newFileName);
+                    var fileInfo = new FileInfo(fullPath);
+                    while (fileInfo.Exists)
+                    {
+                        newFileName = fileInfo.Name.Replace(fileInfo.Extension, "");
+                        newFileName = newFileName + Guid.NewGuid().ToString() + fileInfo.Extension;
+
+                        fullPath = Path.Combine(diskFolderPath, newFileName);
+                        fileInfo = new FileInfo(fullPath);
+                    }
+
+                    if (!Directory.Exists(fileInfo.Directory.FullName))
+                    {
+                        Directory.CreateDirectory(fileInfo.Directory.FullName);
+                    }
+                    File.Move(fileData.LocalFileName, fullPath);
+
+                    if (!File.Exists(fullPath))
+                    {
+                        value.success = false;
+                        value.data.file_size = fileSize.ToString();
+                        value.msg = new MsgModel() { code = 0, text = "อัพโหลดไม่สำเร็จ", topic = "ไม่สำเร็จ" };
+                    }
+                    else
+                    {
+                        DataTable dt = new DataTable();
+                        string strConnection;
+
+                        if (Path.GetExtension(fullPath.ToLower()) == ".xls")
+                            strConnection = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fullPath + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1;\"";
+                        else
+                            strConnection = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fullPath + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\"";
+                        OleDbConnection exconn = new OleDbConnection(strConnection);
+                        exconn.Open();
+                        OleDbDataAdapter da = new OleDbDataAdapter("SELECT GroupName, DSN, Value, ValueTimeStamp, StatusTextEN FROM[ต้นฉบับ$]", exconn);
+                        da.Fill(dt);
+                        exconn.Close();
+                        if (dt.AsEnumerable().Any())
+                        {
+                            List<ElectricModel> electricModel = dt.AsEnumerable().Select(c => new ElectricModel()
+                            {
+                                GroupName = c["GroupName"] != DBNull.Value ? c.Field<string>("GroupName") : "",
+                                DSN = c["DSN"] != DBNull.Value ? c.Field<string>("DSN") : "",
+                                Value = c["Value"] != DBNull.Value ? (decimal)(c.Field<decimal>("Value")) : 0,
+                                ValueTimeStamp = c["ValueTimeStamp"] != DBNull.Value ? c.Field<DateTime>("ValueTimeStamp") : DateTime.Now,
+                                StatusTextEN = c["StatusTextEN"] != DBNull.Value ? c.Field<string>("StatusTextEN") : ""
+
+                            }).Where(c => c.DSN != "").ToList();
+
+                            //srv.RenewHollidayFromUpload(hollidays, user);
+                            //return "";
+                        }
+                        else
+                        {
+                            //return "File has no data!!";
+                        }
+
+                        value.success = true;
+                        value.data.img_url = "";
+                        value.data.file_size = fileSize.ToString();
+                        value.msg = new MsgModel() { code = 0, text = "อัพโหลดสำเร็จ", topic = "สำเร็จ" };
+                    }
                 }
             }
 

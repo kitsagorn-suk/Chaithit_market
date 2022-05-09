@@ -273,7 +273,7 @@ namespace Chaithit_Market.Services
                 ValidationModel validation = new ValidationModel();
                 
                 int billID = 0;
-                int.TryParse(p, out billID);
+                //int.TryParse(p, out billID);
                 validation = ValidationManager.CheckValidationDupicateTranPay(lang, billID);
                 if (validation.Success == true)
                 {
