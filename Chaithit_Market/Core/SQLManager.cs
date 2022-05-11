@@ -1048,17 +1048,11 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pEndDate," +
                 "@pRentAmount," +
-                "@pElectricUnit," +
-                "@pElectricAmount," +
                 "@pWaterUnit," +
-                "@pWaterAmount," +
                 "@pLampUnit," +
                 "@pElectricEquipUnit," +
-                "@pElectricNightMarketAmount," +
-                "@pTotalAmount," +
                 "@pDiscountPercent," +
                 "@pDiscountAmount," +
-                "@pNetAmount," +
                 "@pCreateBy");
 
             SqlParameter pTranRentID = new SqlParameter(@"pTranRentID", SqlDbType.Int);
@@ -1086,25 +1080,10 @@ namespace Chaithit_Market.Core
             pRentAmount.Value = insertTransectionBillDTO.rentAmount;
             sql.Parameters.Add(pRentAmount);
 
-            SqlParameter pElectricUnit = new SqlParameter(@"pElectricUnit", SqlDbType.Int);
-            pElectricUnit.Direction = ParameterDirection.Input;
-            pElectricUnit.Value = insertTransectionBillDTO.electricUnit;
-            sql.Parameters.Add(pElectricUnit);
-
-            SqlParameter pElectricAmount = new SqlParameter(@"pElectricAmount", SqlDbType.Decimal);
-            pElectricAmount.Direction = ParameterDirection.Input;
-            pElectricAmount.Value = insertTransectionBillDTO.electricAmount;
-            sql.Parameters.Add(pElectricAmount);
-
             SqlParameter pWaterUnit = new SqlParameter(@"pWaterUnit", SqlDbType.Int);
             pWaterUnit.Direction = ParameterDirection.Input;
             pWaterUnit.Value = insertTransectionBillDTO.waterUnit;
             sql.Parameters.Add(pWaterUnit);
-
-            SqlParameter pWaterAmount = new SqlParameter(@"pWaterAmount", SqlDbType.Decimal);
-            pWaterAmount.Direction = ParameterDirection.Input;
-            pWaterAmount.Value = insertTransectionBillDTO.waterAmount;
-            sql.Parameters.Add(pWaterAmount);
 
             SqlParameter pLampUnit = new SqlParameter(@"pLampUnit", SqlDbType.Int);
             pLampUnit.Direction = ParameterDirection.Input;
@@ -1116,16 +1095,6 @@ namespace Chaithit_Market.Core
             pElectricEquipUnit.Value = insertTransectionBillDTO.electricEquipUnit;
             sql.Parameters.Add(pElectricEquipUnit);
 
-            SqlParameter pElectricNightMarketAmount = new SqlParameter(@"pElectricNightMarketAmount", SqlDbType.Decimal);
-            pElectricNightMarketAmount.Direction = ParameterDirection.Input;
-            pElectricNightMarketAmount.Value = insertTransectionBillDTO.electricNightMarketAmount;
-            sql.Parameters.Add(pElectricNightMarketAmount); 
-
-            SqlParameter pTotalAmount = new SqlParameter(@"pTotalAmount", SqlDbType.Decimal);
-            pTotalAmount.Direction = ParameterDirection.Input;
-            pTotalAmount.Value = insertTransectionBillDTO.totalAmount;
-            sql.Parameters.Add(pTotalAmount);
-
             SqlParameter pDiscountPercent = new SqlParameter(@"pDiscountPercent", SqlDbType.Int);
             pDiscountPercent.Direction = ParameterDirection.Input;
             pDiscountPercent.Value = insertTransectionBillDTO.discountPercent;
@@ -1135,12 +1104,7 @@ namespace Chaithit_Market.Core
             pDiscountAmount.Direction = ParameterDirection.Input;
             pDiscountAmount.Value = insertTransectionBillDTO.discountAmount;
             sql.Parameters.Add(pDiscountAmount);
-
-            SqlParameter pNetAmount = new SqlParameter(@"pNetAmount", SqlDbType.Decimal);
-            pNetAmount.Direction = ParameterDirection.Input;
-            pNetAmount.Value = insertTransectionBillDTO.netAmount;
-            sql.Parameters.Add(pNetAmount);
-
+            
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
             pCreateBy.Value = userID;
@@ -4021,14 +3985,14 @@ namespace Chaithit_Market.Core
             table = sql.executeQueryWithReturnTable();
 
             Pagination<SearchManageBill> pagination = new Pagination<SearchManageBill>();
-
-
+            
             if (table != null && table.Rows.Count > 0)
             {
                 foreach (DataRow row in table.Rows)
                 {
                     SearchManageBill data = new SearchManageBill();
                     data.loadData(row);
+                    data.imageUrl = data.fileCode.Split(',');
                     pagination.data.Add(data);
                 }
             }
@@ -4394,6 +4358,66 @@ namespace Chaithit_Market.Core
                     data.loadData(row);
                 }
             }
+
+            return data;
+        }
+
+        public _ReturnIdModel UpdateAdminApprove(GetIDCenterDTO getIDCenterDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec update_admin_approve " +
+                "@pBillID," +
+                "@pUpdateBy ");
+
+            SqlParameter pBillID = new SqlParameter(@"pBillID", SqlDbType.Int);
+            pBillID.Direction = ParameterDirection.Input;
+            pBillID.Value = getIDCenterDTO.id;
+            sql.Parameters.Add(pBillID);
+
+            SqlParameter pUpdateBy = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
+            pUpdateBy.Direction = ParameterDirection.Input;
+            pUpdateBy.Value = userID;
+            sql.Parameters.Add(pUpdateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public TranPayImageModel GetTranPayImage(int billID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_tranrent_image " +
+                "@pBillID");
+
+            SqlParameter pBillID = new SqlParameter(@"pBillID", SqlDbType.Int);
+            pBillID.Direction = ParameterDirection.Input;
+            pBillID.Value = billID;
+            sql.Parameters.Add(pBillID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            TranPayImageModel data = new TranPayImageModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            data.imageUrl = data.fileCode.Split(',');
 
             return data;
         }

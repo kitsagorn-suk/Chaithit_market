@@ -1307,46 +1307,90 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+        [Route("update/admin/approve")]
+        [HttpPost]
+        public IHttpActionResult UpdateAdminApprove(GetIDCenterDTO getIDCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
 
-        //[Route("get/tranpay/admin")]
-        //[HttpPost]
-        //public IHttpActionResult GetTranPayAdmin()
-        //{
-        //    var request = HttpContext.Current.Request;
-        //    string authHeader = (request.Headers["Authorization"] ?? "");
-        //    string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
-        //    string platform = request.Headers["platform"];
-        //    string version = request.Headers["version"];
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
 
-        //    AuthenticationController _auth = AuthenticationController.Instance;
-        //    AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+            try
+            {
+                string json = JsonConvert.SerializeObject(getIDCenterDTO);
+                int logID = _sql.InsertLogReceiveData("UpdateAdminApprove", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
 
-        //    try
-        //    {
-        //        string json = JsonConvert.SerializeObject(data.user_id);
-        //        int logID = _sql.InsertLogReceiveData("GetTranPayAdmin", json, timestampNow.ToString(), authHeader,
-        //                data.user_id, platform.ToLower());
+                string currentDate = DateTime.Now.ToString("ddMMyyyy");
 
-        //        GetService srv = new GetService();
+                string checkMissingOptional = "";
+                
+                if (getIDCenterDTO.id == 0)
+                {
+                    checkMissingOptional += "billID ";
+                }
+                
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
 
-        //        var obj = new object();
+                SaveService srv = new SaveService();
+                var obj = new object();
+                obj = srv.UpdateAdminApproveService(authHeader, lang, platform.ToLower(), logID, getIDCenterDTO, data.user_id);
 
-        //        if (data.user_id != 0)
-        //        {
-        //            obj = srv.GetTranPayAdminService(authHeader, lang, platform.ToLower(), logID, data.user_id);
-        //        }
-        //        else
-        //        {
-        //            throw new Exception("Missing Parameter : userProfileID");
-        //        }
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
 
-        //        return Ok(obj);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
-        //    }
-        //}
+        [Route("get/tranpay/image")]
+        [HttpPost]
+        public IHttpActionResult GetTranPayImage(GetIDCenterDTO getIDCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] ?? "");
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(data.user_id);
+                int logID = _sql.InsertLogReceiveData("GetTranPayImage", json, timestampNow.ToString(), authHeader,
+                        data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                var obj = new object();
+
+                if (data.user_id != 0)
+                {
+                    obj = srv.GetTranPayImageService(authHeader, lang, platform.ToLower(), logID, getIDCenterDTO);
+                }
+                else
+                {
+                    throw new Exception("Missing Parameter : billID");
+                }
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
         #endregion
 
         #region Transection
