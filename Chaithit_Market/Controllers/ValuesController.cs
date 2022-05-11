@@ -1237,10 +1237,12 @@ namespace Chaithit_Market.Controllers
 
                 if (payID.data != null && !payID.data.id.Equals(0))
                 {
+                    bool havefile = false;
                     foreach (MultipartFileData dataitem in streamProvider.FileData)
                     {
                         try
                         {
+                            
                             fileSize = new FileInfo(dataitem.LocalFileName).Length;
                             if (fileSize > 3100000)
                             {
@@ -1253,6 +1255,10 @@ namespace Chaithit_Market.Controllers
 
                             keyName = dataitem.Headers.ContentDisposition.Name.Replace("\"", "");
                             fileName = dataitem.Headers.ContentDisposition.FileName.Replace("\"", "");
+                            if (!string.IsNullOrEmpty(fileName))
+                            {
+                                havefile = true;
+                            }
                             newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
 
                             var fullPath = Path.Combine(diskFolderPath, newFileName);
@@ -1290,6 +1296,11 @@ namespace Chaithit_Market.Controllers
                         {
                             string message = ex.StackTrace;
                         }
+                    }
+
+                    if (!havefile)
+                    {
+                        throw new Exception("กรุณาเเนบรูป"); 
                     }
                 }
                 else
