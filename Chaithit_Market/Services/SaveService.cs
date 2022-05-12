@@ -271,10 +271,9 @@ namespace Chaithit_Market.Services
             {
                 value.data = new _ReturnIdModel();
                 ValidationModel validation = new ValidationModel();
-                
-                int billID = 0;
-                //int.TryParse(p, out billID);
-                validation = ValidationManager.CheckValidationDupicateTranPay(lang, billID);
+
+                validation = ValidationManager.CheckValidationDupicateTranPay(lang, saveTranPayDTO.billID);
+
                 if (validation.Success == true)
                 {
                     value.data = _sql.InsertTranPay(saveTranPayDTO, userID);
@@ -290,6 +289,50 @@ namespace Chaithit_Market.Services
             catch (Exception ex)
             {
                 LogManager.ServiceLog.WriteExceptionLog(ex, "SaveTranPayService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public ReturnIdModel UpdateAdminApproveService(string authorization, string lang, string platform, int logID,
+            GetIDCenterDTO getIDCenterDTO, int userID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            ReturnIdModel value = new ReturnIdModel();
+            try
+            {
+                value.data = new _ReturnIdModel();
+                ValidationModel validation = new ValidationModel();
+
+                validation = ValidationManager.CheckValidation(1,lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.UpdateAdminApprove(getIDCenterDTO, userID);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "UpdateAdminApproveService:");
                 if (logID > 0)
                 {
                     _sql.UpdateLogReceiveDataError(logID, ex.ToString());

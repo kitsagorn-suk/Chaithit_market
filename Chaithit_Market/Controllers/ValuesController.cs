@@ -917,6 +917,46 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+        [Route("get/outstanding/bill/user/total")]
+        [HttpPost]
+        public IHttpActionResult GetOutStandingBillUserTotal(GetHistoryUserBillDTO getHistoryUserBillDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] ?? "");
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(getHistoryUserBillDTO);
+                int logID = _sql.InsertLogReceiveData("GetOutStandingBillUserTotal", json, timestampNow.ToString(), authHeader,
+                        data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                var obj = new object();
+
+                if (getHistoryUserBillDTO.userID != 0)
+                {
+                    obj = srv.GetOutStandingBillUserTotalService(authHeader, lang, platform.ToLower(), logID, getHistoryUserBillDTO);
+                }
+                else
+                {
+                    throw new Exception("Missing Parameter : userID");
+                }
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         [Route("search/manage/renter")]
         [HttpPost]
         public IHttpActionResult SearchManageRenter(SearchManageRenterDTO searchManageRenterDTO)
@@ -1237,10 +1277,12 @@ namespace Chaithit_Market.Controllers
 
                 if (payID.data != null && !payID.data.id.Equals(0))
                 {
+                    bool havefile = false;
                     foreach (MultipartFileData dataitem in streamProvider.FileData)
                     {
                         try
                         {
+                            
                             fileSize = new FileInfo(dataitem.LocalFileName).Length;
                             if (fileSize > 3100000)
                             {
@@ -1253,6 +1295,10 @@ namespace Chaithit_Market.Controllers
 
                             keyName = dataitem.Headers.ContentDisposition.Name.Replace("\"", "");
                             fileName = dataitem.Headers.ContentDisposition.FileName.Replace("\"", "");
+                            if (!string.IsNullOrEmpty(fileName))
+                            {
+                                havefile = true;
+                            }
                             newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
 
                             var fullPath = Path.Combine(diskFolderPath, newFileName);
@@ -1291,6 +1337,11 @@ namespace Chaithit_Market.Controllers
                             string message = ex.StackTrace;
                         }
                     }
+
+                    if (!havefile)
+                    {
+                        throw new Exception("กรุณาเเนบรูป"); 
+                    }
                 }
                 else
                 {
@@ -1300,6 +1351,91 @@ namespace Chaithit_Market.Controllers
                 obj = payID;
 
                 return Request.CreateResponse(HttpStatusCode.OK, obj, Configuration.Formatters.JsonFormatter);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("update/admin/approve")]
+        [HttpPost]
+        public IHttpActionResult UpdateAdminApprove(GetIDCenterDTO getIDCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(getIDCenterDTO);
+                int logID = _sql.InsertLogReceiveData("UpdateAdminApprove", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                string currentDate = DateTime.Now.ToString("ddMMyyyy");
+
+                string checkMissingOptional = "";
+                
+                if (getIDCenterDTO.id == 0)
+                {
+                    checkMissingOptional += "billID ";
+                }
+                
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
+
+                SaveService srv = new SaveService();
+                var obj = new object();
+                obj = srv.UpdateAdminApproveService(authHeader, lang, platform.ToLower(), logID, getIDCenterDTO, data.user_id);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("get/tranpay/image")]
+        [HttpPost]
+        public IHttpActionResult GetTranPayImage(GetIDCenterDTO getIDCenterDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] ?? "");
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(data.user_id);
+                int logID = _sql.InsertLogReceiveData("GetTranPayImage", json, timestampNow.ToString(), authHeader,
+                        data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                var obj = new object();
+
+                if (data.user_id != 0)
+                {
+                    obj = srv.GetTranPayImageService(authHeader, lang, platform.ToLower(), logID, getIDCenterDTO);
+                }
+                else
+                {
+                    throw new Exception("Missing Parameter : billID");
+                }
+
+                return Ok(obj);
             }
             catch (Exception ex)
             {
@@ -1477,10 +1613,6 @@ namespace Chaithit_Market.Controllers
                         {
                             checkMissingOptional += "electricEquipUnit ";
                         }
-                        if (insertTransectionBillDTO.electricNightMarketAmount == 0)
-                        {
-                            checkMissingOptional += "electricNightMarketAmount ";
-                        }
                     }
                     else
                     {
@@ -1488,24 +1620,12 @@ namespace Chaithit_Market.Controllers
                         {
                             checkMissingOptional += "electricUnit ";
                         }
-                        if (insertTransectionBillDTO.electricAmount == 0)
-                        {
-                            checkMissingOptional += "electricAmount ";
-                        }
                         if (insertTransectionBillDTO.waterUnit == 0)
                         {
                             checkMissingOptional += "waterUnit ";
                         }
-                        if (insertTransectionBillDTO.waterAmount == 0)
-                        {
-                            checkMissingOptional += "waterAmount ";
-                        }
                     }
-                    if (insertTransectionBillDTO.discountAmount == 0 && insertTransectionBillDTO.discountPercent == 0)
-                    {
-                        checkMissingOptional += "discountAmount and discountPercent must be not zero ";
-                    }
-                    else if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
+                    if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
                     {
                         checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
                     }
@@ -1516,10 +1636,6 @@ namespace Chaithit_Market.Controllers
                     if (insertTransectionBillDTO.netAmount == 0)
                     {
                         checkMissingOptional += "netAmount ";
-                    }
-                    if ((insertTransectionBillDTO.rentAmount + insertTransectionBillDTO.electricAmount + insertTransectionBillDTO.waterAmount) != insertTransectionBillDTO.totalAmount)
-                    {
-                        checkMissingOptional += "TotalAmount is not related ";
                     }
                 }
                 else if (insertTransectionBillDTO.mode.ToLower().Equals("update"))
@@ -1558,10 +1674,6 @@ namespace Chaithit_Market.Controllers
                         {
                             checkMissingOptional += "electricEquipUnit ";
                         }
-                        if (insertTransectionBillDTO.electricNightMarketAmount == 0)
-                        {
-                            checkMissingOptional += "electricNightMarketAmount ";
-                        }
                     }
                     else
                     {
@@ -1569,24 +1681,12 @@ namespace Chaithit_Market.Controllers
                         {
                             checkMissingOptional += "electricUnit ";
                         }
-                        if (insertTransectionBillDTO.electricAmount == 0)
-                        {
-                            checkMissingOptional += "electricAmount ";
-                        }
                         if (insertTransectionBillDTO.waterUnit == 0)
                         {
                             checkMissingOptional += "waterUnit ";
                         }
-                        if (insertTransectionBillDTO.waterAmount == 0)
-                        {
-                            checkMissingOptional += "waterAmount ";
-                        }
                     }
-                    if (insertTransectionBillDTO.discountAmount == 0 && insertTransectionBillDTO.discountPercent == 0)
-                    {
-                        checkMissingOptional += "discountAmount and discountPercent must be not zero ";
-                    }
-                    else if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
+                    if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
                     {
                         checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
                     }
@@ -1597,10 +1697,6 @@ namespace Chaithit_Market.Controllers
                     if (insertTransectionBillDTO.netAmount == 0)
                     {
                         checkMissingOptional += "netAmount ";
-                    }
-                    if ((insertTransectionBillDTO.rentAmount + insertTransectionBillDTO.electricAmount + insertTransectionBillDTO.waterAmount) != insertTransectionBillDTO.totalAmount)
-                    {
-                        checkMissingOptional += "TotalAmount is not related ";
                     }
                 }
                 else
@@ -1614,6 +1710,11 @@ namespace Chaithit_Market.Controllers
                 }
 
                 insertTransectionBillDTO.billCode = insertTransectionBillDTO.tranRentID.ToString() + currentDate;
+                if (_sql == null)
+
+                {
+                    _sql = SQLManager.Instance;
+                }
 
                 SaveService srv = new SaveService();
                 var obj = new object();
@@ -1876,6 +1977,14 @@ namespace Chaithit_Market.Controllers
                     {
                         checkMissingOptional += "name ";
                     }
+                    if (saveUnitDTO.rateID == 0)
+                    {
+                        checkMissingOptional += "rateID Must 0";
+                    }
+                    if (string.IsNullOrEmpty(saveUnitDTO.electricMeter))
+                    {
+                        checkMissingOptional += "electricMeter ";
+                    }
                 }
                 else if (saveUnitDTO.mode.ToLower().Equals("update"))
                 {
@@ -1894,6 +2003,14 @@ namespace Chaithit_Market.Controllers
                     if (string.IsNullOrEmpty(saveUnitDTO.name))
                     {
                         checkMissingOptional += "name ";
+                    }
+                    if (saveUnitDTO.rateID == 0)
+                    {
+                        checkMissingOptional += "rateID Must 0";
+                    }
+                    if (string.IsNullOrEmpty(saveUnitDTO.electricMeter))
+                    {
+                        checkMissingOptional += "electricMeter ";
                     }
                 }
                 else if (saveUnitDTO.mode.ToLower().Equals("delete"))
@@ -2242,6 +2359,37 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+        [Route("get/dropdown/sixMonthAgo")]
+        [HttpPost]
+        public IHttpActionResult GetDropdownSixMonthAgo()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject("");
+                int logID = _sql.InsertLogReceiveData("GetDropdownSixMonthAgo", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                MasterDataService srv = new MasterDataService();
+
+                var obj = srv.GetDropdownSixMonthAgoService(authHeader, lang, platform.ToLower(), logID);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         [Route("search/master/empType")]
         [HttpPost]
         public IHttpActionResult SearchEmpType(SearchNameCenterDTO searchNameCenterDTO)
@@ -2532,13 +2680,20 @@ namespace Chaithit_Market.Controllers
 
                 string checkMissingOptional = "";
                 
-                if (string.IsNullOrEmpty(getDashbordDTO.startDate))
+                if (string.IsNullOrEmpty(getDashbordDTO.month) && string.IsNullOrEmpty(getDashbordDTO.quarter))
                 {
-                    checkMissingOptional += "startDate ";
+                    checkMissingOptional += "month and quarter";
                 }
-                if (string.IsNullOrEmpty(getDashbordDTO.endDate))
+                if (!string.IsNullOrEmpty(getDashbordDTO.month) && !string.IsNullOrEmpty(getDashbordDTO.quarter))
                 {
-                    checkMissingOptional += "endDate ";
+                    checkMissingOptional += "Choose to enter value month or quarter ";
+                }
+                if (!string.IsNullOrEmpty(getDashbordDTO.quarter))
+                {
+                    if (getDashbordDTO.quarter != "1" && getDashbordDTO.quarter != "2" && getDashbordDTO.quarter != "3" && getDashbordDTO.quarter != "4" && getDashbordDTO.quarter != "5")
+                    {
+                        checkMissingOptional += "quarter must value 1,2,3,4,5 ";
+                    }
                 }
                 if (checkMissingOptional != "")
                 {

@@ -459,13 +459,13 @@ namespace Chaithit_Market.Services
             SearchHistoryPaidBillAdminModel value = new SearchHistoryPaidBillAdminModel();
             try
             {
-                Pagination<SearchHistoryPaidBillAdmin> data = new Pagination<SearchHistoryPaidBillAdmin>();
+                value.historyPaidBill = new Pagination<SearchHistoryPaidBillAdmin>();
 
                 ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
 
                 if (validation.Success == true)
                 {
-                    data = _sql.SearchHistoryPaidBillAdmin(searchHistoryAdminBillDTO);
+                    value.historyPaidBill = _sql.SearchHistoryPaidBillAdmin(searchHistoryAdminBillDTO);
                 }
                 else
                 {
@@ -473,7 +473,6 @@ namespace Chaithit_Market.Services
                 }
 
                 value.success = validation.Success;
-                value.data = data;
                 value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
             }
             catch (Exception ex)
@@ -545,13 +544,13 @@ namespace Chaithit_Market.Services
             SearchHistoryPaidBillAdminModel value = new SearchHistoryPaidBillAdminModel();
             try
             {
-                Pagination<SearchHistoryPaidBillAdmin> data = new Pagination<SearchHistoryPaidBillAdmin>();
+                value.historyPaidBill = new Pagination<SearchHistoryPaidBillAdmin>();
 
                 ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
 
                 if (validation.Success == true)
                 {
-                    data = _sql.SearchOutStandingBillUser(searchHistoryUserBillDTO);
+                    value.historyPaidBill = _sql.SearchOutStandingBillUser(searchHistoryUserBillDTO);
                 }
                 else
                 {
@@ -559,7 +558,6 @@ namespace Chaithit_Market.Services
                 }
 
                 value.success = validation.Success;
-                value.data = data;
                 value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
             }
             catch (Exception ex)
@@ -577,6 +575,91 @@ namespace Chaithit_Market.Services
             }
             return value;
         }
-        
+
+        public GetHistoryPaidBillAdminTotalModel GetOutStandingBillUserTotalService(string authorization, string lang, string platform, int logID, GetHistoryUserBillDTO getHistoryUserBillDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            GetHistoryPaidBillAdminTotalModel value = new GetHistoryPaidBillAdminTotalModel();
+            try
+            {
+                value.data = new HistoryPaidBillAdminTotalModel();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.GetOutStandingBillUserTotal(getHistoryUserBillDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetOutStandingBillUserTotalService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public GetTranPayImageModel GetTranPayImageService(string authorization, string lang, string platform, int logID, GetIDCenterDTO getIDCenterDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            GetTranPayImageModel value = new GetTranPayImageModel();
+            try
+            {
+                value.data = new TranPayImageModel();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.GetTranPayImage(getIDCenterDTO.id);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetTranPayImageService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
     }
 }

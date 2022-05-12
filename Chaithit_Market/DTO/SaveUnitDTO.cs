@@ -14,5 +14,6 @@ namespace Chaithit_Market.DTO
         public string unitCode { set; get; } = "";
         public string name { set; get; } = "";
         public int rateID { set; get; } = 0;
+        public string electricMeter { set; get; } = "";
     }
 }

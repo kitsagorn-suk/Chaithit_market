@@ -188,6 +188,8 @@
     <Compile Include="DTO\GetDropdownIsAllDTO.cs" />
     <Compile Include="DTO\GetDropdownUnitIsAllDTO.cs" />
     <Compile Include="DTO\GetDropdownZoneSubIsAllDTO.cs" />
+    <Compile Include="DTO\GetHistoryPaidBillAdminTotalModel.cs" />
+    <Compile Include="DTO\GetHistoryUserBillDTO.cs" />
     <Compile Include="DTO\GetIDCenterDTO.cs" />
     <Compile Include="DTO\GetMessageTopicDTO.cs" />
     <Compile Include="DTO\InsertTransectionBillDTO.cs" />
@@ -223,7 +225,9 @@
     <Compile Include="Models\ElectricModel.cs" />
     <Compile Include="Models\GetAllDropdownModel.cs" />
     <Compile Include="Models\GetDashbordModel.cs" />
+    <Compile Include="Models\GetDropdownMonthModel.cs" />
     <Compile Include="Models\GetRenterByUserIDModel.cs" />
+    <Compile Include="Models\GetTranPayImageModel.cs" />
     <Compile Include="Models\GetUserProfileModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\LogModel.cs" />

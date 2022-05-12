@@ -10,7 +10,7 @@ namespace Chaithit_Market.Models
     {
         public bool success { get; set; }
         public MsgModel msg { get; set; }
-        public Pagination<SearchHistoryPaidBillAdmin> data { get; set; }
+        public Pagination<SearchHistoryPaidBillAdmin> historyPaidBill { get; set; }
     }
 
     public class SearchHistoryPaidBillAdmin

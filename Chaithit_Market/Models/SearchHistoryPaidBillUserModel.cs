@@ -28,6 +28,7 @@ namespace Chaithit_Market.Models
         public decimal balanceAmount { set; get; } = 0;
         public int discountPercent { set; get; } = 0;
         public decimal discountAmount { set; get; } = 0;
+        public int isComplete { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -44,6 +45,7 @@ namespace Chaithit_Market.Models
             balanceAmount = decimal.Parse(dr["balance_amount"].ToString());
             discountPercent = int.Parse(dr["discount_percent"].ToString());
             discountAmount = decimal.Parse(dr["discount_amount"].ToString());
+            isComplete = int.Parse(dr["is_complete"].ToString());
         }
     }
 }
