@@ -29,6 +29,7 @@ namespace Chaithit_Market.Models
         public string endDate { set; get; } = "";
         public int rentType { set; get; } = 0;
         public string payDate { set; get; } = "";
+        public int tranRentID { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -46,6 +47,7 @@ namespace Chaithit_Market.Models
             endDate = dr["end_date"].ToString();
             rentType = int.Parse(dr["rent_type"].ToString());
             payDate = dr["pay_date"].ToString();
+            tranRentID = int.Parse(dr["tran_rent_id"].ToString());
         }
     }
 }
