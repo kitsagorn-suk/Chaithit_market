@@ -907,7 +907,6 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pEndDate," +
                 "@pRentType," +
-                "@pPayDate," +
                 "@pCreateBy");
 
             SqlParameter pTransCode = new SqlParameter(@"pTransCode", SqlDbType.VarChar);
@@ -940,11 +939,6 @@ namespace Chaithit_Market.Core
             pRentType.Value = insertTransectionRentDTO.rentType;
             sql.Parameters.Add(pRentType);
 
-            SqlParameter pPayDate = new SqlParameter(@"pPayDate", SqlDbType.VarChar);
-            pPayDate.Direction = ParameterDirection.Input;
-            pPayDate.Value = insertTransectionRentDTO.endDate;
-            sql.Parameters.Add(pPayDate);
-
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
             pCreateBy.Value = userID;
@@ -976,7 +970,6 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pEndDate," +
                 "@pRentType," +
-                "@pPayDate," +
                 "@pCreateBy");
 
             SqlParameter pTransRentID = new SqlParameter(@"pTransRentID", SqlDbType.Int);
@@ -1014,11 +1007,6 @@ namespace Chaithit_Market.Core
             pRentType.Value = insertTransectionRentDTO.rentType;
             sql.Parameters.Add(pRentType);
 
-            SqlParameter pPayDate = new SqlParameter(@"pPayDate", SqlDbType.VarChar);
-            pPayDate.Direction = ParameterDirection.Input;
-            pPayDate.Value = insertTransectionRentDTO.endDate;
-            sql.Parameters.Add(pPayDate);
-
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
             pCreateBy.Value = userID;
@@ -1053,6 +1041,7 @@ namespace Chaithit_Market.Core
                 "@pElectricEquipUnit," +
                 "@pDiscountPercent," +
                 "@pDiscountAmount," +
+                "@pPayDate," +
                 "@pCreateBy");
 
             SqlParameter pTranRentID = new SqlParameter(@"pTranRentID", SqlDbType.Int);
@@ -1104,7 +1093,12 @@ namespace Chaithit_Market.Core
             pDiscountAmount.Direction = ParameterDirection.Input;
             pDiscountAmount.Value = insertTransectionBillDTO.discountAmount;
             sql.Parameters.Add(pDiscountAmount);
-            
+
+            SqlParameter pPayDate = new SqlParameter(@"pPayDate", SqlDbType.VarChar);
+            pPayDate.Direction = ParameterDirection.Input;
+            pPayDate.Value = insertTransectionBillDTO.endDate;
+            sql.Parameters.Add(pPayDate);
+
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
             pCreateBy.Value = userID;
@@ -1146,6 +1140,7 @@ namespace Chaithit_Market.Core
                 "@pDiscountPercent," +
                 "@pDiscountAmount," +
                 "@pNetAmount," +
+                "@pPayDate," +
                 "@pCreateBy");
 
             SqlParameter pTransBillID = new SqlParameter(@"pTranBillID", SqlDbType.Int);
@@ -1232,6 +1227,11 @@ namespace Chaithit_Market.Core
             pNetAmount.Direction = ParameterDirection.Input;
             pNetAmount.Value = insertTransectionBillDTO.netAmount;
             sql.Parameters.Add(pNetAmount);
+
+            SqlParameter pPayDate = new SqlParameter(@"pPayDate", SqlDbType.VarChar);
+            pPayDate.Direction = ParameterDirection.Input;
+            pPayDate.Value = insertTransectionBillDTO.endDate;
+            sql.Parameters.Add(pPayDate);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;

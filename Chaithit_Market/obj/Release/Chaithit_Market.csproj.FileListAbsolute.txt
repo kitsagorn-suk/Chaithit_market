@@ -78,7 +78,6 @@ D:\_Chaithit_market\Chaithit_Market\bin\System.Web.WebPages.Deployment.xml
 D:\_Chaithit_market\Chaithit_Market\bin\System.Web.WebPages.Razor.xml
 D:\_Chaithit_market\Chaithit_Market\bin\Antlr3.Runtime.pdb
 D:\_Chaithit_market\Chaithit_Market\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csprojAssemblyReference.cache
 D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csproj.CoreCompileInputs.cache
 D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csproj.CopyComplete
 D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.dll
@@ -168,3 +167,4 @@ C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Marke
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.dll
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.pdb
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csprojAssemblyReference.cache
+D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csprojAssemblyReference.cache

@@ -19,7 +19,7 @@ using System.Web.Http.Cors;
 
 namespace Chaithit_Market.Controllers
 {
-    [RoutePrefix("api/1.0")]
+    [RoutePrefix("api")]
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ValuesController : ApiController
     {
@@ -27,7 +27,7 @@ namespace Chaithit_Market.Controllers
         private double timestampNow = Utility.DateTimeToUnixTimestamp(DateTime.Now);
 
         #region Page Login
-        [Route("login")]
+        [Route("1.0/login")]
         [HttpPost]
         public IHttpActionResult Login([FromBody] LoginRequestDTO loginRs)
         {
@@ -77,7 +77,7 @@ namespace Chaithit_Market.Controllers
         #endregion
 
         #region Add User
-        [Route("save/userProfile")]
+        [Route("1.0/save/userProfile")]
         [HttpPost]
         public async Task<HttpResponseMessage> SaveUserProfile()
         {
@@ -380,7 +380,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/userProfile")]
+        [Route("1.0/get/userProfile")]
         [HttpPost]
         public IHttpActionResult GetUserProfile()
         {
@@ -420,7 +420,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/userProfile")]
+        [Route("1.0/search/userProfile")]
         [HttpPost]
         public IHttpActionResult SearchUserProfile(SearchUserProfileDTO searchUserProfileDTO)
         {
@@ -473,7 +473,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/user/rental")]
+        [Route("1.0/get/user/rental")]
         [HttpPost]
         public IHttpActionResult GetUserRental(GetIDCenterDTO getIDCenterDTO)
         {
@@ -513,7 +513,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("upload/file")]
+        [Route("1.0/upload/file")]
         [HttpPost]
         public async Task<HttpResponseMessage> UploadFile()
         {
@@ -604,7 +604,7 @@ namespace Chaithit_Market.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, value, Configuration.Formatters.JsonFormatter);
         }
 
-        [Route("delete/file")]
+        [Route("1.0/delete/file")]
         [HttpPost]
         public async Task<HttpResponseMessage> DeleteFile()
         {
@@ -657,7 +657,7 @@ namespace Chaithit_Market.Controllers
             }
         }
         
-        [Route("search/unit/stand")]
+        [Route("1.0/search/unit/stand")]
         [HttpPost]
         public IHttpActionResult SearchUnitStand(SearchUnitstandDTO searchUnitstandDTO)
         {
@@ -710,7 +710,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/history/paidBill/admin")]
+        [Route("1.0/search/history/paidBill/admin")]
         [HttpPost]
         public IHttpActionResult SearchHistoryPaidBillAdmin(SearchHistoryAdminBillDTO searchHistoryAdminBillDTO)
         {
@@ -763,7 +763,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/history/paidBill/user")]
+        [Route("1.0/search/history/paidBill/user")]
         [HttpPost]
         public IHttpActionResult SearchHistoryPaidBillUser(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
         {
@@ -821,7 +821,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/outstanding/bill/user")]
+        [Route("1.0/search/outstanding/bill/user")]
         [HttpPost]
         public IHttpActionResult SearchOutStandingBillUser(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
         {
@@ -879,7 +879,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/outstanding/bill/user/total")]
+        [Route("1.0/get/outstanding/bill/user/total")]
         [HttpPost]
         public IHttpActionResult GetOutStandingBillUserTotal(GetHistoryUserBillDTO getHistoryUserBillDTO)
         {
@@ -919,7 +919,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/manage/renter")]
+        [Route("1.0/search/manage/renter")]
         [HttpPost]
         public IHttpActionResult SearchManageRenter(SearchManageRenterDTO searchManageRenterDTO)
         {
@@ -972,7 +972,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/manage/unit")]
+        [Route("1.0/search/manage/unit")]
         [HttpPost]
         public IHttpActionResult SearchManageUnit(SearchManageUnitDTO searchManageUnitDTO)
         {
@@ -1025,7 +1025,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/dropdown/user")]
+        [Route("1.0/get/dropdown/user")]
         [HttpPost]
         public IHttpActionResult GetDropdownUser(GetDropdownIsAllDTO getDropdownIsAllDTO)
         {
@@ -1060,7 +1060,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/manage/bill")]
+        [Route("1.0/search/manage/bill")]
         [HttpPost]
         public IHttpActionResult SearchManageBill(SearchManageBillDTO searchManageBillDTO)
         {
@@ -1113,7 +1113,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/renter/byUserID")]
+        [Route("1.0/get/renter/byUserID")]
         [HttpPost]
         public IHttpActionResult GetRenterByUserID(GetIDCenterDTO getIDCenterDTO)
         {
@@ -1153,7 +1153,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("save/tranPay")]
+        [Route("1.0/save/tranPay")]
         [HttpPost]
         public async Task<HttpResponseMessage> SaveTranPay()
         {
@@ -1320,7 +1320,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("update/admin/approve")]
+        [Route("1.0/update/admin/approve")]
         [HttpPost]
         public IHttpActionResult UpdateAdminApprove(GetIDCenterDTO getIDCenterDTO)
         {
@@ -1365,7 +1365,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/tranpay/image")]
+        [Route("1.0/get/tranpay/image")]
         [HttpPost]
         public IHttpActionResult GetTranPayImage(GetIDCenterDTO getIDCenterDTO)
         {
@@ -1405,7 +1405,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("upload/electric")]
+        [Route("1.0/upload/electric")]
         [HttpPost]
         public async Task<HttpResponseMessage> UploadFileExcel()
         {
@@ -1535,7 +1535,7 @@ namespace Chaithit_Market.Controllers
         #endregion
 
         #region Transection
-        [Route("save/transection/rent")]
+        [Route("1.0/save/transection/rent")]
         [HttpPost]
         public IHttpActionResult SaveTransectionRent(InsertTransectionRentDTO insertTransectionRentDTO)
         {
@@ -1584,10 +1584,6 @@ namespace Chaithit_Market.Controllers
                     {
                         checkMissingOptional += "rentType ";
                     }
-                    if (string.IsNullOrEmpty(insertTransectionRentDTO.payDate))
-                    {
-                        checkMissingOptional += "payDate ";
-                    }
                 }
                 else if (insertTransectionRentDTO.mode.ToLower().Equals("update"))
                 {
@@ -1619,10 +1615,7 @@ namespace Chaithit_Market.Controllers
                     {
                         checkMissingOptional += "rentType ";
                     }
-                    if (string.IsNullOrEmpty(insertTransectionRentDTO.payDate))
-                    {
-                        checkMissingOptional += "payDate ";
-                    }
+                    
                 }
                 else
                 {
@@ -1648,7 +1641,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("save/transection/bill")]
+        [Route("1.0/save/transection/bill")]
         [HttpPost]
         public IHttpActionResult SaveTransectionBill(InsertTransectionBillDTO insertTransectionBillDTO)
         {
@@ -1670,112 +1663,72 @@ namespace Chaithit_Market.Controllers
                 string checkMissingOptional = "";
 
                 string currentDate = DateTime.Now.ToString("ddMMyyyy");
-                
-                if (insertTransectionBillDTO.mode.ToLower().Equals("insert"))
+
+                if (!insertTransectionBillDTO.mode.ToLower().Equals("insert") && !insertTransectionBillDTO.mode.ToLower().Equals("update"))
                 {
-                    if (insertTransectionBillDTO.zoneID == 0)
-                    {
-                        checkMissingOptional += "zoneID ";
-                    }
-                    if (insertTransectionBillDTO.tranRentID == 0)
-                    {
-                        checkMissingOptional += "tranRentID ";
-                    }
-                    if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
-                    {
-                        checkMissingOptional += "startDate ";
-                    }
-                    if (string.IsNullOrEmpty(insertTransectionBillDTO.endDate))
-                    {
-                        checkMissingOptional += "endDate ";
-                    }
-                    if (insertTransectionBillDTO.rentAmount == 0)
-                    {
-                        checkMissingOptional += "rentAmount ";
-                    }
-                    if (insertTransectionBillDTO.zoneID == 2)
-                    {
-                        if (insertTransectionBillDTO.lampUnit == 0)
-                        {
-                            checkMissingOptional += "lampUnit ";
-                        }
-                        if (insertTransectionBillDTO.electricEquipUnit == 0)
-                        {
-                            checkMissingOptional += "electricEquipUnit ";
-                        }
-                    }
-                    else
-                    {
-                        if (insertTransectionBillDTO.electricUnit == 0)
-                        {
-                            checkMissingOptional += "electricUnit ";
-                        }
-                        if (insertTransectionBillDTO.waterUnit == 0)
-                        {
-                            checkMissingOptional += "waterUnit ";
-                        }
-                    }
-                    if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
-                    {
-                        checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
-                    }
+                    throw new Exception("Choose Mode Insert or Update");
                 }
-                else if (insertTransectionBillDTO.mode.ToLower().Equals("update"))
+
+                if (insertTransectionBillDTO.mode.ToLower().Equals("update"))
                 {
                     if (insertTransectionBillDTO.tranBillID == 0)
                     {
                         checkMissingOptional += "tranBillID ";
                     }
-                    if (insertTransectionBillDTO.zoneID == 0)
+
+                }
+
+                if (insertTransectionBillDTO.zoneID == 0)
+                {
+                    checkMissingOptional += "zoneID ";
+                }
+                if (insertTransectionBillDTO.tranRentID == 0)
+                {
+                    checkMissingOptional += "tranRentID ";
+                }
+                if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
+                {
+                    checkMissingOptional += "startDate ";
+                }
+                if (string.IsNullOrEmpty(insertTransectionBillDTO.endDate))
+                {
+                    checkMissingOptional += "endDate ";
+                }
+                if (insertTransectionBillDTO.rentAmount == 0)
+                {
+                    checkMissingOptional += "rentAmount ";
+                }
+                if (string.IsNullOrEmpty(insertTransectionBillDTO.payDate))
+                {
+                    checkMissingOptional += "payDate ";
+                }
+
+                if (insertTransectionBillDTO.zoneID == 2)
+                {
+                    if (insertTransectionBillDTO.lampUnit == 0)
                     {
-                        checkMissingOptional += "zoneID ";
+                        checkMissingOptional += "lampUnit ";
                     }
-                    if (insertTransectionBillDTO.tranRentID == 0)
+                    if (insertTransectionBillDTO.electricEquipUnit == 0)
                     {
-                        checkMissingOptional += "tranRentID ";
-                    }
-                    if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
-                    {
-                        checkMissingOptional += "startDate ";
-                    }
-                    if (string.IsNullOrEmpty(insertTransectionBillDTO.endDate))
-                    {
-                        checkMissingOptional += "endDate ";
-                    }
-                    if (insertTransectionBillDTO.rentAmount == 0)
-                    {
-                        checkMissingOptional += "rentAmount ";
-                    }
-                    if (insertTransectionBillDTO.zoneID == 2)
-                    {
-                        if (insertTransectionBillDTO.lampUnit == 0)
-                        {
-                            checkMissingOptional += "lampUnit ";
-                        }
-                        if (insertTransectionBillDTO.electricEquipUnit == 0)
-                        {
-                            checkMissingOptional += "electricEquipUnit ";
-                        }
-                    }
-                    else
-                    {
-                        if (insertTransectionBillDTO.electricUnit == 0)
-                        {
-                            checkMissingOptional += "electricUnit ";
-                        }
-                        if (insertTransectionBillDTO.waterUnit == 0)
-                        {
-                            checkMissingOptional += "waterUnit ";
-                        }
-                    }
-                    if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
-                    {
-                        checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
+                        checkMissingOptional += "electricEquipUnit ";
                     }
                 }
                 else
                 {
-                    throw new Exception("Choose Mode Insert or Update");
+                    if (insertTransectionBillDTO.electricUnit == 0)
+                    {
+                        checkMissingOptional += "electricUnit ";
+                    }
+                    if (insertTransectionBillDTO.waterUnit == 0)
+                    {
+                        checkMissingOptional += "waterUnit ";
+                    }
+                }
+
+                if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
+                {
+                    checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
                 }
 
                 if (checkMissingOptional != "")
@@ -1804,7 +1757,7 @@ namespace Chaithit_Market.Controllers
         #endregion
 
         #region Master
-        [Route("save/master/empType")]
+        [Route("1.0/save/master/empType")]
         [HttpPost]
         public IHttpActionResult SaveEmpType(MasterDataDTO masterDataDTO)
         {
@@ -1872,7 +1825,7 @@ namespace Chaithit_Market.Controllers
             }
         }
         
-        [Route("save/master/zone")]
+        [Route("1.0/save/master/zone")]
         [HttpPost]
         public IHttpActionResult SaveZone(SaveZoneDTO saveZoneDTO)
         {
@@ -1940,7 +1893,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("save/master/zoneSub")]
+        [Route("1.0/save/master/zoneSub")]
         [HttpPost]
         public IHttpActionResult SaveZoneSub(SaveZoneSubDTO saveZoneSubDTO)
         {
@@ -2016,7 +1969,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("save/master/unit")]
+        [Route("1.0/save/master/unit")]
         [HttpPost]
         public IHttpActionResult SaveUnit(SaveUnitDTO saveUnitDTO)
         {
@@ -2116,7 +2069,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("save/master/rateAmount")]
+        [Route("1.0/save/master/rateAmount")]
         [HttpPost]
         public IHttpActionResult SaveRateAmount(SaveRateAmountDTO saveRateAmountDTO)
         {
@@ -2184,7 +2137,7 @@ namespace Chaithit_Market.Controllers
             }
         }
         
-        [Route("get/dropdown/master/empType")]
+        [Route("1.0/get/dropdown/master/empType")]
         [HttpPost]
         public IHttpActionResult GetDropdownEmpType(GetDropdownIsAllDTO getDropdownIsAllDTO)
         {
@@ -2219,7 +2172,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/dropdown/master/zone")]
+        [Route("1.0/get/dropdown/master/zone")]
         [HttpPost]
         public IHttpActionResult GetDropdownZone(GetDropdownIsAllDTO getDropdownIsAllDTO)
         {
@@ -2254,7 +2207,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/dropdown/master/zoneSub")]
+        [Route("1.0/get/dropdown/master/zoneSub")]
         [HttpPost]
         public IHttpActionResult GetDropdownZoneSub(GetDropdownZoneSubIsAllDTO getDropdownZoneSubIsAllDTO)
         {
@@ -2294,7 +2247,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/dropdown/master/unit")]
+        [Route("1.0/get/dropdown/master/unit")]
         [HttpPost]
         public IHttpActionResult GetDropdownUnit(GetDropdownUnitIsAllDTO getDropdownUnitIsAllDTO)
         {
@@ -2334,7 +2287,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/dropdown/master/rateAmount")]
+        [Route("1.0/get/dropdown/master/rateAmount")]
         [HttpPost]
         public IHttpActionResult GetDropdownRateAmount(GetDropdownIsAllDTO getDropdownIsAllDTO)
         {
@@ -2369,7 +2322,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/dropdown/unit/status")]
+        [Route("1.0/get/dropdown/unit/status")]
         [HttpPost]
         public IHttpActionResult GetDropdownUnitStatus()
         {
@@ -2401,7 +2354,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/dropdown/rentType")]
+        [Route("1.0/get/dropdown/rentType")]
         [HttpPost]
         public IHttpActionResult GetDropdownRentType()
         {
@@ -2433,7 +2386,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("get/dropdown/sixMonthAgo")]
+        [Route("1.0/get/dropdown/sixMonthAgo")]
         [HttpPost]
         public IHttpActionResult GetDropdownSixMonthAgo()
         {
@@ -2464,7 +2417,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/master/empType")]
+        [Route("1.0/search/master/empType")]
         [HttpPost]
         public IHttpActionResult SearchEmpType(SearchNameCenterDTO searchNameCenterDTO)
         {
@@ -2517,7 +2470,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/master/zone")]
+        [Route("1.0/search/master/zone")]
         [HttpPost]
         public IHttpActionResult SearchZone(SearchNameCenterDTO searchNameCenterDTO)
         {
@@ -2570,7 +2523,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/master/zoneSub")]
+        [Route("1.0/search/master/zoneSub")]
         [HttpPost]
         public IHttpActionResult SearchZoneSub(SearchZoneSubDTO searchZoneSubDTO)
         {
@@ -2623,7 +2576,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/master/unit")]
+        [Route("1.0/search/master/unit")]
         [HttpPost]
         public IHttpActionResult SearchUnit(SearchUnitDTO searchUnitDTO)
         {
@@ -2676,7 +2629,7 @@ namespace Chaithit_Market.Controllers
             }
         }
 
-        [Route("search/master/rateAmount")]
+        [Route("1.0/search/master/rateAmount")]
         [HttpPost]
         public IHttpActionResult SearchRateAmount(SearchNameCenterDTO searchNameCenterDTO)
         {
@@ -2729,7 +2682,7 @@ namespace Chaithit_Market.Controllers
             }
         }
         
-        [Route("get/dashbord")]
+        [Route("1.0/get/dashbord")]
         [HttpPost]
         public IHttpActionResult GetDashbord(GetDashbordDTO getDashbordDTO)
         {
