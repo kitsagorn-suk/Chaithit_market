@@ -5,6 +5,8 @@ using Chaithit_Market.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -1402,6 +1404,134 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
+
+        [Route("upload/electric")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadFileExcel()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] ?? "");
+            string lang = (request.Headers["lang"] ?? WebConfigurationManager.AppSettings["default_language"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            UploadModel value = new UploadModel();
+            value.data = new _ServiceUploadData();
+
+            string diskFolderPath = string.Empty;
+            string keyName = string.Empty;
+            string fileName = string.Empty;
+            string newFileName = string.Empty;
+            string fileExtension = string.Empty;
+            var fileSize = long.MinValue;
+
+            var path = WebConfigurationManager.AppSettings["body_path"];
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            if (!Request.Content.IsMimeMultipartContent("form-data"))
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType));
+            }
+
+            MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(path);
+
+            await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+            foreach (MultipartFileData fileData in streamProvider.FileData)
+            {
+                fileName = fileData.Headers.ContentDisposition.FileName.Replace("\"", "");
+                fileSize = new FileInfo(fileData.LocalFileName).Length;
+                fileExtension = Path.GetExtension(fileName);
+
+                if ((fileExtension != ".xls") && (fileExtension != ".xlsx"))
+                {
+                    value.success = false;
+                    value.data.file_size = fileSize.ToString();
+                    value.msg = new MsgModel() { code = 0, text = "กรุณาเลือกไฟล์นามสกุล xls หรือ xlsx", topic = "ไม่สำเร็จ" };
+                }
+                else
+                {
+
+                    if (fileSize > 3100000)
+                    {
+                        throw new Exception("error file size limit 3.00 MB");
+                    }
+
+
+                    newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
+
+                    diskFolderPath = WebConfigurationManager.AppSettings["file_electric_path"];
+
+                    var fullPath = Path.Combine(diskFolderPath, newFileName);
+                    var fileInfo = new FileInfo(fullPath);
+                    while (fileInfo.Exists)
+                    {
+                        newFileName = fileInfo.Name.Replace(fileInfo.Extension, "");
+                        newFileName = newFileName + Guid.NewGuid().ToString() + fileInfo.Extension;
+
+                        fullPath = Path.Combine(diskFolderPath, newFileName);
+                        fileInfo = new FileInfo(fullPath);
+                    }
+
+                    if (!Directory.Exists(fileInfo.Directory.FullName))
+                    {
+                        Directory.CreateDirectory(fileInfo.Directory.FullName);
+                    }
+                    File.Move(fileData.LocalFileName, fullPath);
+
+                    if (!File.Exists(fullPath))
+                    {
+                        value.success = false;
+                        value.data.file_size = fileSize.ToString();
+                        value.msg = new MsgModel() { code = 0, text = "อัพโหลดไม่สำเร็จ", topic = "ไม่สำเร็จ" };
+                    }
+                    else
+                    {
+                        DataTable dt = new DataTable();
+                        string strConnection;
+
+                        if (Path.GetExtension(fullPath.ToLower()) == ".xls")
+                            strConnection = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fullPath + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1;\"";
+                        else
+                            strConnection = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fullPath + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\"";
+                        OleDbConnection exconn = new OleDbConnection(strConnection);
+                        exconn.Open();
+                        OleDbDataAdapter da = new OleDbDataAdapter("SELECT GroupName, DSN, Value, ValueTimeStamp, StatusTextEN FROM[ต้นฉบับ$]", exconn);
+                        da.Fill(dt);
+                        exconn.Close();
+                        if (dt.AsEnumerable().Any())
+                        {
+                            ////List<ElectricModel> electricModel = dt.AsEnumerable().Select(c => new ElectricModel()
+                            ////{
+                            ////    GroupName = c["GroupName"] != DBNull.Value ? c.Field<string>("GroupName") : "",
+                            ////    DSN = c["DSN"] != DBNull.Value ? c.Field<string>("DSN") : "",
+                            ////    Value = c["Value"] != DBNull.Value ? (decimal)(c.Field<decimal>("Value")) : 0,
+                            ////    ValueTimeStamp = c["ValueTimeStamp"] != DBNull.Value ? c.Field<DateTime>("ValueTimeStamp") : DateTime.Now,
+                            ////    StatusTextEN = c["StatusTextEN"] != DBNull.Value ? c.Field<string>("StatusTextEN") : ""
+
+                            ////}).Where(c => c.DSN != "").ToList();
+
+                            //srv.RenewHollidayFromUpload(hollidays, user);
+                            //return "";
+                        }
+                        else
+                        {
+                            //return "File has no data!!";
+                        }
+
+                        value.success = true;
+                        value.data.img_url = "";
+                        value.data.file_size = fileSize.ToString();
+                        value.msg = new MsgModel() { code = 0, text = "อัพโหลดสำเร็จ", topic = "สำเร็จ" };
+                    }
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, value, Configuration.Formatters.JsonFormatter);
+        }
         #endregion
 
         #region Transection
@@ -1589,14 +1719,6 @@ namespace Chaithit_Market.Controllers
                     {
                         checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
                     }
-                    if (insertTransectionBillDTO.totalAmount == 0)
-                    {
-                        checkMissingOptional += "totalAmount ";
-                    }
-                    if (insertTransectionBillDTO.netAmount == 0)
-                    {
-                        checkMissingOptional += "netAmount ";
-                    }
                 }
                 else if (insertTransectionBillDTO.mode.ToLower().Equals("update"))
                 {
@@ -1649,14 +1771,6 @@ namespace Chaithit_Market.Controllers
                     if (insertTransectionBillDTO.discountAmount != 0 && insertTransectionBillDTO.discountPercent != 0)
                     {
                         checkMissingOptional += "Choose to enter value discountAmount or discountPercent ";
-                    }
-                    if (insertTransectionBillDTO.totalAmount == 0)
-                    {
-                        checkMissingOptional += "totalAmount ";
-                    }
-                    if (insertTransectionBillDTO.netAmount == 0)
-                    {
-                        checkMissingOptional += "netAmount ";
                     }
                 }
                 else
