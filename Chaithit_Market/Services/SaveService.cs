@@ -140,7 +140,7 @@ namespace Chaithit_Market.Services
                             _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "start_date", insertTransectionRentDTO.startDate, userID);
                             _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "end_date", insertTransectionRentDTO.endDate, userID);
                             _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "rent_type", insertTransectionRentDTO.rentType.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "pay_date", insertTransectionRentDTO.payDate.ToString(), userID);
+                            
                             value.data = _sql.UpdateTransectionRent(insertTransectionRentDTO, userID);
                         }
                         else
@@ -226,6 +226,7 @@ namespace Chaithit_Market.Services
                             _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "discount_percent", insertTransectionBillDTO.discountPercent.ToString(), userID);
                             _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "discount_amount", insertTransectionBillDTO.discountAmount.ToString(), userID);
                             _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "net_amount", insertTransectionBillDTO.netAmount.ToString(), userID);
+                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranRentID, TableName, "pay_date", insertTransectionBillDTO.payDate.ToString(), userID);
                             value.data = _sql.UpdateTransectionBill(insertTransectionBillDTO, userID);
                         }
                         else
