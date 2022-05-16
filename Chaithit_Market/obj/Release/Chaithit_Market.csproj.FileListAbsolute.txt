@@ -167,4 +167,13 @@ C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Marke
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.dll
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.pdb
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csprojAssemblyReference.cache
-D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csprojAssemblyReference.cache
+D:\_Chaithit_market\Chaithit_Market\bin\EntityFramework.dll
+D:\_Chaithit_market\Chaithit_Market\bin\EntityFramework.SqlServer.dll
+D:\_Chaithit_market\Chaithit_Market\bin\ExcelDataReader.DataSet.dll
+D:\_Chaithit_market\Chaithit_Market\bin\ExcelDataReader.dll
+D:\_Chaithit_market\Chaithit_Market\bin\EntityFramework.xml
+D:\_Chaithit_market\Chaithit_Market\bin\EntityFramework.SqlServer.xml
+D:\_Chaithit_market\Chaithit_Market\bin\ExcelDataReader.pdb
+D:\_Chaithit_market\Chaithit_Market\bin\ExcelDataReader.xml
+D:\_Chaithit_market\Chaithit_Market\bin\ExcelDataReader.DataSet.pdb
+D:\_Chaithit_market\Chaithit_Market\bin\ExcelDataReader.DataSet.xml

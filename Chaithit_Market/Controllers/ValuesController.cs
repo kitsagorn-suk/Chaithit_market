@@ -2,6 +2,7 @@
 using Chaithit_Market.DTO;
 using Chaithit_Market.Models;
 using Chaithit_Market.Services;
+using ExcelDataReader;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -1418,119 +1419,100 @@ namespace Chaithit_Market.Controllers
             UploadModel value = new UploadModel();
             value.data = new _ServiceUploadData();
 
-            string diskFolderPath = string.Empty;
-            string keyName = string.Empty;
-            string fileName = string.Empty;
-            string newFileName = string.Empty;
-            string fileExtension = string.Empty;
-            var fileSize = long.MinValue;
 
-            var path = WebConfigurationManager.AppSettings["body_path"];
-            if (!Directory.Exists(path))
+            try
             {
-                Directory.CreateDirectory(path);
-            }
 
-            if (!Request.Content.IsMimeMultipartContent("form-data"))
-            {
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.UnsupportedMediaType));
-            }
+                #region Variable Declaration
+                HttpResponseMessage ResponseMessage = null;
+                var httpRequest = HttpContext.Current.Request;
+                DataSet dsexcelRecords = new DataSet();
+                IExcelDataReader reader = null;
+                HttpPostedFile Inputfile = null;
+                Stream FileStream = null;
+                #endregion
 
-            MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(path);
-
-            await Request.Content.ReadAsMultipartAsync(streamProvider);
-
-            foreach (MultipartFileData fileData in streamProvider.FileData)
-            {
-                fileName = fileData.Headers.ContentDisposition.FileName.Replace("\"", "");
-                fileSize = new FileInfo(fileData.LocalFileName).Length;
-                fileExtension = Path.GetExtension(fileName);
-
-                if ((fileExtension != ".xls") && (fileExtension != ".xlsx"))
+                #region Save Student Detail From Excel
+                using (Chaithit_MarketEntities objEntity = new Chaithit_MarketEntities())
                 {
-                    value.success = false;
-                    value.data.file_size = fileSize.ToString();
-                    value.msg = new MsgModel() { code = 0, text = "กรุณาเลือกไฟล์นามสกุล xls หรือ xlsx", topic = "ไม่สำเร็จ" };
-                }
-                else
-                {
-
-                    if (fileSize > 3100000)
+                    if (httpRequest.Files.Count > 0)
                     {
-                        throw new Exception("error file size limit 3.00 MB");
-                    }
+                        Inputfile = httpRequest.Files[0];
+                        FileStream = Inputfile.InputStream;
 
+                        if (Inputfile != null && FileStream != null)
+                        {
+                            if (Inputfile.FileName.EndsWith(".xls"))
+                            {
+                                reader = ExcelReaderFactory.CreateBinaryReader(FileStream);
+                            }
+                            else if (Inputfile.FileName.EndsWith(".xlsx"))
+                            {
+                                reader = ExcelReaderFactory.CreateOpenXmlReader(FileStream);
+                            }
+                            else
+                            {
+                                value.success = false;
+                                value.msg = new MsgModel() { code = 0, text = "The file format is not supported.", topic = "No Success" };
+                            }
 
-                    newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
+                            dsexcelRecords = reader.AsDataSet();
+                            reader.Close();
 
-                    diskFolderPath = WebConfigurationManager.AppSettings["file_electric_path"];
+                            if (dsexcelRecords != null && dsexcelRecords.Tables.Count > 0)
+                            {
+                                DataTable dtElectric = dsexcelRecords.Tables[0];
+                                for (int i = 3; i < dtElectric.Rows.Count; i++)
+                                {
+                                    system_electric objElectric = new system_electric();
+                                    objElectric.group_name = Convert.ToString(dtElectric.Rows[i][0]);
+                                    objElectric.dns_meter = Convert.ToString(dtElectric.Rows[i][1]);
+                                    objElectric.value = Convert.ToDecimal(dtElectric.Rows[i][2]);
+                                    objElectric.value_datetime = Convert.ToDateTime(dtElectric.Rows[i][3]);
+                                    objElectric.status_text_en = Convert.ToString(dtElectric.Rows[i][4]);
+                                    objEntity.system_electric.Add(objElectric);
+                                }
 
-                    var fullPath = Path.Combine(diskFolderPath, newFileName);
-                    var fileInfo = new FileInfo(fullPath);
-                    while (fileInfo.Exists)
-                    {
-                        newFileName = fileInfo.Name.Replace(fileInfo.Extension, "");
-                        newFileName = newFileName + Guid.NewGuid().ToString() + fileInfo.Extension;
+                                int output = objEntity.SaveChanges();
+                                if (output > 0)
+                                {
+                                    value.success = true;
+                                    value.msg = new MsgModel() { code = 0, text = "The Excel file has been successfully uploaded.", topic = "Success" };
+                                }
+                                else
+                                {
+                                    value.success = false;
+                                    value.msg = new MsgModel() { code = 0, text = "Something Went Wrong!, The Excel file uploaded has fiald.", topic = "No Success" };
+                                }
+                            }
+                            else
+                            {
+                                value.success = false;
+                                value.msg = new MsgModel() { code = 0, text = "Selected file is empty.", topic = "No Success" };
+                            }
 
-                        fullPath = Path.Combine(diskFolderPath, newFileName);
-                        fileInfo = new FileInfo(fullPath);
-                    }
+                        }
+                        else
+                        {
+                            value.success = false;
+                            value.msg = new MsgModel() { code = 0, text = "Invalid File.", topic = "No Success" };
+                        }
 
-                    if (!Directory.Exists(fileInfo.Directory.FullName))
-                    {
-                        Directory.CreateDirectory(fileInfo.Directory.FullName);
-                    }
-                    File.Move(fileData.LocalFileName, fullPath);
-
-                    if (!File.Exists(fullPath))
-                    {
-                        value.success = false;
-                        value.data.file_size = fileSize.ToString();
-                        value.msg = new MsgModel() { code = 0, text = "อัพโหลดไม่สำเร็จ", topic = "ไม่สำเร็จ" };
                     }
                     else
                     {
-                        DataTable dt = new DataTable();
-                        string strConnection;
-
-                        if (Path.GetExtension(fullPath.ToLower()) == ".xls")
-                            strConnection = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fullPath + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1;\"";
-                        else
-                            strConnection = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fullPath + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\"";
-                        OleDbConnection exconn = new OleDbConnection(strConnection);
-                        exconn.Open();
-                        OleDbDataAdapter da = new OleDbDataAdapter("SELECT GroupName, DSN, Value, ValueTimeStamp, StatusTextEN FROM[ต้นฉบับ$]", exconn);
-                        da.Fill(dt);
-                        exconn.Close();
-                        if (dt.AsEnumerable().Any())
-                        {
-                            ////List<ElectricModel> electricModel = dt.AsEnumerable().Select(c => new ElectricModel()
-                            ////{
-                            ////    GroupName = c["GroupName"] != DBNull.Value ? c.Field<string>("GroupName") : "",
-                            ////    DSN = c["DSN"] != DBNull.Value ? c.Field<string>("DSN") : "",
-                            ////    Value = c["Value"] != DBNull.Value ? (decimal)(c.Field<decimal>("Value")) : 0,
-                            ////    ValueTimeStamp = c["ValueTimeStamp"] != DBNull.Value ? c.Field<DateTime>("ValueTimeStamp") : DateTime.Now,
-                            ////    StatusTextEN = c["StatusTextEN"] != DBNull.Value ? c.Field<string>("StatusTextEN") : ""
-
-                            ////}).Where(c => c.DSN != "").ToList();
-
-                            //srv.RenewHollidayFromUpload(hollidays, user);
-                            //return "";
-                        }
-                        else
-                        {
-                            //return "File has no data!!";
-                        }
-
-                        value.success = true;
-                        value.data.img_url = "";
-                        value.data.file_size = fileSize.ToString();
-                        value.msg = new MsgModel() { code = 0, text = "อัพโหลดสำเร็จ", topic = "สำเร็จ" };
+                        ResponseMessage = Request.CreateResponse(HttpStatusCode.BadRequest);
                     }
                 }
-            }
+                return Request.CreateResponse(HttpStatusCode.OK, value, Configuration.Formatters.JsonFormatter);
+                #endregion
 
-            return Request.CreateResponse(HttpStatusCode.OK, value, Configuration.Formatters.JsonFormatter);
+
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
         }
         #endregion
 
