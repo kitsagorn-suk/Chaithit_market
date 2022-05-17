@@ -43,6 +43,7 @@ namespace Chaithit_Market.Models
         public decimal electricEquipUnit { set; get; } = 0;
         public string rentType { set; get; } = "";
         public string statusPay { set; get; } = "";
+        public string statusElectric { set; get; } = "";
 
         public void loadData(DataRow dr)
         {
@@ -61,6 +62,7 @@ namespace Chaithit_Market.Models
             electricEquipUnit = decimal.Parse(dr["electric_equip_unit"].ToString());
             rentType = dr["rent_type"].ToString();
             statusPay = dr["status_pay"].ToString();
+            statusElectric = dr["status_electric"].ToString();
         }
     }
 }
