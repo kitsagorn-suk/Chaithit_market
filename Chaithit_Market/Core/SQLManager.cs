@@ -1682,6 +1682,7 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
 
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_admin_page " +
+                "@pBillCode, " +
                 "@pStartDate, " +
                 "@pEndDate, " +
                 "@pIsComplete, " +
@@ -1689,6 +1690,11 @@ namespace Chaithit_Market.Core
                 "@pPerPage, " +
                 "@pSortField, " +
                 "@pSortType");
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = searchHistoryAdminBillDTO.billCode;
+            sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
             pStartDate.Direction = ParameterDirection.Input;
@@ -1736,6 +1742,7 @@ namespace Chaithit_Market.Core
                 {
                     SearchHistoryPaidBillAdmin data = new SearchHistoryPaidBillAdmin();
                     data.loadData(row);
+                    data.imageUrl = data.fileCode.Split(',');
                     pagination.data.Add(data);
                 }
             }
@@ -1753,9 +1760,15 @@ namespace Chaithit_Market.Core
 
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_admin_total " +
+                "@pBillCode, " +
                 "@pStartDate, " +
                 "@pEndDate, " +
                 "@pIsComplete ");
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = searchHistoryAdminBillDTO.billCode;
+            sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
             pStartDate.Direction = ParameterDirection.Input;
