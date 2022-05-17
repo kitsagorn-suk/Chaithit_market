@@ -1193,6 +1193,21 @@ namespace Chaithit_Market.Controllers
                 MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(path);
                 await Request.Content.ReadAsMultipartAsync(streamProvider);
 
+                bool havefile = false;
+                foreach (MultipartFileData dataitem in streamProvider.FileData)
+                {
+                    fileName = dataitem.Headers.ContentDisposition.FileName.Replace("\"", "");
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        havefile = true;
+                    }
+                }
+
+                if (!havefile)
+                {
+                    throw new Exception("กรุณาเเนบรูป");
+                }
+
                 foreach (var key in streamProvider.FormData.AllKeys)
                 {
                     foreach (var val in streamProvider.FormData.GetValues(key))
@@ -1240,7 +1255,6 @@ namespace Chaithit_Market.Controllers
 
                 if (payID.data != null && !payID.data.id.Equals(0))
                 {
-                    bool havefile = false;
                     foreach (MultipartFileData dataitem in streamProvider.FileData)
                     {
                         try
@@ -1258,10 +1272,7 @@ namespace Chaithit_Market.Controllers
 
                             keyName = dataitem.Headers.ContentDisposition.Name.Replace("\"", "");
                             fileName = dataitem.Headers.ContentDisposition.FileName.Replace("\"", "");
-                            if (!string.IsNullOrEmpty(fileName))
-                            {
-                                havefile = true;
-                            }
+                            
                             newFileName = Guid.NewGuid() + Path.GetExtension(fileName);
 
                             var fullPath = Path.Combine(diskFolderPath, newFileName);
@@ -1299,11 +1310,6 @@ namespace Chaithit_Market.Controllers
                         {
                             string message = ex.StackTrace;
                         }
-                    }
-
-                    if (!havefile)
-                    {
-                        throw new Exception("กรุณาเเนบรูป"); 
                     }
                 }
                 else
