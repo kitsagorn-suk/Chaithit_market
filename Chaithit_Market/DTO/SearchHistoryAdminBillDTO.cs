@@ -7,7 +7,12 @@ namespace Chaithit_Market.DTO
 {
     public class SearchHistoryAdminBillDTO
     {
-        public string billCode { set; get; } = "";
+        private string _billNumber;
+        public string billNumber
+        {
+            get { return _billNumber ?? String.Empty; }
+            set { _billNumber = value; }
+        }
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
         public int isComplete { set; get; } = 0;

@@ -1693,7 +1693,7 @@ namespace Chaithit_Market.Core
 
             SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
             pBillCode.Direction = ParameterDirection.Input;
-            pBillCode.Value = searchHistoryAdminBillDTO.billCode;
+            pBillCode.Value = searchHistoryAdminBillDTO.billNumber;
             sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
@@ -1767,7 +1767,7 @@ namespace Chaithit_Market.Core
 
             SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
             pBillCode.Direction = ParameterDirection.Input;
-            pBillCode.Value = searchHistoryAdminBillDTO.billCode;
+            pBillCode.Value = searchHistoryAdminBillDTO.billNumber;
             sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
@@ -4005,7 +4005,10 @@ namespace Chaithit_Market.Core
                 {
                     SearchManageBill data = new SearchManageBill();
                     data.loadData(row);
-                    data.imageUrl = data.fileCode.Split(',');
+                    if (!string.IsNullOrEmpty(data.fileCode))
+                    {
+                        data.imageUrl = data.fileCode.Split(',');
+                    }
                     pagination.data.Add(data);
                 }
             }

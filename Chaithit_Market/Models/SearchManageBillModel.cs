@@ -39,7 +39,7 @@ namespace Chaithit_Market.Models
         public decimal overpayAmount { set; get; } = 0;
         public int isComplete { set; get; } = 0;
         public string fileCode { set; get; } = "";
-        public string[] imageUrl { get; set; } = { "" };
+        public string[] imageUrl { get; set; } = { };
 
         public void loadData(DataRow dr)
         {
