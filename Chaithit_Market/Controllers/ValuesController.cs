@@ -1657,6 +1657,18 @@ namespace Chaithit_Market.Controllers
                     throw new Exception("Choose Mode Insert or Update");
                 }
 
+                if (insertTransectionBillDTO.mode.ToLower().Equals("insert"))
+                {
+                    if (insertTransectionBillDTO.zoneID == 0)
+                    {
+                        checkMissingOptional += "zoneID ";
+                    }
+                    if (insertTransectionBillDTO.tranRentID == 0)
+                    {
+                        checkMissingOptional += "tranRentID ";
+                    }
+                }
+
                 if (insertTransectionBillDTO.mode.ToLower().Equals("update"))
                 {
                     if (insertTransectionBillDTO.tranBillID == 0)
@@ -1665,15 +1677,7 @@ namespace Chaithit_Market.Controllers
                     }
 
                 }
-
-                if (insertTransectionBillDTO.zoneID == 0)
-                {
-                    checkMissingOptional += "zoneID ";
-                }
-                if (insertTransectionBillDTO.tranRentID == 0)
-                {
-                    checkMissingOptional += "tranRentID ";
-                }
+                
                 if (string.IsNullOrEmpty(insertTransectionBillDTO.startDate))
                 {
                     checkMissingOptional += "startDate ";
