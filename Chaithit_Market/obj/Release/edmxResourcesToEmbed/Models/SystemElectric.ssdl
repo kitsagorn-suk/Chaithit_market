@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Chaithit_MarketModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="system_electric">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="group_name" Type="varchar" MaxLength="10" />
+    <Property Name="dns_meter" Type="varchar" MaxLength="20" />
+    <Property Name="value" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="value_datetime" Type="datetime" />
+    <Property Name="status_text_en" Type="varchar" MaxLength="200" />
+    <Property Name="status" Type="bit" />
+    <Property Name="create_date" Type="datetime" />
+    <Property Name="create_by" Type="int" />
+    <Property Name="update_date" Type="datetime" />
+    <Property Name="update_by" Type="int" />
+    <Property Name="value_now" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="no" Type="int" />
+    <Property Name="year" Type="int" />
+    <Property Name="month" Type="int" />
+    <Property Name="start_date" Type="date" />
+    <Property Name="end_date" Type="date" />
+  </EntityType>
+  <EntityContainer Name="Chaithit_MarketModelStoreContainer">
+    <EntitySet Name="system_electric" EntityType="Self.system_electric" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

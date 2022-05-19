@@ -247,23 +247,23 @@
     <Compile Include="Models\SearchMasterZoneSubModel.cs" />
     <Compile Include="Models\SearchUnitStandModel.cs" />
     <Compile Include="Models\SearchUserProfileModel.cs" />
-    <Compile Include="Models\system_electric.Context.cs">
+    <Compile Include="Models\SystemElectric.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>system_electric.Context.tt</DependentUpon>
+      <DependentUpon>SystemElectric.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SystemElectric.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SystemElectric.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SystemElectric.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SystemElectric.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\system_electric.cs">
-      <DependentUpon>system_electric.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\system_electric.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>system_electric.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\system_electric1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>system_electric.tt</DependentUpon>
+      <DependentUpon>SystemElectric.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UploadModel.cs" />
     <Compile Include="Models\ValidationModel.cs" />
@@ -283,15 +283,15 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Models\system_electric.Context.tt">
+    <Content Include="Models\SystemElectric.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>system_electric.Context.cs</LastGenOutput>
-      <DependentUpon>system_electric.edmx</DependentUpon>
+      <DependentUpon>SystemElectric.edmx</DependentUpon>
+      <LastGenOutput>SystemElectric.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\system_electric.tt">
+    <Content Include="Models\SystemElectric.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>system_electric.edmx</DependentUpon>
-      <LastGenOutput>system_electric1.cs</LastGenOutput>
+      <DependentUpon>SystemElectric.edmx</DependentUpon>
+      <LastGenOutput>SystemElectric.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -315,12 +315,12 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="libman.json" />
-    <EntityDeploy Include="Models\system_electric.edmx">
+    <EntityDeploy Include="Models\SystemElectric.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>system_electric.Designer.cs</LastGenOutput>
+      <LastGenOutput>SystemElectric.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\system_electric.edmx.diagram">
-      <DependentUpon>system_electric.edmx</DependentUpon>
+    <Content Include="Models\SystemElectric.edmx.diagram">
+      <DependentUpon>SystemElectric.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />

@@ -20,5 +20,13 @@ namespace Chaithit_Market.Models
         public Nullable<decimal> value { get; set; }
         public Nullable<System.DateTime> value_datetime { get; set; }
         public string status_text_en { get; set; }
+        public Nullable<System.DateTime> create_date { get; set; }
+        public Nullable<int> create_by { get; set; }
+        public Nullable<decimal> value_now { get; set; }
+        public Nullable<int> no { get; set; }
+        public Nullable<int> year { get; set; }
+        public Nullable<int> month { get; set; }
+        public Nullable<System.DateTime> start_date { get; set; }
+        public Nullable<System.DateTime> end_date { get; set; }
     }
 }
