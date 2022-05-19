@@ -1422,6 +1422,9 @@ namespace Chaithit_Market.Controllers
             string platform = request.Headers["platform"];
             string version = request.Headers["version"];
 
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
             UploadModel value = new UploadModel();
             value.data = new _ServiceUploadData();
 
@@ -1437,6 +1440,38 @@ namespace Chaithit_Market.Controllers
                 HttpPostedFile Inputfile = null;
                 Stream FileStream = null;
                 #endregion
+
+                var path = WebConfigurationManager.AppSettings["body_path"];
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                MultipartFormDataStreamProvider streamProvider = new MultipartFormDataStreamProvider(path);
+                await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+                string startDate = "", endDate = "";
+                foreach (var key in streamProvider.FormData.AllKeys)
+                {
+                    foreach (var val in streamProvider.FormData.GetValues(key))
+                    {
+                        if (key == "startDate")
+                        {
+                            if (string.IsNullOrEmpty(val))
+                            {
+                                throw new Exception("Missing Parameter : startDate");
+                            }
+                            startDate = val;
+                        }
+                        if (key == "endDate")
+                        {
+                            if (string.IsNullOrEmpty(val))
+                            {
+                                throw new Exception("Missing Parameter : endDate");
+                            }
+                            endDate = val;
+                        }
+                    }
+                }
 
                 #region Save Student Detail From Excel
                 using (Chaithit_MarketEntities objEntity = new Chaithit_MarketEntities())
@@ -1465,17 +1500,36 @@ namespace Chaithit_Market.Controllers
                             dsexcelRecords = reader.AsDataSet();
                             reader.Close();
 
+                            DataTable dtElec = _sql.GetElecticUnit();
+
                             if (dsexcelRecords != null && dsexcelRecords.Tables.Count > 0)
                             {
                                 DataTable dtElectric = dsexcelRecords.Tables[0];
                                 for (int i = 3; i < dtElectric.Rows.Count; i++)
                                 {
                                     system_electric objElectric = new system_electric();
+                                    DataRow[] dr = dtElec.Select("dns_meter='" + dtElectric.Rows[i][1].ToString() + "'");
+                                    if (dr.Length > 0)
+                                    {
+                                        objElectric.value_now = Convert.ToDecimal(dtElectric.Rows[i][2]) - Convert.ToDecimal(dr[0]["value"].ToString());
+                                    }
+                                    else
+                                    {
+                                        objElectric.value_now = Convert.ToDecimal(dtElectric.Rows[i][2]);
+                                    }
                                     objElectric.group_name = Convert.ToString(dtElectric.Rows[i][0]);
                                     objElectric.dns_meter = Convert.ToString(dtElectric.Rows[i][1]);
                                     objElectric.value = Convert.ToDecimal(dtElectric.Rows[i][2]);
                                     objElectric.value_datetime = Convert.ToDateTime(dtElectric.Rows[i][3]);
                                     objElectric.status_text_en = Convert.ToString(dtElectric.Rows[i][4]);
+                                    objElectric.create_date = DateTime.Now;
+                                    objElectric.create_by = data.user_id;
+                                    objElectric.no = 1;
+                                    objElectric.year = Convert.ToDateTime(startDate).Year;
+                                    objElectric.month = Convert.ToDateTime(startDate).Month;
+                                    objElectric.start_date = Convert.ToDateTime(startDate);
+                                    objElectric.end_date = Convert.ToDateTime(endDate);
+
                                     objEntity.system_electric.Add(objElectric);
                                 }
 
@@ -1514,6 +1568,53 @@ namespace Chaithit_Market.Controllers
                 #endregion
 
 
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("1.0/get/default/electric")]
+        [HttpPost]
+        public IHttpActionResult GetDefaultElectric(GetDefaultElectricDTO getDefaultElectricDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] ?? "");
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(getDefaultElectricDTO);
+                int logID = _sql.InsertLogReceiveData("GetDefaultElectric", json, timestampNow.ToString(), authHeader,
+                        data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                string checkMissingOptional = "";
+
+                if (string.IsNullOrEmpty(getDefaultElectricDTO.dnsMeter))
+                {
+                    checkMissingOptional += "dnsMeter ";
+                }
+                if (string.IsNullOrEmpty(getDefaultElectricDTO.startDate))
+                {
+                    checkMissingOptional += "startDate ";
+                }
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
+
+                var obj = new object();
+                obj = srv.GetDefaultElectricService(authHeader, lang, platform.ToLower(), logID, getDefaultElectricDTO);
+
+                return Ok(obj);
             }
             catch (Exception ex)
             {
