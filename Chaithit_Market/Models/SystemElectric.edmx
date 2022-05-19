@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Chaithit_MarketModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="system_electric">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="group_name" Type="varchar" MaxLength="10" />
+          <Property Name="dns_meter" Type="varchar" MaxLength="20" />
+          <Property Name="value" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="value_datetime" Type="datetime" />
+          <Property Name="status_text_en" Type="varchar" MaxLength="200" />
+          <Property Name="status" Type="bit" />
+          <Property Name="create_date" Type="datetime" />
+          <Property Name="create_by" Type="int" />
+          <Property Name="update_date" Type="datetime" />
+          <Property Name="update_by" Type="int" />
+          <Property Name="value_now" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="no" Type="int" />
+          <Property Name="year" Type="int" />
+          <Property Name="month" Type="int" />
+          <Property Name="start_date" Type="date" />
+          <Property Name="end_date" Type="date" />
+        </EntityType>
+        <EntityContainer Name="Chaithit_MarketModelStoreContainer">
+          <EntitySet Name="system_electric" EntityType="Self.system_electric" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Chaithit_MarketModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="system_electric">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="group_name" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="dns_meter" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="value" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="value_datetime" Type="DateTime" Precision="3" />
+          <Property Name="status_text_en" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Precision="3" />
+          <Property Name="create_by" Type="Int32" />
+          <Property Name="value_now" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="no" Type="Int32" />
+          <Property Name="year" Type="Int32" />
+          <Property Name="month" Type="Int32" />
+          <Property Name="start_date" Type="DateTime" Precision="0" />
+          <Property Name="end_date" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityContainer Name="Chaithit_MarketEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="system_electric" EntityType="Self.system_electric" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Chaithit_MarketModelStoreContainer" CdmEntityContainer="Chaithit_MarketEntities">
+          <EntitySetMapping Name="system_electric">
+            <EntityTypeMapping TypeName="Chaithit_MarketModel.system_electric">
+              <MappingFragment StoreEntitySet="system_electric">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="group_name" ColumnName="group_name" />
+                <ScalarProperty Name="dns_meter" ColumnName="dns_meter" />
+                <ScalarProperty Name="value" ColumnName="value" />
+                <ScalarProperty Name="value_datetime" ColumnName="value_datetime" />
+                <ScalarProperty Name="status_text_en" ColumnName="status_text_en" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="create_by" ColumnName="create_by" />
+                <ScalarProperty Name="value_now" ColumnName="value_now" />
+                <ScalarProperty Name="no" ColumnName="no" />
+                <ScalarProperty Name="year" ColumnName="year" />
+                <ScalarProperty Name="month" ColumnName="month" />
+                <ScalarProperty Name="start_date" ColumnName="start_date" />
+                <ScalarProperty Name="end_date" ColumnName="end_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

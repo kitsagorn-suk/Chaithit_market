@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Chaithit_MarketModelStoreContainer" CdmEntityContainer="Chaithit_MarketEntities">
+    <EntitySetMapping Name="system_electric">
+      <EntityTypeMapping TypeName="Chaithit_MarketModel.system_electric">
+        <MappingFragment StoreEntitySet="system_electric">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="group_name" ColumnName="group_name" />
+          <ScalarProperty Name="dns_meter" ColumnName="dns_meter" />
+          <ScalarProperty Name="value" ColumnName="value" />
+          <ScalarProperty Name="value_datetime" ColumnName="value_datetime" />
+          <ScalarProperty Name="status_text_en" ColumnName="status_text_en" />
+          <ScalarProperty Name="create_date" ColumnName="create_date" />
+          <ScalarProperty Name="create_by" ColumnName="create_by" />
+          <ScalarProperty Name="value_now" ColumnName="value_now" />
+          <ScalarProperty Name="no" ColumnName="no" />
+          <ScalarProperty Name="year" ColumnName="year" />
+          <ScalarProperty Name="month" ColumnName="month" />
+          <ScalarProperty Name="start_date" ColumnName="start_date" />
+          <ScalarProperty Name="end_date" ColumnName="end_date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
