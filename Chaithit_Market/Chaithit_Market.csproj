@@ -185,6 +185,7 @@
     <Compile Include="Core\Utility.cs" />
     <Compile Include="Core\ValidationManager.cs" />
     <Compile Include="DTO\GetDashbordDTO.cs" />
+    <Compile Include="DTO\GetDefaultElectricDTO.cs" />
     <Compile Include="DTO\GetDropdownIsAllDTO.cs" />
     <Compile Include="DTO\GetDropdownUnitIsAllDTO.cs" />
     <Compile Include="DTO\GetDropdownZoneSubIsAllDTO.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Models\CheckUserByTokenModel.cs" />
     <Compile Include="Models\GetAllDropdownModel.cs" />
     <Compile Include="Models\GetDashbordModel.cs" />
+    <Compile Include="Models\GetDefaultElectricModelcs.cs" />
     <Compile Include="Models\GetDropdownMonthModel.cs" />
     <Compile Include="Models\GetRenterByUserIDModel.cs" />
     <Compile Include="Models\GetTranPayImageModel.cs" />
