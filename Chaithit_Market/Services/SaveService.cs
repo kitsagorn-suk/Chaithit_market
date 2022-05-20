@@ -204,40 +204,40 @@ namespace Chaithit_Market.Services
                 }
                 else if (insertTransectionBillDTO.mode.ToLower() == "update")
                 {
-                    validation = ValidationManager.CheckValidationDupicateTransectionBill(lang, insertTransectionBillDTO);
+                    validation = ValidationManager.CheckValidationIDUpdate(insertTransectionBillDTO.tranBillID, TableName, lang);
                     if (validation.Success == true)
                     {
-                        validation = ValidationManager.CheckValidationIDUpdate(insertTransectionBillDTO.tranBillID, TableName, lang);
-                        if (validation.Success == true)
-                        {
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "tran_rent_id", insertTransectionBillDTO.tranRentID.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "bill_code", insertTransectionBillDTO.billCode.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "start_date", insertTransectionBillDTO.startDate, userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "end_date", insertTransectionBillDTO.endDate, userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "rent_amount", insertTransectionBillDTO.rentAmount.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "electric_unit", insertTransectionBillDTO.electricUnit.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "electric_amount", insertTransectionBillDTO.electricAmount.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "water_unit", insertTransectionBillDTO.waterUnit.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "water_amount", insertTransectionBillDTO.waterAmount.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "lamp_unit", insertTransectionBillDTO.lampUnit.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "electric_equip_unit", insertTransectionBillDTO.electricEquipUnit.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "electric_night_market_amount", insertTransectionBillDTO.electricNightMarketAmount.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "total_amount", insertTransectionBillDTO.totalAmount.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "discount_percent", insertTransectionBillDTO.discountPercent.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "discount_amount", insertTransectionBillDTO.discountAmount.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "net_amount", insertTransectionBillDTO.netAmount.ToString(), userID);
-                            _sql.InsertSystemLogChange(insertTransectionBillDTO.tranRentID, TableName, "pay_date", insertTransectionBillDTO.payDate.ToString(), userID);
-                            value.data = _sql.UpdateTransectionBill(insertTransectionBillDTO, userID);
-                        }
-                        else
-                        {
-                            _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
-                        }
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "bill_code", insertTransectionBillDTO.billCode.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "start_date", insertTransectionBillDTO.startDate, userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "end_date", insertTransectionBillDTO.endDate, userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "rent_amount", insertTransectionBillDTO.rentAmount.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "electric_unit", insertTransectionBillDTO.electricUnit.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "electric_amount", insertTransectionBillDTO.electricAmount.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "water_unit", insertTransectionBillDTO.waterUnit.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "water_amount", insertTransectionBillDTO.waterAmount.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "lamp_unit", insertTransectionBillDTO.lampUnit.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "electric_equip_unit", insertTransectionBillDTO.electricEquipUnit.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "electric_night_market_amount", insertTransectionBillDTO.electricNightMarketAmount.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "total_amount", insertTransectionBillDTO.totalAmount.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "discount_percent", insertTransectionBillDTO.discountPercent.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "discount_amount", insertTransectionBillDTO.discountAmount.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranBillID, TableName, "net_amount", insertTransectionBillDTO.netAmount.ToString(), userID);
+                        _sql.InsertSystemLogChange(insertTransectionBillDTO.tranRentID, TableName, "pay_date", insertTransectionBillDTO.payDate.ToString(), userID);
+                        value.data = _sql.UpdateTransectionBill(insertTransectionBillDTO, userID);
                     }
                     else
                     {
                         _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
                     }
+                    //validation = ValidationManager.CheckValidationDupicateTransectionBill(lang, insertTransectionBillDTO);
+                    //if (validation.Success == true)
+                    //{
+
+                    //}
+                    //else
+                    //{
+                    //    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                    //}
                 }
 
                 value.success = validation.Success;

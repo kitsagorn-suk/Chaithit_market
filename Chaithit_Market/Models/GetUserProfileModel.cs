@@ -26,7 +26,6 @@ namespace Chaithit_Market.Models
         public int statusEmp { set; get; } = 0;
         public string fileCode { set; get; } = "";
         public string[] imageUrl { get; set; } = { "" };
-        public string dnsMeter { set; get; } = "";
 
         public void loadData(DataRow dr)
         {
@@ -40,7 +39,7 @@ namespace Chaithit_Market.Models
             endDate = DateTime.Parse(dr["end_date"].ToString()).ToString("yyyy-MM-dd");
             statusEmp = int.Parse(dr["status_emp"].ToString());
             fileCode = dr["file_code"].ToString();
-            dnsMeter = dr["dns_meter"].ToString();
+            //dnsMeter = dr["dns_meter"].ToString();
         }
 
         public List<MarketDetail> dataMarket { get; set; }

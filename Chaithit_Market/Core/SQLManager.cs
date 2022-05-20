@@ -1130,7 +1130,6 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec update_transection_bill " +
                 "@pTranBillID," +
-                "@pTranRentID," +
                 "@pBillCode," +
                 "@pStartDate," +
                 "@pEndDate," +
