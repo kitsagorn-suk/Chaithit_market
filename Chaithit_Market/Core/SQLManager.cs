@@ -677,7 +677,8 @@ namespace Chaithit_Market.Core
             SQLCustomExecute sql = new SQLCustomExecute("exec check_dupicate_transection_bill " +
                 "@pTranBillID, " +
                 "@pBillCode, " +
-                "@pTranRentID ");
+                "@pTranRentID, " +
+                "@pStartDate ");
 
             SqlParameter pTranBillID = new SqlParameter(@"pTranBillID", SqlDbType.Int);
             pTranBillID.Direction = ParameterDirection.Input;
@@ -693,6 +694,11 @@ namespace Chaithit_Market.Core
             pTranRentID.Direction = ParameterDirection.Input;
             pTranRentID.Value = insertTransectionBillDTO.tranRentID;
             sql.Parameters.Add(pTranRentID);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 20);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = insertTransectionBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -1682,6 +1688,7 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
 
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_admin_page " +
+                "@pBillCode, " +
                 "@pStartDate, " +
                 "@pEndDate, " +
                 "@pIsComplete, " +
@@ -1689,6 +1696,11 @@ namespace Chaithit_Market.Core
                 "@pPerPage, " +
                 "@pSortField, " +
                 "@pSortType");
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = searchHistoryAdminBillDTO.billNumber;
+            sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
             pStartDate.Direction = ParameterDirection.Input;
@@ -1736,6 +1748,7 @@ namespace Chaithit_Market.Core
                 {
                     SearchHistoryPaidBillAdmin data = new SearchHistoryPaidBillAdmin();
                     data.loadData(row);
+                    data.imageUrl = data.fileCode.Split(',');
                     pagination.data.Add(data);
                 }
             }
@@ -1753,9 +1766,15 @@ namespace Chaithit_Market.Core
 
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_admin_total " +
+                "@pBillCode, " +
                 "@pStartDate, " +
                 "@pEndDate, " +
                 "@pIsComplete ");
+
+            SqlParameter pBillCode = new SqlParameter(@"pBillCode", SqlDbType.VarChar, 255);
+            pBillCode.Direction = ParameterDirection.Input;
+            pBillCode.Value = searchHistoryAdminBillDTO.billNumber;
+            sql.Parameters.Add(pBillCode);
 
             SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
             pStartDate.Direction = ParameterDirection.Input;
@@ -3992,7 +4011,10 @@ namespace Chaithit_Market.Core
                 {
                     SearchManageBill data = new SearchManageBill();
                     data.loadData(row);
-                    data.imageUrl = data.fileCode.Split(',');
+                    if (!string.IsNullOrEmpty(data.fileCode))
+                    {
+                        data.imageUrl = data.fileCode.Split(',');
+                    }
                     pagination.data.Add(data);
                 }
             }
@@ -4418,6 +4440,48 @@ namespace Chaithit_Market.Core
             }
 
             data.imageUrl = data.fileCode.Split(',');
+
+            return data;
+        }
+
+        public DataTable GetElecticUnit()
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_system_electric ");
+
+            table = sql.executeQueryWithReturnTable();
+
+            return table;
+        }
+
+        public DefaultElectricModelc GetDefaultElectric(GetDefaultElectricDTO getDefaultElectricDTO)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_default_electric " +
+                "@pDNSMeter," +
+                "@pStartDate");
+
+            SqlParameter pDNSMeter = new SqlParameter(@"pDNSMeter", SqlDbType.VarChar);
+            pDNSMeter.Direction = ParameterDirection.Input;
+            pDNSMeter.Value = getDefaultElectricDTO.dnsMeter;
+            sql.Parameters.Add(pDNSMeter);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = getDefaultElectricDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            table = sql.executeQueryWithReturnTable();
+
+            DefaultElectricModelc data = new DefaultElectricModelc();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
 
             return data;
         }
