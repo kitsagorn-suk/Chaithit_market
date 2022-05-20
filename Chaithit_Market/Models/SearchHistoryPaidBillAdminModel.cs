@@ -57,8 +57,6 @@ namespace Chaithit_Market.Models
             fileCode = dr["file_code"].ToString();
             lastElectricUnit = dr["last_electric_unit"].ToString();
             previousElectricUnit = dr["previous_electric_unit"].ToString();
-            //lastElectricUnit = dr["last_electric_unit"].ToString();
-            //previousElectricUnit = dr["previous_electric_unit"].ToString();
         }
     }
 }
