@@ -55,8 +55,8 @@ namespace Chaithit_Market.Models
             balanceAmount = decimal.Parse(dr["balance_amount"].ToString());
             overpayAmount = decimal.Parse(dr["overpay_amount"].ToString());
             fileCode = dr["file_code"].ToString();
-            lastElectricUnit = "";
-            previousElectricUnit = "";
+            lastElectricUnit = dr["last_electric_unit"].ToString();
+            previousElectricUnit = dr["previous_electric_unit"].ToString();
             //lastElectricUnit = dr["last_electric_unit"].ToString();
             //previousElectricUnit = dr["previous_electric_unit"].ToString();
         }
