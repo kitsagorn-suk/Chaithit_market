@@ -29,6 +29,8 @@ namespace Chaithit_Market.Models
         public string endDate { set; get; } = "";
         public int rentType { set; get; } = 0;
         public int tranRentID { set; get; } = 0;
+        public int rentTypeAmount { set; get; } = 0;
+        public int status { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -46,6 +48,8 @@ namespace Chaithit_Market.Models
             endDate = dr["end_date"].ToString();
             rentType = int.Parse(dr["rent_type"].ToString());
             tranRentID = int.Parse(dr["tran_rent_id"].ToString());
+            rentTypeAmount = int.Parse(dr["rent_type_amount"].ToString());
+            status = int.Parse(dr["status"].ToString().ToLower() == "true" ? "1" : "0");
         }
     }
 }

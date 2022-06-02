@@ -42,7 +42,8 @@ namespace Chaithit_Market.Models
         public decimal lampUnit { set; get; } = 0;
         public decimal electricEquipUnit { set; get; } = 0;
         public string rentType { set; get; } = "";
-        public string statusPay { set; get; } = "";
+        public string listBillCode { set; get; } = "";
+        public string statusElectric { set; get; } = "";
 
         public void loadData(DataRow dr)
         {
@@ -60,7 +61,8 @@ namespace Chaithit_Market.Models
             lampUnit = decimal.Parse(dr["lamp_unit"].ToString());
             electricEquipUnit = decimal.Parse(dr["electric_equip_unit"].ToString());
             rentType = dr["rent_type"].ToString();
-            statusPay = dr["status_pay"].ToString();
+            listBillCode = dr["list_bill_code"].ToString();
+            statusElectric = dr["status_electric"].ToString();
         }
     }
 }

@@ -16,5 +16,6 @@ namespace Chaithit_Market.DTO
         public decimal waterAmount { set; get; } = 0;
         public decimal lampAmountPerOne { set; get; } = 0;
         public decimal electricEquipAmount { set; get; } = 0;
+        public int status { set; get; } = 0;
     }
 }

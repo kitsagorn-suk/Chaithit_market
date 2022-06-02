@@ -275,6 +275,12 @@ namespace Chaithit_Market.Core
                         getMessage = ValidationModel.GetInvalidMessage(state, lang);
                         return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                     }
+                    if (dt.Rows[0]["DupDate"].ToString() != "0")
+                    {
+                        state = ValidationModel.InvalidState.E301021;
+                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
+                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                    }
                 }
 
                 getMessage = ValidationModel.GetInvalidMessage(ValidationModel.InvalidState.S201001, lang);
