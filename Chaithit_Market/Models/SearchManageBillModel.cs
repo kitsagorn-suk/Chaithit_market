@@ -44,6 +44,7 @@ namespace Chaithit_Market.Models
         public string mobile { set; get; } = "";
         public string position { set; get; } = "";
         public string statusEmpName { set; get; } = "";
+        public string zoneName { set; get; } = "";
 
         public void loadData(DataRow dr)
         {
@@ -75,6 +76,7 @@ namespace Chaithit_Market.Models
             mobile = dr["mobile"].ToString();
             position = dr["position"].ToString();
             statusEmpName = dr["status_emp_name"].ToString();
+            zoneName = dr["zone_name"].ToString();
         }
     }
 }

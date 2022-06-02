@@ -11,5 +11,6 @@ namespace Chaithit_Market.DTO
         public int zoneSubID { set; get; } = 0;
         public int zoneID { set; get; } = 0;
         public string name { set; get; } = "";
+        public int status { set; get; } = 0;
     }
 }

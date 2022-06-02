@@ -82,7 +82,6 @@ C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\Microsoft.CodeDom.Prov
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csproj.CopyComplete
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.dll
 C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.pdb
-C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csprojAssemblyReference.cache
 D:\_Chaithit_market\Chaithit_Market\bin\Chaithit_Market.dll.config
 D:\_Chaithit_market\Chaithit_Market\bin\Chaithit_Market.dll
 D:\_Chaithit_market\Chaithit_Market\bin\Chaithit_Market.pdb
@@ -178,3 +177,13 @@ D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csproj.CopyCompl
 D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.dll
 D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.pdb
 D:\_Chaithit_market\Chaithit_Market\obj\Release\Chaithit_Market.csprojAssemblyReference.cache
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\EntityFramework.dll
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\EntityFramework.SqlServer.dll
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\ExcelDataReader.DataSet.dll
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\ExcelDataReader.dll
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\EntityFramework.xml
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\EntityFramework.SqlServer.xml
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\ExcelDataReader.pdb
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\ExcelDataReader.xml
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\ExcelDataReader.DataSet.pdb
+C:\Users\USER\Desktop\Chaithit_market\Chaithit_Market\bin\ExcelDataReader.DataSet.xml

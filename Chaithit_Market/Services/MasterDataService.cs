@@ -38,6 +38,7 @@ namespace Chaithit_Market.Services
                         if (validation.Success == true)
                         {
                             _sql.InsertSystemLogChange(masterDataDTO.masterID, TableName, "name", masterDataDTO.name, userID);
+                            _sql.InsertSystemLogChange(masterDataDTO.masterID, TableName, "status", masterDataDTO.status.ToString(), userID);
                             value.data = _sql.UpdateMasterData(masterDataDTO, TableName, userID);
                         }
                         else
@@ -241,6 +242,7 @@ namespace Chaithit_Market.Services
                         {
                             _sql.InsertSystemLogChange(saveZoneSubDTO.zoneSubID, TableName, "zone_id", saveZoneSubDTO.zoneID.ToString(), userID);
                             _sql.InsertSystemLogChange(saveZoneSubDTO.zoneSubID, TableName, "name", saveZoneSubDTO.name, userID);
+                            _sql.InsertSystemLogChange(saveZoneSubDTO.zoneSubID, TableName, "status", saveZoneSubDTO.status.ToString(), userID);
                             value.data = _sql.UpdateZoneSub(saveZoneSubDTO, userID);
                         }
                         else
@@ -325,6 +327,7 @@ namespace Chaithit_Market.Services
                             _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "unit_code", saveUnitDTO.unitCode, userID);
                             _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "name", saveUnitDTO.name, userID);
                             _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "rate_id", saveUnitDTO.rateID.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveUnitDTO.unitID, TableName, "status", saveUnitDTO.status.ToString(), userID);
                             value.data = _sql.UpdateUnit(saveUnitDTO, userID);
                         }
                         else
@@ -411,6 +414,7 @@ namespace Chaithit_Market.Services
                             _sql.InsertSystemLogChange(saveRateAmountDTO.rateID, TableName, "water_amount", saveRateAmountDTO.waterAmount.ToString(), userID);
                             _sql.InsertSystemLogChange(saveRateAmountDTO.rateID, TableName, "lamp_amount_per_one", saveRateAmountDTO.lampAmountPerOne.ToString(), userID);
                             _sql.InsertSystemLogChange(saveRateAmountDTO.rateID, TableName, "electric_equip_amount", saveRateAmountDTO.electricEquipAmount.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveRateAmountDTO.rateID, TableName, "status", saveRateAmountDTO.status.ToString(), userID);
                             value.data = _sql.UpdateRateAmount(saveRateAmountDTO, userID);
                         }
                         else

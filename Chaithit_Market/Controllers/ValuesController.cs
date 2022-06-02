@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -68,6 +69,32 @@ namespace Chaithit_Market.Controllers
                 LoginService srv = new LoginService();
 
                 var obj = srv.Login(authHeader, lang, username, password, type, platform.ToLower(), logID);
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("1.0/logout")]
+        [HttpPost]
+        public IHttpActionResult Logout()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = "web";
+            string businesscode = request.Headers["businesscode"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                LoginService srv = new LoginService();
+
+                var obj = srv.Logout(authHeader, lang, data.user_id, platform.ToLower(), 1);
                 return Ok(obj);
             }
             catch (Exception ex)
@@ -242,10 +269,6 @@ namespace Chaithit_Market.Controllers
                     if (saveUserProfileDTO.userProfileID == 0)
                     {
                         checkMissingOptional += "userProfileID ";
-                    }
-                    if (string.IsNullOrEmpty(saveUserProfileDTO.password))
-                    {
-                        checkMissingOptional += "password ";
                     }
                     if (string.IsNullOrEmpty(saveUserProfileDTO.firstName))
                     {
@@ -943,6 +966,15 @@ namespace Chaithit_Market.Controllers
 
                 var obj = new object();
 
+                if (string.IsNullOrEmpty(searchManageRenterDTO.type))
+                {
+                    throw new Exception("Missing Parameter : type");
+                }
+                else if(searchManageRenterDTO.type.ToLower() != "employee" && searchManageRenterDTO.type.ToLower() != "renter")
+                {
+                    throw new Exception("Type must value employee or renter");
+                }
+
                 if (searchManageRenterDTO.pageInt.Equals(null) || searchManageRenterDTO.pageInt.Equals(0))
                 {
                     throw new Exception("invalid : pageInt ");
@@ -953,7 +985,7 @@ namespace Chaithit_Market.Controllers
                     throw new Exception("invalid : perPage ");
                 }
 
-                if (searchManageRenterDTO.sortField > 4)
+                if (searchManageRenterDTO.sortField > 7)
                 {
                     throw new Exception("invalid : sortField " + searchManageRenterDTO.sortField);
                 }
@@ -1621,6 +1653,97 @@ namespace Chaithit_Market.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
             }
         }
+
+        [Route("1.0/auto/update/unitIsUsed")]
+        [HttpGet]
+        public IHttpActionResult AutoUpdateUnitIsUsed()
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] ?? "");
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"]; //
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string currentDate = DateTime.Now.ToString("yyyy-MM-dd", new CultureInfo("en-US"));
+                int logID = _sql.InsertLogReceiveData("AutoUpdateUnitIsUsed", currentDate, timestampNow.ToString(), "",
+                        0, "");
+
+                SaveService srv = new SaveService();
+
+                var obj = new object();
+                obj = srv.AutoUpdateUnitIsUsedService(currentDate);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
+        [Route("1.0/search/pay/user")]
+        [HttpPost]
+        public IHttpActionResult SearchPayUser(SearchHistoryUserPayDTO searchHistoryUserPayDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(searchHistoryUserPayDTO);
+                int logID = _sql.InsertLogReceiveData("SearchPayUser", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+
+                GetService srv = new GetService();
+
+                var obj = new object();
+
+                if (searchHistoryUserPayDTO.userID.Equals(0))
+                {
+                    throw new Exception("invalid : userID ");
+                }
+
+                if (searchHistoryUserPayDTO.pageInt.Equals(null) || searchHistoryUserPayDTO.pageInt.Equals(0))
+                {
+                    throw new Exception("invalid : pageInt ");
+                }
+
+                if (searchHistoryUserPayDTO.perPage.Equals(null) || searchHistoryUserPayDTO.perPage.Equals(0))
+                {
+                    throw new Exception("invalid : perPage ");
+                }
+
+                if (searchHistoryUserPayDTO.sortField > 4)
+                {
+                    throw new Exception("invalid : sortField " + searchHistoryUserPayDTO.sortField);
+                }
+
+                if (!(searchHistoryUserPayDTO.sortType == "a" || searchHistoryUserPayDTO.sortType == "d" || searchHistoryUserPayDTO.sortType == "A" || searchHistoryUserPayDTO.sortType == "D" || searchHistoryUserPayDTO.sortType == ""))
+                {
+                    throw new Exception("invalid sortType");
+                }
+
+                obj = srv.SearchPayUserService(authHeader, lang, platform.ToLower(), logID, searchHistoryUserPayDTO);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         #endregion
 
         #region Transection
@@ -1665,24 +1788,22 @@ namespace Chaithit_Market.Controllers
                     {
                         checkMissingOptional += "startDate ";
                     }
-                    if (string.IsNullOrEmpty(insertTransectionRentDTO.endDate))
-                    {
-                        checkMissingOptional += "endDate ";
-                    }
                     if (insertTransectionRentDTO.rentType == 0)
                     {
                         checkMissingOptional += "rentType ";
                     }
+                    if (insertTransectionRentDTO.rentTypeAmount == 0)
+                    {
+                        checkMissingOptional += "rentTypeAmount ";
+                    }
+
+                    insertTransectionRentDTO.transCode += currentDate;
                 }
                 else if (insertTransectionRentDTO.mode.ToLower().Equals("update"))
                 {
                     if (insertTransectionRentDTO.tranRentID == 0)
                     {
                         checkMissingOptional += "tranRentID ";
-                    }
-                    if (string.IsNullOrEmpty(insertTransectionRentDTO.transCode))
-                    {
-                        checkMissingOptional += "transCode ";
                     }
                     if (insertTransectionRentDTO.userID == 0)
                     {
@@ -1696,15 +1817,14 @@ namespace Chaithit_Market.Controllers
                     {
                         checkMissingOptional += "startDate ";
                     }
-                    if (string.IsNullOrEmpty(insertTransectionRentDTO.endDate))
-                    {
-                        checkMissingOptional += "endDate ";
-                    }
                     if (insertTransectionRentDTO.rentType == 0)
                     {
                         checkMissingOptional += "rentType ";
                     }
-                    
+                    if (insertTransectionRentDTO.rentTypeAmount == 0)
+                    {
+                        checkMissingOptional += "rentTypeAmount ";
+                    }
                 }
                 else
                 {
@@ -1715,8 +1835,6 @@ namespace Chaithit_Market.Controllers
                 {
                     throw new Exception("Missing Parameter : " + checkMissingOptional);
                 }
-
-                insertTransectionRentDTO.transCode += currentDate;
 
                 SaveService srv = new SaveService();
                 var obj = new object();
@@ -2083,6 +2201,10 @@ namespace Chaithit_Market.Controllers
 
                 string checkMissingOptional = "";
 
+                if (string.IsNullOrEmpty(saveUnitDTO.electricMeter))
+                {
+                    saveUnitDTO.electricMeter = "";
+                }
                 if (saveUnitDTO.mode.ToLower().Equals("insert"))
                 {
                     if (saveUnitDTO.zoneID == 0)
@@ -2100,10 +2222,6 @@ namespace Chaithit_Market.Controllers
                     if (saveUnitDTO.rateID == 0)
                     {
                         checkMissingOptional += "rateID Must 0";
-                    }
-                    if (string.IsNullOrEmpty(saveUnitDTO.electricMeter))
-                    {
-                        checkMissingOptional += "electricMeter ";
                     }
                 }
                 else if (saveUnitDTO.mode.ToLower().Equals("update"))
@@ -2127,10 +2245,6 @@ namespace Chaithit_Market.Controllers
                     if (saveUnitDTO.rateID == 0)
                     {
                         checkMissingOptional += "rateID Must 0";
-                    }
-                    if (string.IsNullOrEmpty(saveUnitDTO.electricMeter))
-                    {
-                        checkMissingOptional += "electricMeter ";
                     }
                 }
                 else if (saveUnitDTO.mode.ToLower().Equals("delete"))

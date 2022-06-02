@@ -243,6 +243,32 @@ namespace Chaithit_Market.Core
             return data;
         }
 
+        public _ReturnIdModel Logout(int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec logout " +
+                "@pUserID ");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
         public int UpdateLogReceiveDataError(int pLogID, string pErrorText)
         {
             int id = 0;
@@ -416,6 +442,7 @@ namespace Chaithit_Market.Core
                 "@pMasterID," +
                 "@pTableName," +
                 "@pName," +
+                "@pStatus," +
                 "@pUserID ");
 
             SqlParameter pMasterID = new SqlParameter(@"pMasterID", SqlDbType.Int);
@@ -432,6 +459,11 @@ namespace Chaithit_Market.Core
             pName.Direction = ParameterDirection.Input;
             pName.Value = masterDataDTO.name;
             sql.Parameters.Add(pName);
+
+            SqlParameter pStatus = new SqlParameter(@"pStatus", SqlDbType.Int);
+            pStatus.Direction = ParameterDirection.Input;
+            pStatus.Value = masterDataDTO.status;
+            sql.Parameters.Add(pStatus);
 
             SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -913,6 +945,7 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pEndDate," +
                 "@pRentType," +
+                "@pRentTypeAmount," +
                 "@pCreateBy");
 
             SqlParameter pTransCode = new SqlParameter(@"pTransCode", SqlDbType.VarChar);
@@ -944,6 +977,11 @@ namespace Chaithit_Market.Core
             pRentType.Direction = ParameterDirection.Input;
             pRentType.Value = insertTransectionRentDTO.rentType;
             sql.Parameters.Add(pRentType);
+
+            SqlParameter pRentTypeAmount = new SqlParameter(@"pRentTypeAmount", SqlDbType.Int);
+            pRentTypeAmount.Direction = ParameterDirection.Input;
+            pRentTypeAmount.Value = insertTransectionRentDTO.rentTypeAmount;
+            sql.Parameters.Add(pRentTypeAmount);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
@@ -970,23 +1008,18 @@ namespace Chaithit_Market.Core
             DataTable table = new DataTable();
             SQLCustomExecute sql = new SQLCustomExecute("exec update_transection_rent " +
                 "@pTransRentID," +
-                "@pTransCode," +
                 "@pUserID," +
                 "@pUnitID," +
                 "@pStartDate," +
                 "@pEndDate," +
                 "@pRentType," +
+                "@pRentTypeAmount," +
                 "@pCreateBy");
 
             SqlParameter pTransRentID = new SqlParameter(@"pTransRentID", SqlDbType.Int);
             pTransRentID.Direction = ParameterDirection.Input;
             pTransRentID.Value = insertTransectionRentDTO.tranRentID;
             sql.Parameters.Add(pTransRentID);
-
-            SqlParameter pTransCode = new SqlParameter(@"pTransCode", SqlDbType.VarChar);
-            pTransCode.Direction = ParameterDirection.Input;
-            pTransCode.Value = insertTransectionRentDTO.transCode;
-            sql.Parameters.Add(pTransCode);
 
             SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -1012,6 +1045,11 @@ namespace Chaithit_Market.Core
             pRentType.Direction = ParameterDirection.Input;
             pRentType.Value = insertTransectionRentDTO.rentType;
             sql.Parameters.Add(pRentType);
+
+            SqlParameter pRentTypeAmount = new SqlParameter(@"pRentTypeAmount", SqlDbType.Int);
+            pRentTypeAmount.Direction = ParameterDirection.Input;
+            pRentTypeAmount.Value = insertTransectionRentDTO.rentTypeAmount;
+            sql.Parameters.Add(pRentTypeAmount);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
@@ -1042,6 +1080,7 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pEndDate," +
                 "@pRentAmount," +
+                "@pElectricUnit," +
                 "@pWaterUnit," +
                 "@pLampUnit," +
                 "@pElectricEquipUnit," +
@@ -1074,6 +1113,11 @@ namespace Chaithit_Market.Core
             pRentAmount.Direction = ParameterDirection.Input;
             pRentAmount.Value = insertTransectionBillDTO.rentAmount;
             sql.Parameters.Add(pRentAmount);
+
+            SqlParameter pElectricUnit = new SqlParameter(@"pElectricUnit", SqlDbType.Int);
+            pElectricUnit.Direction = ParameterDirection.Input;
+            pElectricUnit.Value = insertTransectionBillDTO.electricUnit;
+            sql.Parameters.Add(pElectricUnit);
 
             SqlParameter pWaterUnit = new SqlParameter(@"pWaterUnit", SqlDbType.Int);
             pWaterUnit.Direction = ParameterDirection.Input;
@@ -2354,6 +2398,7 @@ namespace Chaithit_Market.Core
                 "@pZoneSubID," +
                 "@pZoneID," +
                 "@pName," +
+                "@pStatus," +
                 "@pUpdateBy ");
 
             SqlParameter pZoneSubID = new SqlParameter(@"pZoneSubID", SqlDbType.Int);
@@ -2370,6 +2415,11 @@ namespace Chaithit_Market.Core
             pName.Direction = ParameterDirection.Input;
             pName.Value = saveZoneSubDTO.name;
             sql.Parameters.Add(pName);
+
+            SqlParameter pStatus = new SqlParameter(@"pStatus", SqlDbType.Int);
+            pStatus.Direction = ParameterDirection.Input;
+            pStatus.Value = saveZoneSubDTO.status;
+            sql.Parameters.Add(pStatus);
 
             SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -2542,6 +2592,7 @@ namespace Chaithit_Market.Core
                 "@pName," +
                 "@pRateID," +
                 "@pDnsMeter," +
+                "@pStatus," +
                 "@pUpdateBy ");
 
             SqlParameter pUnitID = new SqlParameter(@"pUnitID", SqlDbType.Int);
@@ -2578,6 +2629,11 @@ namespace Chaithit_Market.Core
             pDnsMeter.Direction = ParameterDirection.Input;
             pDnsMeter.Value = saveUnitDTO.electricMeter;
             sql.Parameters.Add(pDnsMeter);
+
+            SqlParameter pStatus = new SqlParameter(@"pStatus", SqlDbType.Int);
+            pStatus.Direction = ParameterDirection.Input;
+            pStatus.Value = saveUnitDTO.status;
+            sql.Parameters.Add(pStatus);
 
             SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -2769,6 +2825,7 @@ namespace Chaithit_Market.Core
                 "@pWaterAmount," +
                 "@pLampAmountPerOne," +
                 "@pElectricEquipAmount," +
+                "@pStatus," +
                 "@pUpdateBy ");
 
             SqlParameter pRateID = new SqlParameter(@"pRateID", SqlDbType.Int);
@@ -2810,6 +2867,11 @@ namespace Chaithit_Market.Core
             pElectricEquipAmount.Direction = ParameterDirection.Input;
             pElectricEquipAmount.Value = saveRateAmountDTO.electricEquipAmount;
             sql.Parameters.Add(pElectricEquipAmount);
+
+            SqlParameter pStatus = new SqlParameter(@"pStatus", SqlDbType.Int);
+            pStatus.Direction = ParameterDirection.Input;
+            pStatus.Value = saveRateAmountDTO.status;
+            sql.Parameters.Add(pStatus);
 
             SqlParameter pUserID = new SqlParameter(@"pUpdateBy", SqlDbType.Int);
             pUserID.Direction = ParameterDirection.Input;
@@ -3662,6 +3724,7 @@ namespace Chaithit_Market.Core
                 "@pUnitNo, " +
                 "@pStartDate, " +
                 "@pEndDate, " +
+                "@pType, " +
                 "@pPage, " +
                 "@pPerPage, " +
                 "@pSortField, " +
@@ -3691,6 +3754,11 @@ namespace Chaithit_Market.Core
             pEndDate.Direction = ParameterDirection.Input;
             pEndDate.Value = searchManageRenterDTO.endDate;
             sql.Parameters.Add(pEndDate);
+
+            SqlParameter pType = new SqlParameter(@"pType", SqlDbType.VarChar, 15);
+            pType.Direction = ParameterDirection.Input;
+            pType.Value = searchManageRenterDTO.type;
+            sql.Parameters.Add(pType);
 
             SqlParameter paramPage = new SqlParameter(@"pPage", SqlDbType.Int);
             paramPage.Direction = ParameterDirection.Input;
@@ -3744,7 +3812,8 @@ namespace Chaithit_Market.Core
                 "@pEmpType, " +
                 "@pUnitNo, " +
                 "@pStartDate, " +
-                "@pEndDate ");
+                "@pEndDate, " +
+                "@pType ");
 
             SqlParameter pNameOrMobile = new SqlParameter(@"pNameOrMobile", SqlDbType.VarChar, 250);
             pNameOrMobile.Direction = ParameterDirection.Input;
@@ -3770,6 +3839,11 @@ namespace Chaithit_Market.Core
             pEndDate.Direction = ParameterDirection.Input;
             pEndDate.Value = searchManageRenterDTO.endDate;
             sql.Parameters.Add(pEndDate);
+
+            SqlParameter pType = new SqlParameter(@"pType", SqlDbType.VarChar, 15);
+            pType.Direction = ParameterDirection.Input;
+            pType.Value = searchManageRenterDTO.type;
+            sql.Parameters.Add(pType);
 
             table = sql.executeQueryWithReturnTable();
 
@@ -4483,6 +4557,117 @@ namespace Chaithit_Market.Core
             }
 
             return data;
+        }
+
+        public _ReturnIdModel AutoUpdateUnitIsUsed(string currentDate)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec auto_update_unit_isused " +
+                "@pCurrentDate");
+
+            SqlParameter pCurrentDate = new SqlParameter(@"pCurrentDate", SqlDbType.VarChar, 50);
+            pCurrentDate.Direction = ParameterDirection.Input;
+            pCurrentDate.Value = currentDate;
+            sql.Parameters.Add(pCurrentDate);
+            
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
+
+        public Pagination<SearchPayUser> SearchPayUser(SearchHistoryUserPayDTO searchHistoryUserPayDTO)
+        {
+            DataTable table = new DataTable();
+
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_pay_user_page " +
+                "@pUserID, " +
+                "@pPage, " +
+                "@pPerPage, " +
+                "@pSortField, " +
+                "@pSortType");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = searchHistoryUserPayDTO.userID;
+            sql.Parameters.Add(pUserID);
+
+            SqlParameter pPage = new SqlParameter(@"pPage", SqlDbType.Int);
+            pPage.Direction = ParameterDirection.Input;
+            pPage.Value = searchHistoryUserPayDTO.pageInt;
+            sql.Parameters.Add(pPage);
+
+            SqlParameter pPerPage = new SqlParameter(@"pPerPage", SqlDbType.Int);
+            pPerPage.Direction = ParameterDirection.Input;
+            pPerPage.Value = searchHistoryUserPayDTO.perPage;
+            sql.Parameters.Add(pPerPage);
+
+            SqlParameter pSortField = new SqlParameter(@"pSortField", SqlDbType.Int);
+            pSortField.Direction = ParameterDirection.Input;
+            pSortField.Value = searchHistoryUserPayDTO.sortField;
+            sql.Parameters.Add(pSortField);
+
+            SqlParameter pSortType = new SqlParameter(@"pSortType", SqlDbType.VarChar, 1);
+            pSortType.Direction = ParameterDirection.Input;
+            pSortType.Value = searchHistoryUserPayDTO.sortType;
+            sql.Parameters.Add(pSortType);
+
+            table = sql.executeQueryWithReturnTable();
+
+            Pagination<SearchPayUser> pagination = new Pagination<SearchPayUser>();
+
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    SearchPayUser data = new SearchPayUser();
+                    data.loadData(row);
+                    pagination.data.Add(data);
+                }
+            }
+
+            int total = GetTotalSearchSearchPayUser(searchHistoryUserPayDTO);
+
+            pagination.SetPagination(total, searchHistoryUserPayDTO.perPage, searchHistoryUserPayDTO.pageInt);
+
+            return pagination;
+        }
+
+        public int GetTotalSearchSearchPayUser(SearchHistoryUserPayDTO searchHistoryUserPayDTO)
+        {
+            int total = 0;
+
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_pay_user_total " +
+                "@pUserID ");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = searchHistoryUserPayDTO.userID;
+            sql.Parameters.Add(pUserID);
+
+            table = sql.executeQueryWithReturnTable();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    DataRow dr = table.Rows[0];
+                    total = int.Parse(dr["total"].ToString());
+                }
+            }
+
+            return total;
         }
     }
 

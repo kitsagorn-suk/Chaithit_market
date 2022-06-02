@@ -47,7 +47,10 @@ namespace Chaithit_Market.Services
                         validation = ValidationManager.CheckValidationIDUpdate(saveUserProfileDTO.userProfileID, TableName, lang);
                         if (validation.Success == true)
                         {
-                            _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "password", saveUserProfileDTO.endDate, userID);
+                            if(!string.IsNullOrEmpty(saveUserProfileDTO.password))
+                            {
+                                _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "password", saveUserProfileDTO.password, userID);
+                            }
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "firstname", saveUserProfileDTO.firstName, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "lastname", saveUserProfileDTO.lastName, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "mobile", saveUserProfileDTO.mobile, userID);
@@ -134,13 +137,13 @@ namespace Chaithit_Market.Services
                         validation = ValidationManager.CheckValidationIDUpdate(insertTransectionRentDTO.tranRentID, TableName, lang);
                         if (validation.Success == true)
                         {
-                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "trans_code", insertTransectionRentDTO.transCode, userID);
                             _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "user_id", insertTransectionRentDTO.userID.ToString(), userID);
                             _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "unit_id", insertTransectionRentDTO.unitID.ToString(), userID);
                             _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "start_date", insertTransectionRentDTO.startDate, userID);
                             _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "end_date", insertTransectionRentDTO.endDate, userID);
                             _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "rent_type", insertTransectionRentDTO.rentType.ToString(), userID);
-                            
+                            _sql.InsertSystemLogChange(insertTransectionRentDTO.tranRentID, TableName, "rent_type_amount", insertTransectionRentDTO.rentTypeAmount.ToString(), userID);
+
                             value.data = _sql.UpdateTransectionRent(insertTransectionRentDTO, userID);
                         }
                         else
@@ -343,6 +346,49 @@ namespace Chaithit_Market.Services
             finally
             {
                 _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public ReturnIdModel AutoUpdateUnitIsUsedService(string currentDate)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            ReturnIdModel value = new ReturnIdModel();
+            try
+            {
+                value.data = new _ReturnIdModel();
+                ValidationModel validation = new ValidationModel();
+
+                validation = ValidationManager.CheckValidation(1, "th", "web");
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.AutoUpdateUnitIsUsed(currentDate);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(0, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "AutoUpdateUnitIsUsedService:");
+                if (0 > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(0, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(0, 1);
             }
             return value;
         }

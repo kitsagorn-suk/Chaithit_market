@@ -208,6 +208,7 @@
     <Compile Include="DTO\SaveZoneSubDTO.cs" />
     <Compile Include="DTO\SearchHistoryAdminBillDTO.cs" />
     <Compile Include="DTO\SearchHistoryUserBillDTO.cs" />
+    <Compile Include="DTO\SearchHistoryUserPayDTO.cs" />
     <Compile Include="DTO\SearchManageBillDTO.cs" />
     <Compile Include="DTO\SearchManageRenterDTO.cs" />
     <Compile Include="DTO\SearchManageUnitDTO.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Models\SearchMasterUnitModel.cs" />
     <Compile Include="Models\SearchMasterZoneModel.cs" />
     <Compile Include="Models\SearchMasterZoneSubModel.cs" />
+    <Compile Include="Models\SearchPayUserModel.cs" />
     <Compile Include="Models\SearchUnitStandModel.cs" />
     <Compile Include="Models\SearchUserProfileModel.cs" />
     <Compile Include="Models\SystemElectric.Context.cs">

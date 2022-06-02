@@ -23,6 +23,11 @@ namespace Chaithit_Market.Models
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
         public string unitNo { set; get; } = "";
+        public string firstName { set; get; } = "";
+        public string lastName { set; get; } = "";
+        public string detail { set; get; } = "";
+        public string userStartDate { set; get; } = "";
+        public int statusEmp { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -34,6 +39,11 @@ namespace Chaithit_Market.Models
             startDate = dr["start_date"].ToString();
             endDate = dr["end_date"].ToString();
             unitNo = dr["unit_no"].ToString();
+            firstName = dr["fisrt_name"].ToString();
+            lastName = dr["last_name"].ToString();
+            detail = dr["detail"].ToString();
+            userStartDate = dr["user_start_date"].ToString();
+            statusEmp = int.Parse(dr["status_emp"].ToString());
         }
     }
 }
