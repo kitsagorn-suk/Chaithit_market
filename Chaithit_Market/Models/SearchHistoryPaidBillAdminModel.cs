@@ -33,8 +33,8 @@ namespace Chaithit_Market.Models
         public decimal overpayAmount { set; get; } = 0;
         public string fileCode { set; get; } = "";
         public string[] imageUrl { get; set; } = { "" };
-        public string lastElectricUnit { set; get; } = "";
-        public string previousElectricUnit { set; get; } = "";
+        public int status { set; get; } = 0;
+        public string zoneName { set; get; } = "";
 
         public void loadData(DataRow dr)
         {
@@ -55,8 +55,8 @@ namespace Chaithit_Market.Models
             balanceAmount = decimal.Parse(dr["balance_amount"].ToString());
             overpayAmount = decimal.Parse(dr["overpay_amount"].ToString());
             fileCode = dr["file_code"].ToString();
-            lastElectricUnit = dr["last_electric_unit"].ToString();
-            previousElectricUnit = dr["previous_electric_unit"].ToString();
+            status = int.Parse(dr["status"].ToString());
+            zoneName = dr["zone_name"].ToString();
         }
     }
 }
