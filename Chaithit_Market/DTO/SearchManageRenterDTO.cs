@@ -17,6 +17,7 @@ namespace Chaithit_Market.DTO
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
         public string type { set; get; } = "";
+        public string showRenter { set; get; } = "";
         public int perPage { set; get; } = 0;
         public int pageInt { set; get; } = 0;
         public int sortField { set; get; } = 0;

@@ -55,7 +55,7 @@ namespace Chaithit_Market.Services
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "lastname", saveUserProfileDTO.lastName, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "mobile", saveUserProfileDTO.mobile, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "position", saveUserProfileDTO.position, userID);
-                            _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "start_date", saveUserProfileDTO.startDate, userID);
+                            _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "recommender", saveUserProfileDTO.recommender, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "status_emp", saveUserProfileDTO.statusEmp.ToString(), userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "emp_type", saveUserProfileDTO.empType.ToString(), userID);
                             value.data = _sql.UpdateUserProfile(saveUserProfileDTO, userID);
@@ -276,7 +276,45 @@ namespace Chaithit_Market.Services
                 value.data = new _ReturnIdModel();
                 ValidationModel validation = new ValidationModel();
 
-                validation = ValidationManager.CheckValidationDupicateTranPay(lang, saveTranPayDTO.billID);
+                validation = ValidationManager.CheckValidationDupicateTranPay(lang, saveTranPayDTO.billID, saveTranPayDTO.payAmount);
+
+                string[] billArr = saveTranPayDTO.billID.Split(',');
+
+                var nums = billArr.Where(s =>
+                    {
+                        int result;
+                        return !string.IsNullOrEmpty(s) && int.TryParse(s, out result);
+                    }
+                )
+                .Select(s => int.Parse(s))
+                .OrderBy(n => n);
+
+                string newBillList = "";
+                decimal balanceAmount = 0, payAmount = 0;
+                payAmount = saveTranPayDTO.payAmount;
+                foreach (var p in nums)
+                {
+                    int bill = 0;
+                    int.TryParse(p.ToString(), out bill);
+                    
+                    balanceAmount = _sql.getBalance(bill);
+                    payAmount = payAmount - balanceAmount;
+                    
+                    if (string.IsNullOrEmpty(newBillList))
+                    {
+                        newBillList = p.ToString();
+                    }
+                    else
+                    {
+                        newBillList += "," + p.ToString();
+                    }
+                    if (payAmount <= 0)
+                    {
+                        break;
+                    }
+                }
+
+                saveTranPayDTO.billID = newBillList;
 
                 if (validation.Success == true)
                 {
@@ -307,7 +345,7 @@ namespace Chaithit_Market.Services
         }
 
         public ReturnIdModel UpdateAdminApproveService(string authorization, string lang, string platform, int logID,
-            GetIDCenterDTO getIDCenterDTO, int userID)
+            UpdateAdminApproveDTO updateAdminApproveDTO, int userID)
         {
             if (_sql == null)
             {
@@ -324,7 +362,7 @@ namespace Chaithit_Market.Services
 
                 if (validation.Success == true)
                 {
-                    value.data = _sql.UpdateAdminApprove(getIDCenterDTO, userID);
+                    value.data = _sql.UpdateAdminApprove(updateAdminApproveDTO, userID);
                 }
                 else
                 {
@@ -389,6 +427,94 @@ namespace Chaithit_Market.Services
             finally
             {
                 _sql.UpdateStatusLog(0, 1);
+            }
+            return value;
+        }
+
+        public ReturnIdModel ChangePasswordService(string authorization, string lang, string platform, int logID,
+            ChangePasswordDTO changePasswordDTO, int userID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            ReturnIdModel value = new ReturnIdModel();
+            try
+            {
+                value.data = new _ReturnIdModel();
+                ValidationModel validation = new ValidationModel();
+                
+                validation = ValidationManager.CheckValidationDupicatePassword(lang, changePasswordDTO.userID, changePasswordDTO.passwordOld);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.ChangePassword(changePasswordDTO, userID);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "ChangePasswordService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
+        public ReturnIdModel ForgetPasswordService(string authorization, string lang, string platform, int logID,
+            ForgetPasswordDTO forgetPasswordDTO, int userID)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            ReturnIdModel value = new ReturnIdModel();
+            try
+            {
+                value.data = new _ReturnIdModel();
+                ValidationModel validation = new ValidationModel();
+
+                validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.ForgetPassword(forgetPasswordDTO, userID);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "ForgetPasswordService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
             }
             return value;
         }

@@ -491,6 +491,48 @@ namespace Chaithit_Market.Services
             return value;
         }
 
+        public GetTotalHistoryPaidBillAdminModel GetTotalHistoryPaidBillAdminService(string authorization, string lang, string platform, int logID, SearchHistoryAdminBillDTO searchHistoryAdminBillDTO)
+        {
+            if (_sql == null)
+            {
+                _sql = SQLManager.Instance;
+            }
+
+            GetTotalHistoryPaidBillAdminModel value = new GetTotalHistoryPaidBillAdminModel();
+            try
+            {
+                value.data = new TotalHistoryPaidBillAdminModel();
+
+                ValidationModel validation = ValidationManager.CheckValidation(1, lang, platform);
+
+                if (validation.Success == true)
+                {
+                    value.data = _sql.GetTotalHistoryPaidBillAdmin(searchHistoryAdminBillDTO);
+                }
+                else
+                {
+                    _sql.UpdateLogReceiveDataError(logID, validation.InvalidMessage);
+                }
+
+                value.success = validation.Success;
+                value.msg = new MsgModel() { code = validation.InvalidCode, text = validation.InvalidMessage, topic = validation.InvalidText };
+            }
+            catch (Exception ex)
+            {
+                LogManager.ServiceLog.WriteExceptionLog(ex, "GetTotalHistoryPaidBillAdminService:");
+                if (logID > 0)
+                {
+                    _sql.UpdateLogReceiveDataError(logID, ex.ToString());
+                }
+                throw ex;
+            }
+            finally
+            {
+                _sql.UpdateStatusLog(logID, 1);
+            }
+            return value;
+        }
+
         public SearchHistoryPaidBillUserModel SearchHistoryPaidBillUserService(string authorization, string lang, string platform, int logID, SearchHistoryUserBillDTO searchHistoryUserBillDTO)
         {
             if (_sql == null)

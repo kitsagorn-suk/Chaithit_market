@@ -26,8 +26,12 @@ namespace Chaithit_Market.Models
         public string firstName { set; get; } = "";
         public string lastName { set; get; } = "";
         public string detail { set; get; } = "";
-        public string userStartDate { set; get; } = "";
         public int statusEmp { set; get; } = 0;
+        public string userName { set; get; } = "";
+        public string fileCode { set; get; } = "";
+        public string[] imageUrl { get; set; } = { "" };
+        public string recommender { set; get; } = "";
+        public string userStartDate { set; get; } = "";
 
         public void loadData(DataRow dr)
         {
@@ -42,8 +46,11 @@ namespace Chaithit_Market.Models
             firstName = dr["fisrt_name"].ToString();
             lastName = dr["last_name"].ToString();
             detail = dr["detail"].ToString();
-            userStartDate = dr["user_start_date"].ToString();
             statusEmp = int.Parse(dr["status_emp"].ToString());
+            userName = dr["user_name"].ToString();
+            fileCode = dr["file_code"].ToString();
+            recommender = dr["recommender"].ToString();
+            userStartDate = dr["user_start_date"].ToString();
         }
     }
 }

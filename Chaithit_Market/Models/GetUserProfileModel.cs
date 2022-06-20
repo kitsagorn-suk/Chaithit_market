@@ -21,11 +21,9 @@ namespace Chaithit_Market.Models
         public string lastName { set; get; } = "";
         public string mobile { set; get; } = "";
         public string position { set; get; } = "";
-        public string startDate { set; get; } = "";
-        public string endDate { set; get; } = "";
         public int statusEmp { set; get; } = 0;
         public string fileCode { set; get; } = "";
-        public string[] imageUrl { get; set; } = { "" };
+        public string[] imageUrl { get; set; } = {  };
 
         public void loadData(DataRow dr)
         {
@@ -35,11 +33,8 @@ namespace Chaithit_Market.Models
             lastName = dr["lastname"].ToString();
             mobile = dr["mobile"].ToString();
             position = dr["position"].ToString();
-            startDate = DateTime.Parse(dr["start_date"].ToString()).ToString("yyyy-MM-dd");
-            endDate = DateTime.Parse(dr["end_date"].ToString()).ToString("yyyy-MM-dd");
             statusEmp = int.Parse(dr["status_emp"].ToString());
             fileCode = dr["file_code"].ToString();
-            //dnsMeter = dr["dns_meter"].ToString();
         }
 
         public List<MarketDetail> dataMarket { get; set; }
@@ -50,12 +45,16 @@ namespace Chaithit_Market.Models
         public string rentName { set; get; } = "";
         public string startDate { set; get; } = "";
         public string endDate { set; get; } = "";
+        public string zoneName { set; get; } = "";
+        public string unitName { set; get; } = "";
 
         public void loadData(DataRow dr)
         {
             rentName = dr["rent_name"].ToString();
             startDate = DateTime.Parse(dr["start_date"].ToString()).ToString("yyyy-MM-dd");
             endDate = DateTime.Parse(dr["end_date"].ToString()).ToString("yyyy-MM-dd");
+            zoneName = dr["zone_name"].ToString();
+            unitName = dr["unit_name"].ToString();
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Chaithit_Market.Models
         public string position { set; get; } = "";
         public string statusEmpName { set; get; } = "";
         public string zoneName { set; get; } = "";
+        public int zoneID { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -77,6 +78,7 @@ namespace Chaithit_Market.Models
             position = dr["position"].ToString();
             statusEmpName = dr["status_emp_name"].ToString();
             zoneName = dr["zone_name"].ToString();
+            zoneID = int.Parse(dr["zone_id"].ToString());
         }
     }
 }

@@ -454,12 +454,6 @@ namespace Chaithit_Market.Core
 
                 if (dt.Rows.Count > 0)
                 {
-                    if (dt.Rows[0]["Name"].ToString() != "0")
-                    {
-                        state = ValidationModel.InvalidState.E301006;
-                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
-                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
-                    }
                     if (dt.Rows[0]["UnitCode"].ToString() != "0")
                     {
                         state = ValidationModel.InvalidState.E301014;
@@ -544,7 +538,7 @@ namespace Chaithit_Market.Core
             return value;
         }
 
-        public static ValidationModel CheckValidationDupicateTranPay(string lang, string billID)
+        public static ValidationModel CheckValidationDupicateTranPay(string lang, string billID, decimal payAmount)
         {
             ValidationModel value = new ValidationModel();
             try
@@ -553,12 +547,15 @@ namespace Chaithit_Market.Core
                 ValidationModel.InvalidState state;
 
                 string[] billArr = billID.Split(',');
+                decimal balanceAmountTotal = 0, balanceAmount = 0;
                 foreach (var p in billArr)
                 {
                     int bill = 0;
                     int.TryParse(p, out bill);
 
                     DataTable dt = _sql.CheckDupicateTranPay(bill);
+                    balanceAmount = _sql.getBalance(bill);
+                    balanceAmountTotal += balanceAmount;
 
                     if (dt.Rows.Count > 0)
                     {
@@ -568,6 +565,47 @@ namespace Chaithit_Market.Core
                             getMessage = ValidationModel.GetInvalidMessage(state, lang);
                             return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                         }
+                    }
+                }
+
+                if (payAmount > balanceAmountTotal)
+                {
+                    state = ValidationModel.InvalidState.E301023;
+                    getMessage = ValidationModel.GetInvalidMessage(state, lang);
+                    return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
+                }
+
+
+                getMessage = ValidationModel.GetInvalidMessage(ValidationModel.InvalidState.S201001, lang);
+                value.Success = true;
+                value.InvalidCode = ValidationModel.GetInvalidCode(ValidationModel.InvalidState.S201001);
+                value.InvalidMessage = getMessage.message;
+                value.InvalidText = getMessage.topic;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return value;
+        }
+
+        public static ValidationModel CheckValidationDupicatePassword(string lang, int userID, string passwordOld)
+        {
+            ValidationModel value = new ValidationModel();
+            try
+            {
+                GetMessageTopicDTO getMessage = new GetMessageTopicDTO();
+                ValidationModel.InvalidState state;
+                
+                DataTable dt = _sql.CheckDupicatePassword(userID, passwordOld);
+
+                if (dt.Rows.Count > 0)
+                {
+                    if (dt.Rows[0]["havePass"].ToString() == "false")
+                    {
+                        state = ValidationModel.InvalidState.E301022;
+                        getMessage = ValidationModel.GetInvalidMessage(state, lang);
+                        return new ValidationModel { Success = false, InvalidCode = ValidationModel.GetInvalidCode(state), InvalidMessage = getMessage.message, InvalidText = getMessage.topic };
                     }
                 }
 

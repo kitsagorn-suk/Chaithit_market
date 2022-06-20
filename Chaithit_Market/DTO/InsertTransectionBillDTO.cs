@@ -27,5 +27,6 @@ namespace Chaithit_Market.DTO
         public decimal discountAmount { set; get; } = 0;
         public decimal netAmount { set; get; } = 0;
         public string payDate { set; get; } = "";
+        public int completeAmount { set; get; } = 0;
     }
 }

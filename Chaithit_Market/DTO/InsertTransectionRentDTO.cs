@@ -16,5 +16,6 @@ namespace Chaithit_Market.DTO
         public string endDate { set; get; } = "";
         public int rentType { set; get; } = 0;
         public int rentTypeAmount { set; get; } = 0;
+        public int status { set; get; } = 0;
     }
 }
