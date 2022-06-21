@@ -1945,6 +1945,46 @@ namespace Chaithit_Market.Core
             return total;
         }
 
+        public List<HistoryPaidBillUserNoPageModel> SearchHistoryPaidBillUserNoPage(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_user " +
+                "@pUserID, " +
+                "@pStartDate, " +
+                "@pEndDate ");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = searchHistoryUserBillDTO.userID;
+            sql.Parameters.Add(pUserID);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = searchHistoryUserBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = searchHistoryUserBillDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            table = sql.executeQueryWithReturnTable();
+
+            List<HistoryPaidBillUserNoPageModel> list = new List<HistoryPaidBillUserNoPageModel>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    HistoryPaidBillUserNoPageModel data = new HistoryPaidBillUserNoPageModel();
+                    data.loadData(row);
+                    list.Add(data);
+                }
+            }
+
+            return list;
+        }
+
         public Pagination<SearchHistoryPaidBillAdmin> SearchOutStandingBillUser(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
         {
             DataTable table = new DataTable();
