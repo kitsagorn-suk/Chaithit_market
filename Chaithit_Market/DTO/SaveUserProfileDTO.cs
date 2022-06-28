@@ -22,5 +22,7 @@ namespace Chaithit_Market.DTO
         public string recommender { set; get; } = "";
         public string address { set; get; } = "";
         public string taxNo { set; get; } = "";
+        public int officeID { set; get; } = 0;
+        public int branchNo { set; get; } = 0;
     }
 }

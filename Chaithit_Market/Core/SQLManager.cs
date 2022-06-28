@@ -753,6 +753,8 @@ namespace Chaithit_Market.Core
                 "@pStartDate," +
                 "@pAddress," +
                 "@pTaxNo," +
+                "@pOfficeID," +
+                "@pBranchNO," +
                 "@pCreateBy ");
 
             SqlParameter pUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar, 200);
@@ -815,6 +817,16 @@ namespace Chaithit_Market.Core
             paramTaxNo.Value = saveUserProfileDTO.taxNo;
             sql.Parameters.Add(paramTaxNo);
 
+            SqlParameter paramOfficeID = new SqlParameter(@"pOfficeID", SqlDbType.Int);
+            paramOfficeID.Direction = ParameterDirection.Input;
+            paramOfficeID.Value = saveUserProfileDTO.officeID;
+            sql.Parameters.Add(paramOfficeID);
+
+            SqlParameter paramBranchNO = new SqlParameter(@"pBranchNO", SqlDbType.Int);
+            paramBranchNO.Direction = ParameterDirection.Input;
+            paramBranchNO.Value = saveUserProfileDTO.branchNo;
+            sql.Parameters.Add(paramBranchNO);
+
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
             pCreateBy.Value = userID;
@@ -851,7 +863,9 @@ namespace Chaithit_Market.Core
                 "@pUpdateBy, " +
                 "@pPassword, " +
                 "@pAddress, " +
-                "@pTaxNo ");
+                "@pTaxNo, " +
+                "@pOfficeID, " +
+                "@pBranchNO ");
 
             SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
             pUserProfileID.Direction = ParameterDirection.Input;
@@ -917,6 +931,16 @@ namespace Chaithit_Market.Core
             paramTaxNo.Direction = ParameterDirection.Input;
             paramTaxNo.Value = saveUserProfileDTO.taxNo;
             sql.Parameters.Add(paramTaxNo);
+
+            SqlParameter paramOfficeID = new SqlParameter(@"pOfficeID", SqlDbType.Int);
+            paramOfficeID.Direction = ParameterDirection.Input;
+            paramOfficeID.Value = saveUserProfileDTO.officeID;
+            sql.Parameters.Add(paramOfficeID);
+
+            SqlParameter paramBranchNO = new SqlParameter(@"pBranchNO", SqlDbType.Int);
+            paramBranchNO.Direction = ParameterDirection.Input;
+            paramBranchNO.Value = saveUserProfileDTO.branchNo;
+            sql.Parameters.Add(paramBranchNO);
 
             table = sql.executeQueryWithReturnTable();
 

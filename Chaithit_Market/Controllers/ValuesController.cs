@@ -319,6 +319,14 @@ namespace Chaithit_Market.Controllers
                         {
                             saveUserProfileDTO.taxNo = val;
                         }
+                        if (key == "officeID")
+                        {
+                            saveUserProfileDTO.address = val;
+                        }
+                        if (key == "branchNo")
+                        {
+                            saveUserProfileDTO.taxNo = val;
+                        }
                     }
                 }
 
@@ -402,6 +410,14 @@ namespace Chaithit_Market.Controllers
                             {
                                 checkMissingOptional += "taxNo ";
                             }
+                            if (saveUserProfileDTO.officeID == 0)
+                            {
+                                checkMissingOptional += "officeID ";
+                            }
+                            if (saveUserProfileDTO.branchNo == 0)
+                            {
+                                checkMissingOptional += "branchNo ";
+                            }
                         }
                     }
                 }
@@ -461,6 +477,14 @@ namespace Chaithit_Market.Controllers
                             if (string.IsNullOrEmpty(saveUserProfileDTO.taxNo))
                             {
                                 checkMissingOptional += "taxNo ";
+                            }
+                            if (saveUserProfileDTO.officeID == 0)
+                            {
+                                checkMissingOptional += "officeID ";
+                            }
+                            if (saveUserProfileDTO.branchNo == 0)
+                            {
+                                checkMissingOptional += "branchNo ";
                             }
                         }
                     }
