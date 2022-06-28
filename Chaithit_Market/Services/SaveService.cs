@@ -58,6 +58,8 @@ namespace Chaithit_Market.Services
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "recommender", saveUserProfileDTO.recommender, userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "status_emp", saveUserProfileDTO.statusEmp.ToString(), userID);
                             _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "emp_type", saveUserProfileDTO.empType.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "address", saveUserProfileDTO.address.ToString(), userID);
+                            _sql.InsertSystemLogChange(saveUserProfileDTO.userProfileID, TableName, "tax_no", saveUserProfileDTO.taxNo.ToString(), userID);
                             value.data = _sql.UpdateUserProfile(saveUserProfileDTO, userID);
                         }
                         else
