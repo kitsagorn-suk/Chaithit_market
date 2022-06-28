@@ -4895,7 +4895,7 @@ namespace Chaithit_Market.Core
                 "@pCash," +
                 "@pCreateBy ");
 
-            SqlParameter pBillID = new SqlParameter(@"pBillID", SqlDbType.VarChar);
+            SqlParameter pBillID = new SqlParameter(@"pBillID", SqlDbType.VarChar, 100);
             pBillID.Direction = ParameterDirection.Input;
             pBillID.Value = payCashDTO.billID.ToString();
             sql.Parameters.Add(pBillID);
