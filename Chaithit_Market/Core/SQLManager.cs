@@ -1945,6 +1945,46 @@ namespace Chaithit_Market.Core
             return total;
         }
 
+        public List<HistoryPaidBillUserNoPageModel> SearchHistoryPaidBillUserNoPage(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec get_search_all_ncbill_user " +
+                "@pUserID, " +
+                "@pStartDate, " +
+                "@pEndDate ");
+
+            SqlParameter pUserID = new SqlParameter(@"pUserID", SqlDbType.Int);
+            pUserID.Direction = ParameterDirection.Input;
+            pUserID.Value = searchHistoryUserBillDTO.userID;
+            sql.Parameters.Add(pUserID);
+
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 255);
+            pStartDate.Direction = ParameterDirection.Input;
+            pStartDate.Value = searchHistoryUserBillDTO.startDate;
+            sql.Parameters.Add(pStartDate);
+
+            SqlParameter pEndDate = new SqlParameter(@"pEndDate", SqlDbType.VarChar, 255);
+            pEndDate.Direction = ParameterDirection.Input;
+            pEndDate.Value = searchHistoryUserBillDTO.endDate;
+            sql.Parameters.Add(pEndDate);
+
+            table = sql.executeQueryWithReturnTable();
+
+            List<HistoryPaidBillUserNoPageModel> list = new List<HistoryPaidBillUserNoPageModel>();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    HistoryPaidBillUserNoPageModel data = new HistoryPaidBillUserNoPageModel();
+                    data.loadData(row);
+                    list.Add(data);
+                }
+            }
+
+            return list;
+        }
+
         public Pagination<SearchHistoryPaidBillAdmin> SearchOutStandingBillUser(SearchHistoryUserBillDTO searchHistoryUserBillDTO)
         {
             DataTable table = new DataTable();
@@ -4845,6 +4885,44 @@ namespace Chaithit_Market.Core
             table = sql.executeQueryWithReturnTable();
 
             return table;
+        }
+
+        public _ReturnIdModel PayCash(PayCashDTO payCashDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec pay_cash " +
+                "@pBillID," +
+                "@pCash," +
+                "@pCreateBy ");
+
+            SqlParameter pBillID = new SqlParameter(@"pBillID", SqlDbType.VarChar);
+            pBillID.Direction = ParameterDirection.Input;
+            pBillID.Value = payCashDTO.billID.ToString();
+            sql.Parameters.Add(pBillID);
+
+            SqlParameter pCash = new SqlParameter(@"pCash", SqlDbType.Decimal);
+            pCash.Direction = ParameterDirection.Input;
+            pCash.Value = payCashDTO.cash;
+            sql.Parameters.Add(pCash);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
         }
     }
 

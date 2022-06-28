@@ -35,6 +35,8 @@ namespace Chaithit_Market.Models
         public string[] imageUrl { get; set; } = { "" };
         public int status { set; get; } = 0;
         public string zoneName { set; get; } = "";
+        public decimal cash { set; get; } = 0;
+        public decimal transfer { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -57,6 +59,8 @@ namespace Chaithit_Market.Models
             fileCode = dr["file_code"].ToString();
             status = int.Parse(dr["status"].ToString());
             zoneName = dr["zone_name"].ToString();
+            cash = decimal.Parse(dr["cash"].ToString());
+            transfer = decimal.Parse(dr["transfer"].ToString());
         }
     }
 }
