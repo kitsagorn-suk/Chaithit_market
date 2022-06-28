@@ -1963,6 +1963,53 @@ namespace Chaithit_Market.Controllers
             }
         }
 
+        [Route("1.0/pay/cash")]
+        [HttpPost]
+        public IHttpActionResult PayCash(PayCashDTO payCashDTO)
+        {
+            var request = HttpContext.Current.Request;
+            string authHeader = (request.Headers["Authorization"] == null ? "" : request.Headers["Authorization"]);
+            string lang = (request.Headers["lang"] == null ? WebConfigurationManager.AppSettings["default_language"] : request.Headers["lang"]);
+            string platform = request.Headers["platform"];
+            string version = request.Headers["version"];
+
+            AuthenticationController _auth = AuthenticationController.Instance;
+            AuthorizationModel data = _auth.ValidateHeader(authHeader, lang, true);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(payCashDTO);
+                int logID = _sql.InsertLogReceiveData("PayCash", json, timestampNow.ToString(), authHeader,
+                    data.user_id, platform.ToLower());
+                
+                string checkMissingOptional = "";
+
+                if (payCashDTO.billID == 0)
+                {
+                    checkMissingOptional += "billID ";
+                }
+                if (payCashDTO.cash == 0)
+                {
+                    checkMissingOptional += "cash ";
+                }
+
+                if (checkMissingOptional != "")
+                {
+                    throw new Exception("Missing Parameter : " + checkMissingOptional);
+                }
+
+                SaveService srv = new SaveService();
+                var obj = new object();
+                obj = srv.PayCashService(authHeader, lang, platform.ToLower(), logID, payCashDTO, data.user_id);
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message));
+            }
+        }
+
         #endregion
 
         #region Transection

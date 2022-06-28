@@ -211,6 +211,7 @@
     <Compile Include="DTO\LoginRequestDTO.cs" />
     <Compile Include="DTO\MasterDataDTO.cs" />
     <Compile Include="DTO\MasterPlaceSubDTO.cs" />
+    <Compile Include="DTO\PayCashDTO.cs" />
     <Compile Include="DTO\SavePrefixUnitDTO.cs" />
     <Compile Include="DTO\SaveRateAmountDTO.cs" />
     <Compile Include="DTO\SaveRentalDTO.cs" />

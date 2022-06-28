@@ -4886,6 +4886,44 @@ namespace Chaithit_Market.Core
 
             return table;
         }
+
+        public _ReturnIdModel PayCash(PayCashDTO payCashDTO, int userID)
+        {
+            DataTable table = new DataTable();
+            SQLCustomExecute sql = new SQLCustomExecute("exec pay_cash " +
+                "@pBillID," +
+                "@pCash," +
+                "@pCreateBy ");
+
+            SqlParameter pBillID = new SqlParameter(@"pBillID", SqlDbType.VarChar);
+            pBillID.Direction = ParameterDirection.Input;
+            pBillID.Value = payCashDTO.billID.ToString();
+            sql.Parameters.Add(pBillID);
+
+            SqlParameter pCash = new SqlParameter(@"pCash", SqlDbType.Decimal);
+            pCash.Direction = ParameterDirection.Input;
+            pCash.Value = payCashDTO.cash;
+            sql.Parameters.Add(pCash);
+
+            SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
+            pCreateBy.Direction = ParameterDirection.Input;
+            pCreateBy.Value = userID;
+            sql.Parameters.Add(pCreateBy);
+
+            table = sql.executeQueryWithReturnTable();
+
+            _ReturnIdModel data = new _ReturnIdModel();
+
+            if (table != null && table.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    data.loadData(row);
+                }
+            }
+
+            return data;
+        }
     }
 
     public class SQLCustomExecute
