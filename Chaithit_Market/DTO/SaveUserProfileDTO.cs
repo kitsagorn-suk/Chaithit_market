@@ -20,5 +20,7 @@ namespace Chaithit_Market.DTO
         public int statusEmp { set; get; } = 0;
         public int empType { set; get; } = 0;
         public string recommender { set; get; } = "";
+        public string address { set; get; } = "";
+        public string taxNo { set; get; } = "";
     }
 }

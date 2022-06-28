@@ -751,34 +751,36 @@ namespace Chaithit_Market.Core
                 "@pEmpType," +
                 "@pRecommender," +
                 "@pStartDate," +
+                "@pAddress," +
+                "@pTaxNo," +
                 "@pCreateBy ");
 
-            SqlParameter pUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar);
+            SqlParameter pUserName = new SqlParameter(@"pUserName", SqlDbType.VarChar, 200);
             pUserName.Direction = ParameterDirection.Input;
             pUserName.Value = saveUserProfileDTO.userName;
             sql.Parameters.Add(pUserName);
 
-            SqlParameter pPassWord = new SqlParameter(@"pPassWord", SqlDbType.VarChar);
+            SqlParameter pPassWord = new SqlParameter(@"pPassWord", SqlDbType.VarChar, 250);
             pPassWord.Direction = ParameterDirection.Input;
             pPassWord.Value = saveUserProfileDTO.password;
             sql.Parameters.Add(pPassWord);
 
-            SqlParameter pFirstname = new SqlParameter(@"pFirstname", SqlDbType.VarChar);
+            SqlParameter pFirstname = new SqlParameter(@"pFirstname", SqlDbType.VarChar, 250);
             pFirstname.Direction = ParameterDirection.Input;
             pFirstname.Value = saveUserProfileDTO.firstName;
             sql.Parameters.Add(pFirstname);
 
-            SqlParameter pLastname = new SqlParameter(@"pLastname", SqlDbType.VarChar);
+            SqlParameter pLastname = new SqlParameter(@"pLastname", SqlDbType.VarChar, 250);
             pLastname.Direction = ParameterDirection.Input;
             pLastname.Value = saveUserProfileDTO.lastName;
             sql.Parameters.Add(pLastname);
 
-            SqlParameter pMoblie = new SqlParameter(@"pMoblie", SqlDbType.VarChar);
+            SqlParameter pMoblie = new SqlParameter(@"pMoblie", SqlDbType.VarChar, 15);
             pMoblie.Direction = ParameterDirection.Input;
             pMoblie.Value = saveUserProfileDTO.mobile;
             sql.Parameters.Add(pMoblie);
 
-            SqlParameter pPosition = new SqlParameter(@"pPosition", SqlDbType.VarChar);
+            SqlParameter pPosition = new SqlParameter(@"pPosition", SqlDbType.VarChar, 250);
             pPosition.Direction = ParameterDirection.Input;
             pPosition.Value = saveUserProfileDTO.position;
             sql.Parameters.Add(pPosition);
@@ -793,15 +795,25 @@ namespace Chaithit_Market.Core
             pEmpType.Value = saveUserProfileDTO.empType;
             sql.Parameters.Add(pEmpType);
 
-            SqlParameter pRecommender = new SqlParameter(@"pRecommender", SqlDbType.VarChar);
+            SqlParameter pRecommender = new SqlParameter(@"pRecommender", SqlDbType.VarChar, 250);
             pRecommender.Direction = ParameterDirection.Input;
             pRecommender.Value = saveUserProfileDTO.recommender;
             sql.Parameters.Add(pRecommender);
 
-            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar);
+            SqlParameter pStartDate = new SqlParameter(@"pStartDate", SqlDbType.VarChar, 250);
             pStartDate.Direction = ParameterDirection.Input;
             pStartDate.Value = saveUserProfileDTO.startDate;
             sql.Parameters.Add(pStartDate);
+
+            SqlParameter paramAddress = new SqlParameter(@"pAddress", SqlDbType.VarChar);
+            paramAddress.Direction = ParameterDirection.Input;
+            paramAddress.Value = saveUserProfileDTO.address;
+            sql.Parameters.Add(paramAddress);
+
+            SqlParameter paramTaxNo = new SqlParameter(@"pTaxNo", SqlDbType.VarChar, 50);
+            paramTaxNo.Direction = ParameterDirection.Input;
+            paramTaxNo.Value = saveUserProfileDTO.taxNo;
+            sql.Parameters.Add(paramTaxNo);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
@@ -837,7 +849,9 @@ namespace Chaithit_Market.Core
                 "@pRecommender," +
                 "@pStartDate," +
                 "@pUpdateBy, " +
-                "@pPassword ");
+                "@pPassword, " +
+                "@pAddress, " +
+                "@pTaxNo ");
 
             SqlParameter pUserProfileID = new SqlParameter(@"pUserProfileID", SqlDbType.Int);
             pUserProfileID.Direction = ParameterDirection.Input;
@@ -893,6 +907,16 @@ namespace Chaithit_Market.Core
             pPassword.Direction = ParameterDirection.Input;
             pPassword.Value = saveUserProfileDTO.password;
             sql.Parameters.Add(pPassword);
+
+            SqlParameter paramAddress = new SqlParameter(@"pAddress", SqlDbType.VarChar);
+            paramAddress.Direction = ParameterDirection.Input;
+            paramAddress.Value = saveUserProfileDTO.address;
+            sql.Parameters.Add(paramAddress);
+
+            SqlParameter paramTaxNo = new SqlParameter(@"pTaxNo", SqlDbType.VarChar, 50);
+            paramTaxNo.Direction = ParameterDirection.Input;
+            paramTaxNo.Value = saveUserProfileDTO.taxNo;
+            sql.Parameters.Add(paramTaxNo);
 
             table = sql.executeQueryWithReturnTable();
 

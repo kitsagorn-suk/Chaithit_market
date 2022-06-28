@@ -311,6 +311,14 @@ namespace Chaithit_Market.Controllers
                         {
                             saveUserProfileDTO.startDate = val;
                         }
+                        if (key == "address")
+                        {
+                            saveUserProfileDTO.address = val;
+                        }
+                        if (key == "taxNo")
+                        {
+                            saveUserProfileDTO.taxNo = val;
+                        }
                     }
                 }
 
@@ -384,6 +392,17 @@ namespace Chaithit_Market.Controllers
                                 checkMissingOptional += "startDate ";
                             }
                         }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(saveUserProfileDTO.address))
+                            {
+                                checkMissingOptional += "address ";
+                            }
+                            if (string.IsNullOrEmpty(saveUserProfileDTO.taxNo))
+                            {
+                                checkMissingOptional += "taxNo ";
+                            }
+                        }
                     }
                 }
                 else if (saveUserProfileDTO.mode.ToLower().Equals("update"))
@@ -431,6 +450,17 @@ namespace Chaithit_Market.Controllers
                             if (string.IsNullOrEmpty(saveUserProfileDTO.startDate))
                             {
                                 checkMissingOptional += "startDate ";
+                            }
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(saveUserProfileDTO.address))
+                            {
+                                checkMissingOptional += "address ";
+                            }
+                            if (string.IsNullOrEmpty(saveUserProfileDTO.taxNo))
+                            {
+                                checkMissingOptional += "taxNo ";
                             }
                         }
                     }
