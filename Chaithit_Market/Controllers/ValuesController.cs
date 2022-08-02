@@ -321,11 +321,11 @@ namespace Chaithit_Market.Controllers
                         }
                         if (key == "officeID")
                         {
-                            saveUserProfileDTO.address = val;
+                            saveUserProfileDTO.officeID = int.Parse(string.IsNullOrEmpty(val) ? "0" : val);
                         }
                         if (key == "branchNo")
                         {
-                            saveUserProfileDTO.taxNo = val;
+                            saveUserProfileDTO.branchNo = int.Parse(string.IsNullOrEmpty(val) ? "0" : val);
                         }
                     }
                 }
@@ -414,7 +414,7 @@ namespace Chaithit_Market.Controllers
                             {
                                 checkMissingOptional += "officeID ";
                             }
-                            if (saveUserProfileDTO.branchNo == 0)
+                            if (saveUserProfileDTO.officeID == 2 && saveUserProfileDTO.branchNo == 0)
                             {
                                 checkMissingOptional += "branchNo ";
                             }
@@ -482,7 +482,7 @@ namespace Chaithit_Market.Controllers
                             {
                                 checkMissingOptional += "officeID ";
                             }
-                            if (saveUserProfileDTO.branchNo == 0)
+                            if (saveUserProfileDTO.officeID == 2 && saveUserProfileDTO.branchNo == 0)
                             {
                                 checkMissingOptional += "branchNo ";
                             }
@@ -2261,7 +2261,7 @@ namespace Chaithit_Market.Controllers
                     checkMissingOptional += "กรุณาระบุส่วนลดเป็นจำนวนเงินหรือเปอร์เซ็นต์ อย่างใดอย่างหนึ่งเท่านั้น";
                 }
 
-                insertTransectionBillDTO.billCode = insertTransectionBillDTO.tranRentID.ToString() + currentDate;
+                insertTransectionBillDTO.billCode = "INV" + insertTransectionBillDTO.tranRentID.ToString() + currentDate;
 
                 SaveService srv = new SaveService();
                 var obj = new object();

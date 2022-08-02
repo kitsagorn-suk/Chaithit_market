@@ -46,6 +46,9 @@ namespace Chaithit_Market.Models
         public string statusEmpName { set; get; } = "";
         public string zoneName { set; get; } = "";
         public int zoneID { set; get; } = 0;
+        public int rentHaveVat { set; get; } = 0;
+        public int electricHaveVat { set; get; } = 0;
+        public int waterHaveVat { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -79,6 +82,9 @@ namespace Chaithit_Market.Models
             statusEmpName = dr["status_emp_name"].ToString();
             zoneName = dr["zone_name"].ToString();
             zoneID = int.Parse(dr["zone_id"].ToString());
+            rentHaveVat = int.Parse(dr["rent_have_vat"].ToString());
+            electricHaveVat = int.Parse(dr["electric_have_vat"].ToString());
+            waterHaveVat = int.Parse(dr["water_have_vat"].ToString());
         }
     }
 }

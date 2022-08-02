@@ -28,5 +28,8 @@ namespace Chaithit_Market.DTO
         public decimal netAmount { set; get; } = 0;
         public string payDate { set; get; } = "";
         public int completeAmount { set; get; } = 0;
+        public int rentHaveVat { set; get; } = 0;
+        public int electricHaveVat { set; get; } = 0;
+        public int waterHaveVat { set; get; } = 0;
     }
 }

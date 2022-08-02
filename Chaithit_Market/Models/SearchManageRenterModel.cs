@@ -32,6 +32,10 @@ namespace Chaithit_Market.Models
         public string[] imageUrl { get; set; } = { "" };
         public string recommender { set; get; } = "";
         public string userStartDate { set; get; } = "";
+        public string taxNo { set; get; } = "";
+        public string address { set; get; } = "";
+        public int officeID { set; get; } = 0;
+        public int branchNo { set; get; } = 0;
 
         public void loadData(DataRow dr)
         {
@@ -51,6 +55,10 @@ namespace Chaithit_Market.Models
             fileCode = dr["file_code"].ToString();
             recommender = dr["recommender"].ToString();
             userStartDate = dr["user_start_date"].ToString();
+            taxNo = dr["tax_no"].ToString();
+            address = dr["address"].ToString();
+            officeID = int.Parse(dr["office_id"].ToString());
+            branchNo = int.Parse(dr["branch_no"].ToString());
         }
     }
 }

@@ -1147,6 +1147,9 @@ namespace Chaithit_Market.Core
                 "@pDiscountPercent," +
                 "@pDiscountAmount," +
                 "@pPayDate," +
+                "@pRentHaveVat," +
+                "@pElectricHaveVat," +
+                "@pWaterHaveVat," +
                 "@pCreateBy");
 
             SqlParameter pTranRentID = new SqlParameter(@"pTranRentID", SqlDbType.Int);
@@ -1209,6 +1212,21 @@ namespace Chaithit_Market.Core
             pPayDate.Value = insertTransectionBillDTO.payDate;
             sql.Parameters.Add(pPayDate);
 
+            SqlParameter pRentHaveVat = new SqlParameter(@"pRentHaveVat", SqlDbType.Int);
+            pRentHaveVat.Direction = ParameterDirection.Input;
+            pRentHaveVat.Value = insertTransectionBillDTO.rentHaveVat;
+            sql.Parameters.Add(pRentHaveVat);
+
+            SqlParameter pElectricHaveVat = new SqlParameter(@"pElectricHaveVat", SqlDbType.Int);
+            pElectricHaveVat.Direction = ParameterDirection.Input;
+            pElectricHaveVat.Value = insertTransectionBillDTO.electricHaveVat;
+            sql.Parameters.Add(pElectricHaveVat);
+
+            SqlParameter pWaterHaveVat = new SqlParameter(@"pWaterHaveVat", SqlDbType.Int);
+            pWaterHaveVat.Direction = ParameterDirection.Input;
+            pWaterHaveVat.Value = insertTransectionBillDTO.waterHaveVat;
+            sql.Parameters.Add(pWaterHaveVat);
+
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
             pCreateBy.Value = userID;
@@ -1246,6 +1264,9 @@ namespace Chaithit_Market.Core
                 "@pDiscountAmount," +
                 "@pCompleteAmount," +
                 "@pPayDate," +
+                "@pRentHaveVat," +
+                "@pElectricHaveVat," +
+                "@pWaterHaveVat," +
                 "@pCreateBy");
 
             SqlParameter pTransBillID = new SqlParameter(@"pTranBillID", SqlDbType.Int);
@@ -1317,6 +1338,21 @@ namespace Chaithit_Market.Core
             pPayDate.Direction = ParameterDirection.Input;
             pPayDate.Value = insertTransectionBillDTO.payDate;
             sql.Parameters.Add(pPayDate);
+
+            SqlParameter pRentHaveVat = new SqlParameter(@"pRentHaveVat", SqlDbType.Int);
+            pRentHaveVat.Direction = ParameterDirection.Input;
+            pRentHaveVat.Value = insertTransectionBillDTO.rentHaveVat;
+            sql.Parameters.Add(pRentHaveVat);
+
+            SqlParameter pElectricHaveVat = new SqlParameter(@"pElectricHaveVat", SqlDbType.Int);
+            pElectricHaveVat.Direction = ParameterDirection.Input;
+            pElectricHaveVat.Value = insertTransectionBillDTO.electricHaveVat;
+            sql.Parameters.Add(pElectricHaveVat);
+
+            SqlParameter pWaterHaveVat = new SqlParameter(@"pWaterHaveVat", SqlDbType.Int);
+            pWaterHaveVat.Direction = ParameterDirection.Input;
+            pWaterHaveVat.Value = insertTransectionBillDTO.waterHaveVat;
+            sql.Parameters.Add(pWaterHaveVat);
 
             SqlParameter pCreateBy = new SqlParameter(@"pCreateBy", SqlDbType.Int);
             pCreateBy.Direction = ParameterDirection.Input;
